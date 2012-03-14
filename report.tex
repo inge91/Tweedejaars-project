@@ -1,0 +1,58 @@
+\documentclass[a4paper]{article}
+\usepackage[english]{babel}
+\usepackage{enumerate}
+\usepackage{amsmath}
+\usepackage{graphicx}
+
+\begin{document}
+
+\title{Classifying Seagull Behaviour}
+\author{Inge Becht \\ Maarten de Jonge \\ Susanne Marselis \\ Richard Pronk}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+\section{Experimentation}
+At the present, it appears that the GPS' measure resolution is inadequate for
+any behaviour classification. On a good day there's about 60 measurements, which
+simply isn't enough for detecting specific behaviours. Thus we'll have to start
+using the accelerometer data early on.
+\begin{figure}[htb] 
+    \begin{center}
+        \makebox[\textwidth] {
+            \includegraphics[width=1.2\textwidth]{fig/scatter.png} }
+        \caption{Plot of location against time}
+        \label{fig:scatter}
+    \end{center}
+\end{figure}
+
+
+
+
+\section{
+Planning
+}
+\textbf{11-01-2012}
+Planning voor eind van de week:
+\begin{enumerate}
+    \item{Morgen willen we scheiding van land en zee afhebben. Data van een
+    bepaalde vogel kunnen scheiden tussen enkel land en enkel zee data.}
+    \item{beginnen met segementeren van de accelerometer. Punten om over na te denken:}
+    \begin{enumerate}
+    \item{op welke schaal kijken we naar de accelerometer data: seconden,
+            uren, dagen?}
+    \item{hoe gaan we de verschillende segmenten leren? 
+            Supervised en zelf dingen met de hand toewijzen? Kmeans
+                toepassen en computer clusters laten vinden?  
+                uiteindelijk met nearest neighbour nieuwe waardes toewijzen als er
+                eenmaal een goed clustermodel gevonden is?}
+    \item{
+            hebben we alle data nodig(x,y,z) of is een van die al karakteristiek genoeg?
+        }
+    \end{enumerate}
+\end{enumerate}
+Vrijdag besloten hoe we dit gaan aanpakken!! 
+    
+
+
+\end{document}
