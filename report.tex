@@ -6,53 +6,80 @@
 
 \begin{document}
 
-\title{Classifying Seagull Behaviour}
-\author{Inge Becht \\ Maarten de Jonge \\ Susanne Marselis \\ Richard Pronk}
+\title{Inverse kinematics for the Nao}
+\author{Inge Becht \\ Maarten de Jonge \\ Richard Pronk}
 \date{\today}
 \maketitle
 
-\section{Introduction}
-\section{Experimentation}
-At the present, it appears that the GPS' measure resolution is inadequate for
-any behaviour classification. On a good day there's about 60 measurements, which
-simply isn't enough for detecting specific behaviours. Thus we'll have to start
-using the accelerometer data early on.
-\begin{figure}[htb] 
-    \begin{center}
-        \makebox[\textwidth] {
-            \includegraphics[width=1.2\textwidth]{fig/scatter.png} }
-        \caption{Plot of location against time}
-        \label{fig:scatter}
-    \end{center}
-\end{figure}
+We used 'a Robust Closed-loop gait for the Standard Platform League Humanoid' to
+solve the inverse kinematics problem on the SPL Nao's to try and make a robuster
+wall. Here we will talk about the equations that are used in the article and our
+interpretation of it
 
+\section*{Equation 1}
+Foot2Torso doesn't matter for us because we can use getPosition to find the foot
+coordinate in Torso Space.
+\begin{align*}    
+Foot2Hip = 
+\begin{bmatrix}
+    1 & 0 & 0 & 0 \\
+    0 & 1 & 0 & \frac{ldist}{2}\\
+    0 & 0 & 1 & 0 \\
+    0 & 0 & 0 & 1 \\
+\end{bmatrix}\\
+\end{align*}
 
+$ldist$ is the distance between the legs and can be calculated using 
+\[getPosition("RAnkleRoll", 0 , True)\]. Substracting the absolute values of y
+gives the distance.
 
+\section*{Equation 2}
+Now we want to rotate 45 degrees over the x-axis to get the orthogonal
+Foot2HipOrth:
+\begin{align*}
+    Rot_x(\frac{\pi}{4})=
+    \begin{bmatrix}
+    1&0&0&0\\
+    0&cos(\frac{\pi}{4})&-sin(\frac{\pi}{4})&0\\
+    0&sin(\frac{\pi}{4})&cos(\frac{\pi}{4})&0\\
+    0&0&0&1\\
+    \end{bmatrix}
+\end{align*}
 
-\section{
-Planning
-}
-\textbf{11-01-2012}
-Planning voor eind van de week:
-\begin{enumerate}
-    \item{Morgen willen we scheiding van land en zee afhebben. Data van een
-    bepaalde vogel kunnen scheiden tussen enkel land en enkel zee data.}
-    \item{beginnen met segementeren van de accelerometer. Punten om over na te denken:}
-    \begin{enumerate}
-    \item{op welke schaal kijken we naar de accelerometer data: seconden,
-            uren, dagen?}
-    \item{hoe gaan we de verschillende segmenten leren? 
-            Supervised en zelf dingen met de hand toewijzen? Kmeans
-                toepassen en computer clusters laten vinden?  
-                uiteindelijk met nearest neighbour nieuwe waardes toewijzen als er
-                eenmaal een goed clustermodel gevonden is?}
-    \item{
-            hebben we alle data nodig(x,y,z) of is een van die al karakteristiek genoeg?
-        }
-    \end{enumerate}
-\end{enumerate}
-Vrijdag besloten hoe we dit gaan aanpakken!! 
-    
+\section*{Equation 3}
+This transformation is inverted so the sum of the transformation matrix
+will be the length of the line between the hip and the ankle joint
+
+\section*{Equation 4 and 5}
+Now that we know the length between the ankle and the hip, we can calculate all
+the angles using the law of cosines. We use this law to calculate the knee angle
+on the inside as follows:
+
+\begin{align*}
+    cosrules: c^2 = a^2 + b^2 - 2 ab cos\gamma
+    a * b * cos(\gamma) =a^2 + b^2 -c^2
+    \gamma = arccos(\frac{a^2 + b^2 - c^2}{2 * a * b})
+\end{align*}
+where a = upperleg, b = lowerleg and $\gamma$ is the joint angle of the knee  
+
+\section*{Equation 6}
+
+\begin{align*}
+    \delta_{knee} = \pi - \gamma
+\end{align*}
+turn the degree of rotation to the outside of the knee.
+
+\section*{Equation 7}
+the angle between the ankle and the invisible line from lowerleg to upperleg.
+Just the same way calculated as equation 5.
+\begin{align*}
+    \delta_{footPitch1} = arccos(\frac{a^2 + b^2 - c^2}{2*a*c})
+\end{align*}
+
+\section*{Equation 8 and 9}
+\begin{align*}
+\end{align*}
+
 
 
 \end{document}
