@@ -121,4 +121,9 @@ class CenterOfMass():
     # constructs a transformation matrx for shifting from the previous
     # coordinate-system to the current one
     def transformation_matrix(self, previous, current):
-        pass
+        # get the x, y and z offset values in vector
+        offsets = self.jointOffsets[(previous, current)]
+        offset_vector = matrix(offsets).transpose()
+
+        # get the 3x3 rotation matrix
+        # TODO
