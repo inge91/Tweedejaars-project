@@ -1,3 +1,5 @@
+from numpy import matrix
+from naoqi import ALProxy
 
 #TODO: voor Linker joints y even inverse waarde geven
             # center of mass        x           y        z
@@ -48,12 +50,12 @@ jointOffsets = {
         ("LHipRoll", "LHipYawPitch")        : [0.0 , 0.0, 0.0],
         ("LHipRoll", "LHipPitch")           : [0.0, 0.0, 0.0],
         ("LHipPitch", "LHipRoll")           : [0.0, 0.0, 0.0],
-        ("LHipPitch", "LKneePitch")         : [0.0, 0.0 -100.0],
-        ("LKneePitch", "LHipPitch")         : [0.0, 0.0 100.0],
+        ("LHipPitch", "LKneePitch")         : [0.0, 0.0, -100.0],
+        ("LKneePitch", "LHipPitch")         : [0.0, 0.0, 100.0],
         ("LKneePitch","LAnklePitch")        : [0.0, 0.0, -102.9],
         ("LAnklePitch","LKneePitch")        : [0.0, 0.0, 102.9],
         ("LAnklePitch", "LAnkleRoll")       : [0.0, 0.0, 0.0],
-        ("LAnkleRoll", "LAnklePitch")       : [0.0, 0.0, 0.0]
+        ("LAnkleRoll", "LAnklePitch")       : [0.0, 0.0, 0.0],
         ("Torso", "RShoulderPitch")         : [0.0, -98.0, 100.00 ],
         ("RShoulderPitch", "Torso")         : [0.0, -98.0, -100.00 ],
         ("RShoulderPitch", "RShoulderRoll") : [0.0, 0.0, 0.0],
@@ -71,18 +73,50 @@ jointOffsets = {
         ("RHipRoll", "RHipPitch")           : [0.0, 0.0, 0.0],
         ("RHipPitch", "RHipRoll")           : [0.0, 0.0, 0.0],
         ("RHipPitch", "RKneePitch")         : [0.0, 0.0 -100.0],
-        ("RKneePitch", "RHipPitch")         : [0.0, 0.0 100.0],
+        ("RKneePitch", "RHipPitch")         : [0.0, 0.0, 100.0],
         ("RKneePitch","RAnklePitch")        : [0.0, 0.0, -102.9],
         ("RAnklePitch","RKneePitch")        : [0.0, 0.0, 102.9],
         ("RAnklePitch", "RAnkleRoll")       : [0.0, 0.0, 0.0],
         ("RAnkleRoll", "RAnklePitch")       : [0.0, 0.0, 0.0]
         }
 
+# returns the center of mass of a geven part
 def get_CoM(part):
     path = {
-            "LLeg" : ("LAnkleRoll", "LAnkePitch", "LKneePitch", "LHipPitch",
-                "LHipRoll", "LHipYawPitch")
-            "RLeg" : ("RAnkleRoll", "RAnkePitch", "RKneePitch", "RHipPitch",
+            "LLeg" : ("LAnkleRoll", "LAnklePitch", "LKneePitch", "LHipPitch",
+                "LHipRoll", "LHipYawPitch"),
+            "RLeg" : ("RAnkleRoll", "RAnklePitch", "RKneePitch", "RHipPitch",
                 "RHipRoll", "RHipYawPitch")
             }.get(part)
 
+    # initial transformation matrix
+    T = matrix([[1, 0, 0, 0],
+                [0, 1, 0, 0],
+                [0, 0, 1, 0],
+                [0, 0, 0, 1]])
+
+    # initial weighted CoM location based on the first element of the path
+    centroid, mass = joinCOM(path[0])
+    total_CoM = mass * centroid
+    total_mass = mass
+
+    # loop through through every element except the first, along with its
+    # previous element
+    for previous, current in (path[i], path[i-1] for i in xrange(1, len(path))):
+        # update the transformation matrix to calculate the centroid location
+        T = T * transformation_matrix(previous, current)
+
+        # multiply the centroid with its weight and update the total CoM and
+        # mass
+        centroid, mass = joinCOM(current)
+        total_CoM += mass * centroid
+        total_mass += mass
+
+    # the final CoM is the total weighted CoM location divided by the total
+    # weight
+    return total_CoM / float(total_mass)
+
+# constructs a transformation matrx for shifting from the previous
+# coordinate-system to the current one
+def transformation_matrix(previous, current)
+    pass
