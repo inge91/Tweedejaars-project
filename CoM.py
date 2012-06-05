@@ -78,9 +78,11 @@ jointOffsets = {
         ("RAnkleRoll", "RAnklePitch")       : [0.0, 0.0, 0.0]
         }
 
+def get_CoM(part):
+    path = {
+            "LLeg" : ("LAnkleRoll", "LAnkePitch", "LKneePitch", "LHipPitch",
+                "LHipRoll", "LHipYawPitch")
+            "RLeg" : ("RAnkleRoll", "RAnkePitch", "RKneePitch", "RHipPitch",
+                "RHipRoll", "RHipYawPitch")
+            }.get(part)
 
-               
-
-    
-
-        }
