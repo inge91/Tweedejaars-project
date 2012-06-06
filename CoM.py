@@ -81,6 +81,10 @@ class CenterOfMass():
             ("RAnkleRoll", "RAnklePitch")       : [0.0, 0.0, 0.0]
             }
 
+    # constructor, initalizes the ALProxy
+    def __init__(self, ip_address, port):
+        self.motion_proxy = ALProxy("ALMotion", ip_address, port)
+
     # returns the center of mass of a geven part
     def get_CoM(self, part):
         path = {
