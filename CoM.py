@@ -90,7 +90,7 @@ class CenterOfMass():
     def __init__(self, ip_address, port):
         self.motion_proxy = ALProxy("ALMotion", ip_address, port)
 
-    # returns the center of mass of a geven part
+    # returns the center of mass of a given part
     def get_CoM(self, part):
         # TODO: add the HipYawPitches to the lists
         path = {
@@ -112,7 +112,7 @@ class CenterOfMass():
         total_CoM = mass * centroid
         total_mass = mass
 
-        # loop through through every element except the first, along with its
+        # loop through every element except the first, along with its
         # previous element
         for previous, current in ((path[i], path[i-1]) 
                 for i in xrange(1, len(path))):

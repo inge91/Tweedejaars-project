@@ -6,14 +6,14 @@
 
 \begin{document}
 
-\title{Inverse kinematics for the Nao}
+\title{Designing a Dynamic for the Nao}
 \author{Inge Becht \\ Maarten de Jonge \\ Richard Pronk}
 \date{\today}
 \maketitle
 
 \section{Introduction}
 Our research is concerned with making a dynamical kick for the Nao robot. The
-Nao is a humanoid robot 58 of cm tall used in the Standard Platform League of
+Nao is a 58 cm tall humanoid robot used in the Standard Platform League of
 Autonomous Robot Soccer. The kick is a very important part of the soccer game as
 having the most goals in a match wins the game. The idea behind a dynamic kick
 is that instead of specifically telling for every joint what to do, the Nao
@@ -22,24 +22,40 @@ how to move his leg to hit the ball without falling over. It is our goal to show
 in our last week how the Nao is able to do this, while making a trade-off
 between accuracy and stability. If it seems to work properly it will be
 integrated in the code of the Dutch Nao Team, the SPL team that represents the
-University of Amsterdam, which at this points still only works with setting
-keypoints.
+University of Amsterdam, which at this points still only 
+define motions with setting the 
+joints manually (by keyframe motions).
 
-\section{Why this project} 
-This project covers the one of the most important aspects of the robot soccer
-game, the kicking of the ball. Since there is more than one player on the field
-there is lots of Interference from the other Naos. Therefore many of the kicks
-fail due to the instability of the Nao. Another interesting part of this project
-is that this project will Help the Dutch Nao Team in their next competition. The
-current keyframe motion is very brittle, with our dynamic kick we will create a
-more robust system against these environmental factors.
+\section{The motiviation for this project} 
+This project covers the one of the most important aspects of humanoid
+robot soccer: the kicking of the ball.
+Having a dynamical kick is desirable for more than one reason which will be
+covered in these sections
+
+\subsection{Stability}
+Since there is mo)e than one player on
+the field who are chasing after the ball
+there is lots of interference from other Naos while kicking. Due to the
+instability of the Nao this can result in falling down quite easily. 
 
 Overheating is also a problem that Nao’s encounter, here the joints will perform
 not as expected or even fail. Using this dynamic system the temperature of the
 joints can be used to prevent overheating. This can be done by kicking the ball
 not as hard as usual or even kicking with the other leg. Making this dynamic
-system for the Nao is a quite difficult task. However there are many papers
-concerning this subject, which will be our leading guides to solve this problem. 
+
+
+\subsection{Helping the Dutch Nao Team}
+Another interesting part of this project
+is that it will Help the Dutch Nao Team in their competition. The
+current keyframe motion used by DNT is very brittle, with our dynamic kick we will create a
+more robust kick. 
+This integration makes this project a more valuable activity in the longrun
+
+\subsection{Harder kicks}
+Being able to define when a kick is stable enough to execute we can make a
+trade-off between how far the ball is kicked and the stableness of the
+robot. This can result in harder kicks then when using keyframe motions.
+
 
 
 \section{Problems, and how to handle them}
