@@ -6,7 +6,7 @@
 
 \begin{document}
 
-\title{Designing a Dynamic for the Nao}
+\title{Designing a Dynamic Kick for the Nao Robot}
 \author{Inge Becht \\ Maarten de Jonge \\ Richard Pronk}
 \date{\today}
 \maketitle
@@ -26,49 +26,49 @@ University of Amsterdam, which at this points still only
 define motions with setting the 
 joints manually (by keyframe motions).
 
-\section{The motiviation for this project} 
+\section{Motiviation for this project} 
 This project covers the one of the most important aspects of humanoid
 robot soccer: the kicking of the ball.
-Having a dynamical kick is desirable for more than one reason which will be
-covered in these sections
+Having a dynamical kick is desired over simple keyframe motions for more than one reason:
+
+\begin{itemize}
+    \item Stability
+    \item Harder kicks
+    \item Helping the Dutch Nao Team
+\end{itemize}
 
 \subsection{Stability}
-Since there is mo)e than one player on
-the field who are chasing after the ball
+Since there is more than one player on
+the field  chasing after the ball,
 there is lots of interference from other Naos while kicking. Due to the
-instability of the Nao this can result in falling down quite easily. 
-
-Overheating is also a problem that Nao’s encounter, here the joints will perform
+instability of the Nao this can result in falling down quite easily, even more
+so when there is no compensation for it when executing a motion. A dynamical
+kick keeps track of the stability and will execute a kick that keeps the nao
+most stable.
+\\\\
+Overheating is also a problem for Naos. When this occurs the joints will perform
 not as expected or even fail. Using this dynamic system the temperature of the
-joints can be used to prevent overheating. This can be done by kicking the ball
-not as hard as usual or even kicking with the other leg. Making this dynamic
+joints can be used to prevent overheating. This then is achieved by kicking the ball
+not as hard as usual or even kicking with the other leg. 
 
+\subsection{Harder kicks and better stability}
+Being able to define when a kick is stable enough to execute we can make a
+trade-off between how far the ball is kicked and the stableness of the
+robotm resulting in harder kicks then when using keyframe motions.
 
 \subsection{Helping the Dutch Nao Team}
 Another interesting part of this project
 is that it will Help the Dutch Nao Team in their competition. The
 current keyframe motion used by DNT is very brittle, with our dynamic kick we will create a
-more robust kick. 
-This integration makes this project a more valuable activity in the longrun
-
-\subsection{Harder kicks}
-Being able to define when a kick is stable enough to execute we can make a
-trade-off between how far the ball is kicked and the stableness of the
-robot. This can result in harder kicks then when using keyframe motions.
-
-
+more robust kick that can give our universities team a bigger chance of winning. 
+This integration makes this project a valuable activity in the longrun, and not
+just a one time experiment.
 
 \section{Problems, and how to handle them}
 The task of kicking a ball requires a couple of things: We need to find a path
 for the foot to travel, then we need a way to calculate the joint angles
 corresponding to the required position of the foot (inverse kinematics), and all
 the while we have to make sure the robot doesn’t fall over.
-
-\begin{enumerate}
-  \item The balance problem
-  \item The kinematics problem
-  \item The kick itself
-\end{enumerate}
 
 \subsection{The balance problem}
 The balance problem requires knowledge of 2 concepts; the \emph{center of mass},
@@ -102,7 +102,7 @@ two potential solutions to this problem:
 \item use a hillclimbing algorithm to approach the desired location over a number of iterations
 \end{enumerate}
 
-We’re currently leaning towards the second option, mainly because it’s easier,
+We're currently leaning towards the second option, mainly because it’s easier,
 more standard, and can deal with unreachable positions (it simply approaches the
 closest reachable position).
 
@@ -115,7 +115,7 @@ metrics.
 
 
 
-\section{Required Materials and support} 
+\section{Required materials and support} 
 To find a solution to our problem statement we need a Nao to experiment on and a
 possible simulation environment for at home. All of these materials are
 available in the robolab.
@@ -123,10 +123,12 @@ available in the robolab.
 Furthermore, there are different papers concerned with the problems we are
 trying to tackle, but none of them cover the whole problem statement, and not
 all are specifically about the Nao. For example we found a paper about
-calculating the center of mass for robots with multiple joints but not tailored
+calculating the center of mass for robots with multiple joints\cite{Cotton2008} but not tailored
 to the problem of the Nao robot.The difficulty for us is to put all this
 information together and to make it work specifically on the Nao, and to
-document this process at the same time.
+document this process at the same time. Most of the problems have been covered
+in previous courses, but it still will require some insight in achieving our set
+goals.
 
 \bibliographystyle{plain}
 \bibliography{library}
