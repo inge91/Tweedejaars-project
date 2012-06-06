@@ -1,10 +1,11 @@
-from numpy import matrix
-from naoqi import ALProxy
-from math import cos, sin
 import sys
 
 # adding the Naoqi Python SDK to the path
 sys.path.append("SDK")
+
+from numpy import matrix
+from naoqi import ALProxy
+from math import cos, sin
 
 class CenterOfMass():
     #TODO: voor Linker joints y even inverse waarde geven
@@ -78,7 +79,7 @@ class CenterOfMass():
             ("RHipRoll", "RHipYawPitch")        : [0.0 , 0.0, 0.0],
             ("RHipRoll", "RHipPitch")           : [0.0, 0.0, 0.0],
             ("RHipPitch", "RHipRoll")           : [0.0, 0.0, 0.0],
-            ("RHipPitch", "RKneePitch")         : [0.0, 0.0 -100.0],
+            ("RHipPitch", "RKneePitch")         : [0.0, 0.0, -100.0],
             ("RKneePitch", "RHipPitch")         : [0.0, 0.0, 100.0],
             ("RKneePitch","RAnklePitch")        : [0.0, 0.0, -102.9],
             ("RAnklePitch","RKneePitch")        : [0.0, 0.0, 102.9],
@@ -108,7 +109,7 @@ class CenterOfMass():
 
         # initial weighted CoM location based on the first element of the path
         centroid, mass = self.jointCOM[path[0]]
-        centroid = matrix(centroid).transpose()
+        centroid = matrix(centroid + [1]).transpose()
         total_CoM = mass * centroid
         total_mass = mass
 
@@ -119,10 +120,12 @@ class CenterOfMass():
             # update the transformation matrix to calculate the centroid location
             T = T * self.transformation_matrix(previous, current)
 
-            # multiply the centroid with its weight and update the total CoM and
-            # mass
+            # multiply the transformed centroid with its weight and update the
+            # total CoM and mass
             centroid, mass = self.jointCOM[current]
-            centroid = matrix(centroid)
+            centroid = matrix(centroid + [1]).transpose()
+            centroid = T * centroid
+
             total_CoM += mass * centroid
             total_mass += mass
 
