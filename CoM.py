@@ -1,6 +1,10 @@
 from numpy import matrix
 from naoqi import ALProxy
 from math import cos, sin
+import sys
+
+# adding the Naoqi Python SDK to the path
+sys.path.append("SDK")
 
 class CenterOfMass():
     #TODO: voor Linker joints y even inverse waarde geven
@@ -103,7 +107,8 @@ class CenterOfMass():
                     [0, 0, 0, 1]])
 
         # initial weighted CoM location based on the first element of the path
-        centroid, mass = self.joinCOM(path[0])
+        centroid, mass = self.jointCOM[path[0]]
+        centroid = matrix(centroid).transpose()
         total_CoM = mass * centroid
         total_mass = mass
 
@@ -112,11 +117,12 @@ class CenterOfMass():
         for previous, current in ((path[i], path[i-1]) 
                 for i in xrange(1, len(path))):
             # update the transformation matrix to calculate the centroid location
-            T = T * transformation_matrix(previous, current)
+            T = T * self.transformation_matrix(previous, current)
 
             # multiply the centroid with its weight and update the total CoM and
             # mass
-            centroid, mass = self.joinCOM(current)
+            centroid, mass = self.jointCOM[current]
+            centroid = matrix(centroid)
             total_CoM += mass * centroid
             total_mass += mass
 
@@ -131,7 +137,7 @@ class CenterOfMass():
         offsets = self.jointOffsets[(previous, current)]
 
         # get the 3x3 rotation matrix using the angle of the previous joint
-        angle = self.motion_proxy.getAngles(previous, false)
+        angle = self.motion_proxy.getAngles(previous, False)[0]
 
         # special case for the crazy-ass hip
         if "YawPitch" in previous:
