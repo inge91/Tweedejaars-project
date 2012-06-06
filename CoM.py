@@ -1,5 +1,6 @@
 from numpy import matrix
 from naoqi import ALProxy
+from math import cos, sin
 
 class CenterOfMass():
     #TODO: voor Linker joints y even inverse waarde geven
@@ -87,11 +88,12 @@ class CenterOfMass():
 
     # returns the center of mass of a geven part
     def get_CoM(self, part):
+        # TODO: add the HipYawPitches to the lists
         path = {
                 "LLeg" : ("LAnkleRoll", "LAnklePitch", "LKneePitch", "LHipPitch",
-                    "LHipRoll", "LHipYawPitch"),
+                    "LHipRoll"),
                 "RLeg" : ("RAnkleRoll", "RAnklePitch", "RKneePitch", "RHipPitch",
-                    "RHipRoll", "RHipYawPitch")
+                    "RHipRoll")
                 }.get(part)
 
         # initial transformation matrix
@@ -125,9 +127,33 @@ class CenterOfMass():
     # constructs a transformation matrx for shifting from the previous
     # coordinate-system to the current one
     def transformation_matrix(self, previous, current):
-        # get the x, y and z offset values in vector
+        # get the x, y and z offset values
         offsets = self.jointOffsets[(previous, current)]
-        offset_vector = matrix(offsets).transpose()
 
-        # get the 3x3 rotation matrix
-        # TODO
+        # get the 3x3 rotation matrix using the angle of the previous joint
+        angle = self.motion_proxy.getAngles(previous, false)
+
+        # special case for the crazy-ass hip
+        if "YawPitch" in previous:
+            pass #TODO
+
+        elif "Roll" in previous:
+            rotation = [[1, 0, 0],
+                        [0, cos(angle), -sin(angle)],
+                        [0, sin(angle), cos(angle)]]
+        elif "Pitch" in previous:
+            rotation = [[cos(angle), 0, -sin(angle)],
+                        [0, 1, 0],
+                        [sin(angle), 0, cos(angle)]]
+        elif "Yaw" in previous:
+            rotation = [[cos(angle), -sin(angle), 0],
+                        [sin(angle), cos(angle), 0],
+                        [0, 0, 1]]
+
+        # merge the rotation and translation together
+        rotation[0].append(offsets[0])
+        rotation[1].append(offsets[1])
+        rotation[2].append(offsets[2])
+        rotation.append([0, 0, 0, 1]) # homogenous stuff
+
+        return matrix(rotation)
