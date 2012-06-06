@@ -11,75 +11,53 @@
 \date{\today}
 \maketitle
 
-We used 'a Robust Closed-loop gait for the Standard Platform League Humanoid' to
-solve the inverse kinematics problem on the SPL Nao's to try and make a robuster
-wall. Here we will talk about the equations that are used in the article and our
-interpretation of it
+\section{Introduction}
+Our research is concerned with making a dynamical kick for the Nao robot. The Nao is a humanoid robot 58 of cm tall used in the Standard Platform League of Autonomous Robot Soccer. The kick is a very important part of the soccer game as having the most goals in a match wins the game. The idea behind a dynamic kick is that instead of specifically telling for every joint what to do, the Nao itself will be able to decide given a position of the ball and his own position how to move his leg to hit the ball without falling over. It is our goal to show in our last week how the Nao is able to do this, while making a trade-off between accuracy and stability. If it seems to work properly it will be integrated in the code of the Dutch Nao Team, the SPL team that represents the University of Amsterdam, which at this points still only works with setting keypoints.
 
-\section*{Equation 1}
-Foot2Torso doesn't matter for us because we can use getPosition to find the foot
-coordinate in Torso Space.
-\begin{align*}    
-Foot2Hip = 
-\begin{bmatrix}
-    1 & 0 & 0 & 0 \\
-    0 & 1 & 0 & \frac{ldist}{2}\\
-    0 & 0 & 1 & 0 \\
-    0 & 0 & 0 & 1 \\
-\end{bmatrix}\\
-\end{align*}
 
-$ldist$ is the distance between the legs and can be calculated using 
-\[getPosition("RAnkleRoll", 0 , True)\]. Substracting the absolute values of y
-gives the distance.
+\section{Why this project} 
 
-\section*{Equation 2}
-Now we want to rotate 45 degrees over the x-axis to get the orthogonal
-Foot2HipOrth:
-\begin{align*}
-    Rot_x(\frac{\pi}{4})=
-    \begin{bmatrix}
-    1&0&0&0\\
-    0&cos(\frac{\pi}{4})&-sin(\frac{\pi}{4})&0\\
-    0&sin(\frac{\pi}{4})&cos(\frac{\pi}{4})&0\\
-    0&0&0&1\\
-    \end{bmatrix}
-\end{align*}
+This project covers the one of the most important aspects of the robot soccer game, the kicking of the ball. Since there is more than one player on the field there is lots of Interference from the other Naos. Therefore many of the kicks fail due to the instability of the Nao. Another interesting part of this project is that this project will Help the Dutch Nao Team in their next competition. The current keyframe motion is very brittle, with our dynamic kick we will create a more robust system against these environmental factors.
 
-\section*{Equation 3}
-This transformation is inverted so the sum of the transformation matrix
-will be the length of the line between the hip and the ankle joint
-
-\section*{Equation 4 and 5}
-Now that we know the length between the ankle and the hip, we can calculate all
-the angles using the law of cosines. We use this law to calculate the knee angle
-on the inside as follows:
-
-\begin{align*}
-    cosrules: c^2 = a^2 + b^2 - 2 ab cos\gamma
-    a * b * cos(\gamma) =a^2 + b^2 -c^2
-    \gamma = arccos(\frac{a^2 + b^2 - c^2}{2 * a * b})
-\end{align*}
-where a = upperleg, b = lowerleg and $\gamma$ is the joint angle of the knee  
-
-\section*{Equation 6}
-
-\begin{align*}
-    \delta_{knee} = \pi - \gamma
-\end{align*}
-turn the degree of rotation to the outside of the knee.
-
-\section*{Equation 7}
-the angle between the ankle and the invisible line from lowerleg to upperleg.
-Just the same way calculated as equation 5.
-\begin{align*}
-    \delta_{footPitch1} = arccos(\frac{a^2 + b^2 - c^2}{2*a*c})
-\end{align*}
-
-\section*{Equation 8 and 9}
-\begin{align*}
-\end{align*}
+Overheating is also a problem that Nao’s encounter, here the joints will perform not as expected or even fail. Using this dynamic system the temperature of the joints can be used to prevent overheating. This can be done by kicking the ball not as hard as usual or even kicking with the other leg. Making this dynamic system for the Nao is a quite difficult task. However there are many papers concerning this subject, which will be our leading guides to solve this problem. 
 
 
 
+
+\section{Problems, and how to handle them}
+The task of kicking a ball requires a couple of things: We need to find a path for the foot to travel, then we need a way to calculate the joint angles corresponding to the required position of the foot (inverse kinematics), and all the while we have to make sure the robot doesn’t fall over.
+
+\begin{enumerate}
+  \item The balance problem
+  \item The kinematics problem
+  \item The kick itself
+\end{enumerate}
+
+\subsection{The balance problem}
+The balance problem requires knowledge of 2 concepts; the \emph{center of mass}, and the \emph{support polygon}. The center of mass is the weighted average location of the Nao’s mass, while the support polygon is the location on the floor over which the center of mass must be located to achieve stability. In the case of a robot standing on the ground, the support polygon is the convex hull of the feet touching the ground. In our case, the robot will only be standing on one foot which should make it rather simple to calculate the support polygon. 
+
+The center of mass is a bit more complex to calculate. It’s defined as the sum of each component’s \emph{centroid} (its own center of mass) multiplied by its mass, divided by the total weight (equation \ref{eq:CoM}). This of course requires each centroid to be described in the same coordinate system.
+\begin{align}
+  \frac{\sum_i \vec{c}_i m_i} {m}        \label eq:CoM
+\end{align}
+In the Nao’s documentation, each component’s centroid is described relative to its own coordinate system, and offsets are included to convert between adjacent components’ coordinate systems. To handle this, we will construct a chain of transformations to walk through each component while calculating the center of mass of the entire robot.
+
+\subsection{The kinematics problem}
+We want to be able to specify a location for the foot, then have the foot automatically move there, which means that the we’ll need to be able calculate the required joint angles. This is known as \emph{inverse kinematics}. There are two potential solutions to this problem:
+\begin{enumerate}
+  \item analytically solve the inverse kinematics chain using goniometry (as done by \cite{Graf2009})
+\item use a hillclimbing algorithm to approach the desired location over a number of iterations
+\end{enumerate}
+
+We’re currently leaning towards the second option, mainly because it’s easier, more standard, and can deal with unreachable positions (it simply approaches the closest reachable position).
+
+\subsection{The kick}
+With the solutions of the previous two problems, we can start to calculate the optimal kick trajectory. For this we plan to use a similar system to Naoteam Humboldt \cite{Muller2011}; we define two measures, one for accuracy and one for strength, then search for a path which maximizes a certain balance of these two metrics. 
+
+
+
+\section{Required Materials and support} 
+To find a solution to our problem statement we need a Nao to experiment on and a possible simulation environment for at home. All of these materials are available in the robolab.
+
+Furthermore, there are different papers concerned with the problems we are trying to tackle, but none of them cover the whole problem statement, and not all are specifically about the Nao. For example we found a paper about calculating the center of mass for robots with multiple joints but not tailored to the problem of the Nao robot.The difficulty for us is to put all this information together and to make it work specifically on the Nao, and to document this process at the same time.
 \end{document}
