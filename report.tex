@@ -12,7 +12,7 @@
 \maketitle
 
 \section{Introduction}
-Our research is concerned with making a dynamical kick for the Nao robot. The
+Our research is concerned with making a dynamic kick for the Nao robot. The
 Nao is a 58 cm tall humanoid robot used in the Standard Platform League of
 Autonomous Robot Soccer. The kick is a very important part of the soccer game as
 having the most goals in a match wins the game. The idea behind a dynamic kick
@@ -26,49 +26,44 @@ University of Amsterdam, which at this points still only
 define motions with setting the 
 joints manually (by keyframe motions).
 
-\section{Motiviation for this project} 
-This project covers the one of the most important aspects of humanoid
-robot soccer: the kicking of the ball.
-Having a dynamical kick is desired over simple keyframe motions for more than one reason:
+\section{Motivation for this project} 
+While the Dutch Nao Team has achieved some successes with their simple
+keyframe motions, having a dynamic kick should still be desired as it tackles
+some different problems that arise when learning robots to play soccer. 
 
-\begin{itemize}
-    \item Stability
-    \item Harder kicks
-    \item Helping the Dutch Nao Team
-\end{itemize}
 
 \subsection{Stability}
 Since there is more than one player on
 the field  chasing after the ball,
 there is lots of interference from other Naos while kicking. Due to the
-instability of the Nao this can result in falling down quite easily, even more
-so when there is no compensation for it when executing a motion. A dynamical
+instability of the Nao this results in falling down quite often, even more
+so when there is no compensation for it when executing a motion. A dynamic
 kick keeps track of the stability and will execute a kick that keeps the nao
 most stable.
 \\\\
 Overheating is also a problem for Naos. When this occurs the joints will perform
 not as expected or even fail. Using this dynamic system the temperature of the
-joints can be used to prevent overheating. This then is achieved by kicking the ball
-not as hard as usual or even kicking with the other leg. 
+joints can be used to prevent overheating. The executed kick will depend less
+on force so the robot will spare its joints.
 
 \subsection{Harder kicks and better stability}
 Being able to define when a kick is stable enough to execute we can make a
 trade-off between how far the ball is kicked and the stableness of the
-robotm resulting in harder kicks then when using keyframe motions.
+robot, resulting in harder kicks then when using keyframe motions.
 
 \subsection{Helping the Dutch Nao Team}
-Another interesting part of this project
-is that it will Help the Dutch Nao Team in their competition. The
+ Working on this project will help the Dutch Nao Team in their competition. The
 current keyframe motion used by DNT is very brittle, with our dynamic kick we will create a
-more robust kick that can give our universities team a bigger chance of winning. 
-This integration makes this project a valuable activity in the longrun, and not
+more robust kick that can give our universities team a bigger chance of
+winning in competitions. 
+This integration makes this project a valuable activity in the long run, and not
 just a one time experiment.
 
 \section{Problems, and how to handle them}
 The task of kicking a ball requires a couple of things: We need to find a path
 for the foot to travel, then we need a way to calculate the joint angles
 corresponding to the required position of the foot (inverse kinematics), and all
-the while we have to make sure the robot doesn’t fall over.
+the while we have to make sure the robot doesn't fall over.
 
 \subsection{The balance problem}
 The balance problem requires knowledge of 2 concepts; the \emph{center of mass},
@@ -79,7 +74,7 @@ case of a robot standing on the ground, the support polygon is the convex hull
 of the feet touching the ground. In our case, the robot will only be standing on
 one foot which should make it rather simple to calculate the support polygon. 
 
-The center of mass is a bit more complex to calculate. It’s defined as the sum
+The center of mass is a bit more complex to calculate. It's defined as the sum
 of each component’s \emph{centroid} (its own center of mass) multiplied by its
 mass, divided by the total weight (equation \ref{eq:CoM}). This of course
 requires each centroid to be described in the same coordinate system.
@@ -94,7 +89,7 @@ mass of the entire robot.
 
 \subsection{The kinematics problem}
 We want to be able to specify a location for the foot, then have the foot
-automatically move there, which means that the we’ll need to be able calculate
+automatically move there, which means that the we'll need to be able calculate
 the required joint angles. This is known as \emph{inverse kinematics}. There are
 two potential solutions to this problem:
 \begin{enumerate}
@@ -108,7 +103,7 @@ closest reachable position).
 
 \subsection{The kick}
 With the solutions of the previous two problems, we can start to calculate the
-optimal kick trajectory. For this we plan to use a similar system to Naoteam
+optimal kick trajectory. For this we plan to use a similar system to Nao team
 Humboldt \cite{Muller2011}; we define two measures, one for accuracy and one for
 strength, then search for a path which maximizes a certain balance of these two
 metrics. 
@@ -124,11 +119,12 @@ Furthermore, there are different papers concerned with the problems we are
 trying to tackle, but none of them cover the whole problem statement, and not
 all are specifically about the Nao. For example we found a paper about
 calculating the center of mass for robots with multiple joints\cite{Cotton2008} but not tailored
-to the problem of the Nao robot.The difficulty for us is to put all this
+to the connection of joints of a  Nao robot.The difficulty for us is to put all this
 information together and to make it work specifically on the Nao, and to
 document this process at the same time. Most of the problems have been covered
 in previous courses, but it still will require some insight in achieving our set
 goals.
+
 
 \bibliographystyle{plain}
 \bibliography{library}
