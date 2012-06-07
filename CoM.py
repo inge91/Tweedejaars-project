@@ -120,6 +120,10 @@ class CenterOfMass():
             # update the transformation matrix to calculate the centroid location
             T = T * self.transformation_matrix(previous, current)
 
+            # FIXME: debug
+            print current + ":"
+            print T * matrix([0, 0, 0, 1]).transpose()
+
             # multiply the transformed centroid with its weight and update the
             # total CoM and mass
             centroid, mass = self.jointCOM[current]
@@ -166,3 +170,7 @@ class CenterOfMass():
         rotation.append([0, 0, 0, 1]) # homogenous stuff
 
         return matrix(rotation)
+
+if __name__ == '__main__':
+    com = CenterOfMass("10.0.0.35", 9559)
+    com.get_CoM("RLeg")
