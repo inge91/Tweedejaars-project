@@ -109,14 +109,20 @@ class CenterOfMass():
 
         # initial weighted CoM location based on the first element of the path
         centroid, mass = self.jointCOM[path[0]]
+        print "\n\ncenter of mass and mass of AnkleRoll" 
+        print centroid
+        print mass
+
         centroid = matrix(centroid + [1]).transpose()
         total_CoM = mass * centroid
         total_mass = mass
 
         # loop through every element except the first, along with its
         # previous element
-        for previous, current in ((path[i], path[i-1]) 
+        for current, previous in ((path[i], path[i-1]) 
                 for i in xrange(1, len(path))):
+            print "current: " + current
+            print "previous: " + previous
             # update the transformation matrix to calculate the centroid location
             T = T * self.transformation_matrix(previous, current)
 
@@ -125,6 +131,10 @@ class CenterOfMass():
             print T * matrix([0, 0, 0, 1]).transpose()
             # total CoM and mass
             centroid, mass = self.jointCOM[current]
+
+            print "\n\ncenter of mass and mass of" + current 
+            print centroid
+            print mass
             centroid = matrix(centroid + [1]).transpose()
             centroid = T * centroid
 
@@ -143,10 +153,10 @@ class CenterOfMass():
 
         # get the 3x3 rotation matrix using the angle of the previous joint
         angle = self.motion_proxy.getAngles(previous, False)[0]
-        print "\n\n angle:"
+        print "\n\n angle of" + previous + ":"
         print angle
 
-        print "\n\n offset:"
+        print "\n\n offset of" + previous + " to " + current 
         print offsets
 
         # special case for the crazy-ass hip
