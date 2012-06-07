@@ -129,12 +129,15 @@ class CenterOfMass():
             # FIXME: debug
             print current + ":"
             print T * matrix([0, 0, 0, 1]).transpose()
+
+            # multiply the transformed centroid with its weight and update the
             # total CoM and mass
             centroid, mass = self.jointCOM[current]
 
             print "\n\ncenter of mass and mass of" + current 
             print centroid
             print mass
+            
             centroid = matrix(centroid + [1]).transpose()
             centroid = T * centroid
 
@@ -160,8 +163,25 @@ class CenterOfMass():
         print offsets
 
         # special case for the crazy-ass hip
+        # we split the angle up in two components, the yaw and pitch, and
+        # divide the angle evenly between them (the joint is set at a 45
+        # degree angle)
+        #
+        # FIXME: might need to do something extra to handle the 45 degree 
+        # rotation
         if "YawPitch" in previous:
-            pass #TODO
+            h_angle = angle / 2.0
+            yaw_component = matrix([[cos(h_angle), -sin(h_angle), 0],
+                                    [sin(h_angle), cos(h_angle), 0],
+                                    [0, 0, 1]])
+
+            pitch_component = matrix([[cos(h_angle), 0, -sin(h_angle)],
+                                      [0, 1, 0],
+                                      [sin(h_angle), 0, cos(h_angle)]])
+
+            # convert it back to a list representation for the next part of the
+            # function
+            rotation = (yaw_component * pitch_component).tolist()
 
         elif "Roll" in previous:
             rotation = [[1, 0, 0],
