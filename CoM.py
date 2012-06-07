@@ -123,8 +123,6 @@ class CenterOfMass():
             # FIXME: debug
             print current + ":"
             print T * matrix([0, 0, 0, 1]).transpose()
-
-            # multiply the transformed centroid with its weight and update the
             # total CoM and mass
             centroid, mass = self.jointCOM[current]
             centroid = matrix(centroid + [1]).transpose()
@@ -145,6 +143,11 @@ class CenterOfMass():
 
         # get the 3x3 rotation matrix using the angle of the previous joint
         angle = self.motion_proxy.getAngles(previous, False)[0]
+        print "\n\n angle:"
+        print angle
+
+        print "\n\n offset:"
+        print offsets
 
         # special case for the crazy-ass hip
         if "YawPitch" in previous:
