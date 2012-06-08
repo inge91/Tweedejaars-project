@@ -6,6 +6,7 @@ sys.path.append("SDK")
 from numpy import matrix
 from naoqi import ALProxy
 from math import cos, sin
+from copy import deepcopy
 
 class CenterOfMass():
     #TODO: voor Linker joints y even inverse waarde geven
@@ -31,7 +32,7 @@ class CenterOfMass():
                 "RShoulderPitch"  : ( [-1.78,  24.96,  0.18],  0.06996 ),
                 "LShoulderPitch"  : ( [-1.78,  -24.96,  0.18],  0.06996 ),
                 "HeadYaw"         : ( [-0.02,  0.17,  -25.56],  0.05930),
-                "Torso"           : ( [-4.15,  0.07,   42.58,   1.03948]),
+                "Torso"           : ( [-4.15,  0.07,   42.58],   1.03948),
                 ######### Misschien niet de juiste versie################
                 "HeadPitch"       : ( [1.20,  -0.84,   53.53],  0.52065)}
      
@@ -42,17 +43,17 @@ class CenterOfMass():
             ("HeadYaw","HeadPitch")             : [0.0, 0.0, 0.0 ],
             ("HeadPitch","HeadYaw")             : [0.0, 0.0, 0.0 ],
             ("Torso", "LShoulderPitch")         : [0.0, 98.0, 100.00 ],
-            ("LShoulderPitch", "Torso")         : [0.0, 98.0, -100.00 ],
+            ("LShoulderPitch", "Torso")         : [0.0, -98.0, -100.00 ],
             ("LShoulderPitch", "LShoulderRoll") : [0.0, 0.0, 0.0],
             ("LShoulderRoll", "LShoulderPitch") : [0.0, 0.0, 0.0],
             ("LShoulderRoll", "LElbowYaw" )     : [105.00, 15.00, 0.00],        
-            ("LElbowYaw", "LShoulderRoll" )     : [105.00, 15.00, 0.00],        
+            ("LElbowYaw", "LShoulderRoll" )     : [-105.00, -15.00, 0.00],        
             ("LElbowYaw", "LElbowRoll")         : [0, 0, 0],
             ("LElbowRoll", "LElbowYaw")         : [0, 0, 0],
             ("LElbowRoll", "LWristYaw")         : [55.95, 0, 0 ],
-            ("LWristYaw", "LElbowRoll")         : [55.95, 0, 0 ],
+            ("LWristYaw", "LElbowRoll")         : [-55.95, 0, 0 ],
             ("Torso", "LHipYawPitch")           : [0, 50.0, -85.0],
-            ("LHipYawPitch", "Torso")           : [0, 50.0, 85.0],
+            ("LHipYawPitch", "Torso")           : [0, -50.0, 85.0],
             ("LHipYawPitch", "LHipRoll")        : [0.0 , 0.0, 0.0],
             ("LHipRoll", "LHipYawPitch")        : [0.0 , 0.0, 0.0],
             ("LHipRoll", "LHipPitch")           : [0.0, 0.0, 0.0],
@@ -64,17 +65,17 @@ class CenterOfMass():
             ("LAnklePitch", "LAnkleRoll")       : [0.0, 0.0, 0.0],
             ("LAnkleRoll", "LAnklePitch")       : [0.0, 0.0, 0.0],
             ("Torso", "RShoulderPitch")         : [0.0, -98.0, 100.00 ],
-            ("RShoulderPitch", "Torso")         : [0.0, -98.0, -100.00 ],
+            ("RShoulderPitch", "Torso")         : [0.0, 98.0, -100.00 ],
             ("RShoulderPitch", "RShoulderRoll") : [0.0, 0.0, 0.0],
             ("RShoulderRoll", "RShoulderPitch") : [0.0, 0.0, 0.0],
             ("RShoulderRoll", "RElbowYaw" )     : [105.00, -15.00, 0.00],        
-            ("RElbowYaw", "RShoulderRoll" )     : [105.00, -15.00, 0.00],        
+            ("RElbowYaw", "RShoulderRoll" )     : [-105.00, 15.00, 0.00],        
             ("RElbowYaw", "RElbowRoll")         : [0, 0, 0],
             ("RElbowRoll", "RElbowYaw")         : [0, 0, 0],
             ("RElbowRoll", "RWristYaw")         : [55.95, 0, 0 ],
-            ("RWristYaw", "RElbowRoll")         : [55.95, 0, 0 ],
+            ("RWristYaw", "RElbowRoll")         : [-55.95, 0, 0 ],
             ("Torso", "RHipYawPitch")           : [0, -50.0, -85.0],
-            ("RHipYawPitch", "Torso")           : [0, -50.0, 85.0],
+            ("RHipYawPitch", "Torso")           : [0, 50.0, 85.0],
             ("RHipYawPitch", "RHipRoll")        : [0.0 , 0.0, 0.0],
             ("RHipRoll", "RHipYawPitch")        : [0.0 , 0.0, 0.0],
             ("RHipRoll", "RHipPitch")           : [0.0, 0.0, 0.0],
@@ -92,14 +93,13 @@ class CenterOfMass():
         self.motion_proxy = ALProxy("ALMotion", ip_address, port)
 
     # returns the center of mass of a given part
-    def get_CoM(self, part):
-        # TODO: add the HipYawPitches to the lists
+    def get_CoM(self, leg):
         path = {
                 "LLeg" : ("LAnkleRoll", "LAnklePitch", "LKneePitch", "LHipPitch",
-                    "LHipRoll"),
+                    "LHipRoll", "LHipYawPitch", "Torso"),
                 "RLeg" : ("RAnkleRoll", "RAnklePitch", "RKneePitch", "RHipPitch",
-                    "RHipRoll")
-                }.get(part)
+                    "RHipRoll", "RHipYawPitch", "Torso")
+                }.get(leg)
 
         # initial transformation matrix
         T = matrix([[1, 0, 0, 0],
@@ -109,10 +109,6 @@ class CenterOfMass():
 
         # initial weighted CoM location based on the first element of the path
         centroid, mass = self.jointCOM[path[0]]
-        print "\n\ncenter of mass and mass of AnkleRoll" 
-        print centroid
-        print mass
-
         centroid = matrix(centroid + [1]).transpose()
         total_CoM = mass * centroid
         total_mass = mass
@@ -121,29 +117,72 @@ class CenterOfMass():
         # previous element
         for current, previous in ((path[i], path[i-1]) 
                 for i in xrange(1, len(path))):
-            print "current: " + current
-            print "previous: " + previous
             # update the transformation matrix to calculate the centroid location
             T = T * self.transformation_matrix(previous, current)
 
             # FIXME: debug
             print current + ":"
             print T * matrix([0, 0, 0, 1]).transpose()
+
+            # multiply the transformed centroid with its weight and update the
             # total CoM and mass
             centroid, mass = self.jointCOM[current]
-
-            print "\n\ncenter of mass and mass of" + current 
-            print centroid
-            print mass
             centroid = matrix(centroid + [1]).transpose()
             centroid = T * centroid
 
             total_CoM += mass * centroid
             total_mass += mass
 
+        # now calculate all other branches from the torso
+        branches = [("LLeg" if leg == "RLeg" else "RLeg"), "LArm", "RArm", "Head"]
+        for branch in branches:
+            branch_com, branch_mass = self.com_from_torso(deepcopy(T), branch)
+
+            total_CoM += branch_com
+            total_mass += branch_mass
+
         # the final CoM is the total weighted CoM location divided by the total
         # weight
         return total_CoM / float(total_mass)
+
+    # returns the center of mass and total weight of a specific bodypart
+    def com_from_torso(self, T, part):
+        path = {
+                "LLeg" : ("Torso", "LHipYawPitch", "LHipRoll", "LHipPitch", "LKneePitch",
+                    "LAnklePitch", "LAnkleRoll"),
+                "RLeg" : ("Torso", "RHipYawPitch", "RHipRoll", "RHipPitch", "RKneePitch",
+                    "RAnklePitch", "RAnkleRoll"),
+                "LArm" : ("Torso", "LShoulderPitch", "LShoulderRoll", "LElbowYaw",
+                    "LElbowRoll"),
+                "RArm" : ("Torso", "RShoulderPitch", "RShoulderRoll", "RElbowYaw",
+                    "RElbowRoll"),
+                "Head" : ("Torso", "HeadYaw", "HeadPitch")
+                }.get(part)
+
+        # loop through every element except the first, along with its
+        # previous element
+        total_mass = 0
+        total_CoM = T * matrix([[0], [0], [0], [1]]) # start at the torso location
+        for current, previous in ((path[i], path[i-1]) 
+                for i in xrange(1, len(path))):
+            # update the transformation matrix to calculate the centroid location
+            T = T * self.transformation_matrix(previous, current)
+
+            # FIXME: debug
+            print current + ":"
+            print T * matrix([0, 0, 0, 1]).transpose()
+
+            # multiply the transformed centroid with its weight and update the
+            # total CoM and mass
+            centroid, mass = self.jointCOM[current]
+            centroid = matrix(centroid + [1]).transpose()
+            centroid = T * centroid
+
+            total_CoM += mass * centroid
+            total_mass += mass
+
+        return total_CoM, total_mass
+
 
     # constructs a transformation matrx for shifting from the previous
     # coordinate-system to the current one
@@ -152,16 +191,32 @@ class CenterOfMass():
         offsets = self.jointOffsets[(previous, current)]
 
         # get the 3x3 rotation matrix using the angle of the previous joint
-        angle = self.motion_proxy.getAngles(previous, False)[0]
-        print "\n\n angle of" + previous + ":"
-        print angle
-
-        print "\n\n offset of" + previous + " to " + current 
-        print offsets
+        # there's a special exception for the Torso, which isn't a joint
+        if previous != "Torso":
+            angle = self.motion_proxy.getAngles(previous, False)[0]
+        else:
+            angle = 0
 
         # special case for the crazy-ass hip
+        # we split the angle up in two components, the yaw and pitch, and
+        # divide the angle evenly between them (the joint is set at a 45
+        # degree angle)
+        #
+        # FIXME: might need to do something extra to handle the 45 degree 
+        # rotation
         if "YawPitch" in previous:
-            pass #TODO
+            h_angle = angle / 2.0
+            yaw_component = matrix([[cos(h_angle), -sin(h_angle), 0],
+                                    [sin(h_angle), cos(h_angle), 0],
+                                    [0, 0, 1]])
+
+            pitch_component = matrix([[cos(h_angle), 0, -sin(h_angle)],
+                                      [0, 1, 0],
+                                      [sin(h_angle), 0, cos(h_angle)]])
+
+            # convert it back to a list representation for the next part of the
+            # function
+            rotation = (yaw_component * pitch_component).tolist()
 
         elif "Roll" in previous:
             rotation = [[1, 0, 0],
@@ -175,6 +230,11 @@ class CenterOfMass():
             rotation = [[cos(angle), -sin(angle), 0],
                         [sin(angle), cos(angle), 0],
                         [0, 0, 1]]
+        # the silly Torso isn't a joint
+        elif "Torso" in previous:
+            rotation = [[1, 0, 0],
+                        [0, 1, 0],
+                        [0, 0, 1]]
 
         # merge the rotation and translation together
         rotation[0].append(offsets[0])
@@ -185,5 +245,5 @@ class CenterOfMass():
         return matrix(rotation)
 
 if __name__ == '__main__':
-    com = CenterOfMass("10.0.0.35", 9559)
+    com = CenterOfMass("10.0.0.38", 9559)
     com.get_CoM("RLeg")
