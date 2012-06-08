@@ -94,12 +94,11 @@ class CenterOfMass():
 
     # returns the center of mass of a given part
     def get_CoM(self, leg):
-        # TODO: add the HipYawPitches to the lists
         path = {
                 "LLeg" : ("LAnkleRoll", "LAnklePitch", "LKneePitch", "LHipPitch",
                     "LHipRoll, LHipYawPitch", "Torso"),
                 "RLeg" : ("RAnkleRoll", "RAnklePitch", "RKneePitch", "RHipPitch",
-                    "RHipRoll, RHipYawPitch", "Torso")
+                    "RHipRoll", "RHipYawPitch", "Torso")
                 }.get(leg)
 
         # initial transformation matrix
@@ -138,7 +137,7 @@ class CenterOfMass():
         branches = [("LLeg" if leg == "RLeg" else "RLeg"), "LArm", "RArm", "Head"]
         for branch in branches:
             branch_com, branch_mass = com_from_torso(deepcopy(T), branch)
-            
+
             total_CoM += branch_com
             total_mass += branch_mass
 
@@ -236,5 +235,5 @@ class CenterOfMass():
         return matrix(rotation)
 
 if __name__ == '__main__':
-    com = CenterOfMass("10.0.0.35", 9559)
+    com = CenterOfMass("10.0.0.38", 9559)
     com.get_CoM("RLeg")
