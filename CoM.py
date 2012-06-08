@@ -96,7 +96,7 @@ class CenterOfMass():
     def get_CoM(self, leg):
         path = {
                 "LLeg" : ("LAnkleRoll", "LAnklePitch", "LKneePitch", "LHipPitch",
-                    "LHipRoll, LHipYawPitch", "Torso"),
+                    "LHipRoll", "LHipYawPitch", "Torso"),
                 "RLeg" : ("RAnkleRoll", "RAnklePitch", "RKneePitch", "RHipPitch",
                     "RHipRoll", "RHipYawPitch", "Torso")
                 }.get(leg)
