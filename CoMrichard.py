@@ -14,6 +14,8 @@ class CenterOfMass():
                 "LHipPitch"       : ( [1.32,   2.35, -53.52],  0.39421 ),
                 "RHipRoll"        : ( [-16.49, -0.29, -4.75],  0.13530),
                 "LHipRoll"        : ( [-16.49, 0.29, -4.75],  0.13530),
+				"RHipYaw"  		  : ( [0,  0,  0 ], 0 ),
+				"LHipYaw"  		  : ( [0,  0,  0 ], 0 ),
                 "RHipYawPitch"    : ( [-7.66,  12.00,  27.17 ], 0.07117 ),
                 "LHipYawPitch"    : ( [-7.66,  -12.00,  27.17 ], 0.07117 ),
                 "RElbowRoll"      : ( [65.36,  -0.34, -0.02],  0.18500 ),
@@ -31,54 +33,27 @@ class CenterOfMass():
      
 
     jointOffsets = {
-            ("Torso", "HeadYaw")                : [0.0, 0.0, 126.50 ],
-            ("HeadYaw", "Torso")                : [0.0, 0.0, -126.50 ],
-            ("HeadYaw","HeadPitch")             : [0.0, 0.0, 0.0 ],
-            ("HeadPitch","HeadYaw")             : [0.0, 0.0, 0.0 ],
-            ("Torso", "LShoulderPitch")         : [0.0, 98.0, 100.00 ],
-            ("LShoulderPitch", "Torso")         : [0.0, 98.0, -100.00 ],
-            ("LShoulderPitch", "LShoulderRoll") : [0.0, 0.0, 0.0],
-            ("LShoulderRoll", "LShoulderPitch") : [0.0, 0.0, 0.0],
-            ("LShoulderRoll", "LElbowYaw" )     : [105.00, 15.00, 0.00],        
-            ("LElbowYaw", "LShoulderRoll" )     : [105.00, 15.00, 0.00],        
-            ("LElbowYaw", "LElbowRoll")         : [0, 0, 0],
-            ("LElbowRoll", "LElbowYaw")         : [0, 0, 0],
-            ("LElbowRoll", "LWristYaw")         : [55.95, 0, 0 ],
-            ("LWristYaw", "LElbowRoll")         : [55.95, 0, 0 ],
-            ("Torso", "LHipYawPitch")           : [0, 50.0, -85.0],
-            ("LHipYawPitch", "Torso")           : [0, 50.0, 85.0],
-            ("LHipYawPitch", "LHipRoll")        : [0.0 , 0.0, 0.0],
-            ("LHipRoll", "LHipYawPitch")        : [0.0 , 0.0, 0.0],
-            ("LHipRoll", "LHipPitch")           : [0.0, 0.0, 0.0],
-            ("LHipPitch", "LHipRoll")           : [0.0, 0.0, 0.0],
-            ("LHipPitch", "LKneePitch")         : [0.0, 0.0, -100.0],
-            ("LKneePitch", "LHipPitch")         : [0.0, 0.0, 100.0],
-            ("LKneePitch","LAnklePitch")        : [0.0, 0.0, -102.9],
-            ("LAnklePitch","LKneePitch")        : [0.0, 0.0, 102.9],
-            ("LAnklePitch", "LAnkleRoll")       : [0.0, 0.0, 0.0],
-            ("LAnkleRoll", "LAnklePitch")       : [0.0, 0.0, 0.0],
-            ("Torso", "RShoulderPitch")         : [0.0, -98.0, 100.00 ],
-            ("RShoulderPitch", "Torso")         : [0.0, -98.0, -100.00 ],
-            ("RShoulderPitch", "RShoulderRoll") : [0.0, 0.0, 0.0],
-            ("RShoulderRoll", "RShoulderPitch") : [0.0, 0.0, 0.0],
-            ("RShoulderRoll", "RElbowYaw" )     : [105.00, -15.00, 0.00],        
-            ("RElbowYaw", "RShoulderRoll" )     : [105.00, -15.00, 0.00],        
-            ("RElbowYaw", "RElbowRoll")         : [0, 0, 0],
-            ("RElbowRoll", "RElbowYaw")         : [0, 0, 0],
-            ("RElbowRoll", "RWristYaw")         : [55.95, 0, 0 ],
-            ("RWristYaw", "RElbowRoll")         : [55.95, 0, 0 ],
-            ("Torso", "RHipYawPitch")           : [0, -50.0, -85.0],
-            ("RHipYawPitch", "Torso")           : [0, -50.0, 85.0],
-            ("RHipYawPitch", "RHipRoll")        : [0.0 , 0.0, 0.0],
-            ("RHipRoll", "RHipYawPitch")        : [0.0 , 0.0, 0.0],
-            ("RHipRoll", "RHipPitch")           : [0.0, 0.0, 0.0],
-            ("RHipPitch", "RHipRoll")           : [0.0, 0.0, 0.0],
-            ("RHipPitch", "RKneePitch")         : [0.0, 0.0, -100.0],
-            ("RKneePitch", "RHipPitch")         : [0.0, 0.0, 100.0],
-            ("RKneePitch","RAnklePitch")        : [0.0, 0.0, -102.9],
-            ("RAnklePitch","RKneePitch")        : [0.0, 0.0, 102.9],
-            ("RAnklePitch", "RAnkleRoll")       : [0.0, 0.0, 0.0],
-            ("RAnkleRoll", "RAnklePitch")       : [0.0, 0.0, 0.0]}
+            ("TorsoToHead")        : [0.0, 0.0, 126.50 ],
+            ("HeadToTorso")        : [0.0, 0.0, -126.50 ],
+            ("TorsoToLShoulder")   : [0.0, 98.0, 100.00 ],
+            ("LShoulderToTorso")   : [0.0, -98.0, -100.00 ],
+            ("LShoulderToLElbow" ) : [105.00, 15.00, 0.00],        
+            ("LElbowToLShoulder" ) : [-105.00, -15.00, 0.00],        
+            ("LElbowToLWrist")     : [55.95, 0, 0 ],
+            ("LWristToLElbow")     : [-55.95, 0, 0 ],
+			("RShoulderToTorso")   : [0.0, 98.0, 100.00 ],
+            ("RShoulderToRElbow" ) : [105.00, -15.00, 0.00],        
+            ("RElbowToRShoulder" ) : [-105.00, 15.00, 0.00],        
+            ("RElbowToRWrist")     : [55.95, 0, 0 ],
+            ("RWristToRElbow")     : [-55.95, 0, 0 ],
+            ("TorsoToRHip")        : [0, -50.0, -85.0],
+			("TorsoToLHip")        : [0, 50.0, -85.0],
+            ("RHipToTorso")        : [0, 50.0, 85.0],
+            ("LHipToTorso")        : [0, -50.0, 85.0],
+            ("HipToKnee")          : [0.0, 0.0, -100.0],
+            ("KneeToHip")          : [0.0, 0.0, 100.0],
+            ("KneeToAnkle")        : [0.0, 0.0, -102.9],
+            ("AnkleToKnee")        : [0.0, 0.0, 102.9]}
 			
     def __init__(self, ip_address, port):
         self.mot = ALProxy("ALMotion", ip_address, port)
@@ -91,65 +66,100 @@ class CenterOfMass():
 		else:
 			checkupdown = -1
 
-		X = self.mot.getAngles("RAnkleRoll", False)[0] * checkupdown
-		global RAnkleRoll    
-		RAnkleRoll =   [[1,			0,			0,			0],
+		X = self.mot.getAngles("RAnkleRoll", False)[0] * checkupdown   
+		self.RAnkleRoll =   [[1,			0,			0,			0],
 						[0,			cos(X),		sin(X),		0],
 						[0,			-sin(X),	cos(X),		0],
 						[0,			0,			0,			1]]
 
 		X = self.mot.getAngles("RAnklePitch", False)[0] * checkupdown
-		global RAnklePitch	
-		RAnklePitch =  [[cos(X),	0,			-sin(X),	0],
+		self.RAnklePitch =  [[cos(X),	0,			-sin(X),	0],
 						[0,			1,			0,			0],
-						[sin(X),	0,			cos(X),		102.90 * checkupdown],
+						[sin(X),	0,			cos(X),		0],
 						[0,			0,			0,			1]]
 
 		X = self.mot.getAngles("RKneePitch", False)[0] * checkupdown
-		global RKneePitch
-		RKneePitch =   [[cos(X),	0,			-sin(X),	0],
+		self.RKneePitch =   [[cos(X),	0,			-sin(X),	0],
 						[0,			1,			0,			0],
-						[sin(X),	0,			cos(X),		100 * checkupdown],
+						[sin(X),	0,			cos(X),		0],
 						[0,			0,			0,			1]]
 
 		X = self.mot.getAngles("RHipPitch", False)[0] * checkupdown	
-		global RHipPitch	
-		RHipPitch =    [[cos(X),	0,			-sin(X),	0],
+		self.RHipPitch =    [[cos(X),	0,			-sin(X),	0],
 						[0,			1,			0,			0],
 						[sin(X),	0,			cos(X),		0],
 						[0,			0,			0,			1]]
 
 		X = self.mot.getAngles("RHipRoll", False)[0] * checkupdown
-		global RHipRoll	
-		RHipRoll = 	   [[1,			0,			0,			0],
+		self.RHipRoll = 	   [[1,			0,			0,			0],
 						[0,			cos(X),		-sin(X),	0],
 						[0,			sin(X),		cos(X),		0],
 						[0,			0,			0,			1]]
 
 		X = self.mot.getAngles("RHipYawPitch", False)[0] * checkupdown		
-		global RHipYaw	
-		RHipYaw =      [[cos(X/2),	-sin(X/2),	0,			0],
+		self.RHipYaw =      [[cos(X/2),	-sin(X/2),	0,			0],
 						[0,			1,			0,			0],
 						[sin(X/2),	cos(X/2),	0,			0],
 						[0,			0,			0,			1]]
 
-		X = self.mot.getAngles("RHipYawPitch", False)[0] * checkupdown	
-		global RHipYawPitch	
-		RHipYawPitch = [[cos(X/2),	0,			-sin(X/2),	0],
+		#X = self.mot.getAngles("RHipYawPitch", False)[0] * checkupdown	
+		self.RHipYawPitch = [[cos(X/2),	0,			-sin(X/2),	0],
 						[0,			1,			0,			0],
 						[sin(X/2),	0,			cos(X/2),	0],
 						[0,			0,			0,			1]]
-							
-		global Torso					
-		Torso =	   	   [[1,			0,			0,			0],
-						[0,			1,			0,			-50 * checkupdown],
-						[0,			0,			1,			85 * checkupdown],
+											
+		
+		#############################################################################################
+		
+		#if supportLeg == "R":
+		#	checkupdown = -1
+		#else:
+		#	checkupdown = 1
+		
+		X = self.mot.getAngles("LAnkleRoll", False)[0] * checkupdown   
+		self.LAnkleRoll =   [[1,			0,			0,			0],
+						[0,			cos(X),		sin(X),		0],
+						[0,			-sin(X),	cos(X),		0],
+						[0,			0,			0,			1]]
+
+		X = self.mot.getAngles("LAnklePitch", False)[0] * checkupdown
+		self.LAnklePitch =  [[cos(X),	0,			-sin(X),	0],
+						[0,			1,			0,			0],
+						[sin(X),	0,			cos(X),		0],
+						[0,			0,			0,			1]]
+
+		X = self.mot.getAngles("LKneePitch", False)[0] * checkupdown
+		self.LKneePitch =   [[cos(X),	0,			-sin(X),	0],
+						[0,			1,			0,			0],
+						[sin(X),	0,			cos(X),		0],
+						[0,			0,			0,			1]]
+
+		X = self.mot.getAngles("LHipPitch", False)[0] * checkupdown	
+		self.LHipPitch =    [[cos(X),	0,			-sin(X),	0],
+						[0,			1,			0,			0],
+						[sin(X),	0,			cos(X),		0],
+						[0,			0,			0,			1]]
+
+		X = self.mot.getAngles("LHipRoll", False)[0] * checkupdown
+		self.LHipRoll = 	   [[1,			0,			0,			0],
+						[0,			cos(X),		-sin(X),	0],
+						[0,			sin(X),		cos(X),		0],
+						[0,			0,			0,			1]]
+
+		X = self.mot.getAngles("LHipYawPitch", False)[0] * checkupdown		
+		self.LHipYaw =      [[cos(X/2),	-sin(X/2),	0,			0],
+						[0,			1,			0,			0],
+						[sin(X/2),	cos(X/2),	0,			0],
+						[0,			0,			0,			1]]
+
+		#X = self.mot.getAngles("RHipYawPitch", False)[0] * checkupdown	
+		self.LHipYawPitch = [[cos(X/2),	0,			-sin(X/2),	0],
+						[0,			1,			0,			0],
+						[sin(X/2),	0,			cos(X/2),	0],
 						[0,			0,			0,			1]]
 						
-
-	# returns the center of mass of a given part
-    def get_CoM(self):
-	    update(self)
+    def CoM(self):
+	    self.update()
 	    Chains = []
 		#if supportLeg = "R":
 		# Chains[0] = ["RAnkleRoll","RAnklePitch","RKneePitch","RHipPitch","RHipRoll","RHipYaw","RHipPitch","Torso"]
@@ -162,7 +172,8 @@ class CenterOfMass():
 		#Chains[3] = ["LShoulderPitch","LShoulderRoll","LElbowYaw","LElbowRoll"]
 		#Chains[4] = ["HeadYaw", "HeadPitch"]
 		
-	    Chains.append(["RAnkleRoll","RAnklePitch","RKneePitch","RHipPitch"])
+	    Chains.append(["RAnkleRoll","RAnklePitch","AnkleToKnee","RKneePitch","KneeToHip","RHipPitch","RHipRoll","RHipYaw","RHipYawPitch","RHipToTorso"])
+	    Chains.append(["TorsoToLHip","LHipYawPitch","LHipYaw","LHipRoll","LHipPitch","HipToKnee","LKneePitch","KneeToAnkle","LAnklePitch","LAnkleRoll"])
 
 	    Transform = [[1,0,0,0],
 					 [0,1,0,0],
@@ -173,20 +184,49 @@ class CenterOfMass():
 	    JointMasses = []
 
 	    for element in Chains[0]:
-		    transform = mult(transform, eval(element))		
-		    JointCOMs.append(mult(transform, [[jointCOM[element][0][0]],[jointCOM[element][0][1]],[jointCOM[element][0][2]],[1]]))
-		    JointMasses.append(jointCOM[element][1])
-	    transformToTorso = transform
-	    print JointCOMs[:]
-	    print JointMasses[:]	
-	    COM = [0,0,0]
-	    for i in range(range(len(JointMasses))):
-		    COM[0] += JointCOMs[i][0] * JointMasses[i]
-		    COM[1] += JointCOMs[i][1] * JointMasses[i]
-		    COM[2] += JointCOMs[i][2] * JointMasses[i]
-	    COM = COM/sum(JointMasses)
-	    print COM
+		    if element in self.jointCOM:
+			    Transform = self.mult(Transform, eval("self." + element))
+			    JointCOMs.append(self.mult(Transform, [[self.jointCOM[element][0][0]],[self.jointCOM[element][0][1]],[self.jointCOM[element][0][2]],[1]]))
+			    JointMasses.append(self.jointCOM[element][1])
+			    print "transform (rotation):"
+		    else:
+			    Transform[0][3] += self.jointOffsets[element][0]
+			    Transform[1][3] += self.jointOffsets[element][1]
+			    Transform[2][3] += self.jointOffsets[element][2]
+			    print "transform (translate):"		
+		    print Transform
+	    transformToTorso = Transform
+	    for element in Chains[1]:
+		    if element in self.jointCOM:
+			    Transform = self.mult(Transform, eval("self." + element))
+			    JointCOMs.append(self.mult(Transform, [[self.jointCOM[element][0][0]],[self.jointCOM[element][0][1]],[self.jointCOM[element][0][2]],[1]]))
+			    JointMasses.append(self.jointCOM[element][1])
+			    print "transform (rotation):"
+		    else:
+			    Transform[0][3] += self.jointOffsets[element][0]
+			    Transform[1][3] += self.jointOffsets[element][1]
+			    Transform[2][3] += self.jointOffsets[element][2]
+			    print "transform (translate):"		
+		    print Transform
+	    print "JointCOMs: " 
+	    print JointCOMs
+	    print "masses: "
+	    print JointMasses	
+	    COM = [0.0,0.0,0.0]
+	    for i in range(len(JointMasses)):
+		    COM[0] += JointCOMs[i][0][0] * JointMasses[i]
+		    COM[1] += JointCOMs[i][1][0] * JointMasses[i]
+		    COM[2] += JointCOMs[i][2][0] * JointMasses[i]
 		
+	    COM = [a/sum(JointMasses) for a in COM]
+	    print "COM:"
+	    return COM
+	
+    def zero(self,m,n):
+		# Create zero matrix
+		new_matrix = [[0 for row in range(n)] for col in range(m)]
+		return new_matrix
+	
     def mult(self,matrix1,matrix2):
 		# Matrix multiplication
 		if len(matrix1[0]) != len(matrix2):
@@ -194,7 +234,7 @@ class CenterOfMass():
 			print 'Matrices must be m*n and n*p to multiply!'
 		else:
 			# Multiply if correct dimensions
-			new_matrix = zero(len(matrix1),len(matrix2[0]))
+			new_matrix = self.zero(len(matrix1),len(matrix2[0]))
 			for i in range(len(matrix1)):
 				for j in range(len(matrix2[0])):
 					for k in range(len(matrix2)):
