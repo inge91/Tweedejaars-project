@@ -6,6 +6,7 @@ sys.path.append("SDK")
 from numpy import matrix
 from naoqi import ALProxy
 from math import cos, sin
+from copy import deepcopy
 
 class CenterOfMass():
     #TODO: voor Linker joints y even inverse waarde geven
@@ -92,14 +93,14 @@ class CenterOfMass():
         self.motion_proxy = ALProxy("ALMotion", ip_address, port)
 
     # returns the center of mass of a given part
-    def get_CoM(self, part):
+    def get_CoM(self, leg):
         # TODO: add the HipYawPitches to the lists
         path = {
                 "LLeg" : ("LAnkleRoll", "LAnklePitch", "LKneePitch", "LHipPitch",
-                    "LHipRoll"),
+                    "LHipRoll, LHipYawPitch", "Torso"),
                 "RLeg" : ("RAnkleRoll", "RAnklePitch", "RKneePitch", "RHipPitch",
-                    "RHipRoll")
-                }.get(part)
+                    "RHipRoll, RHipYawPitch", "Torso")
+                }.get(leg)
 
         # initial transformation matrix
         T = matrix([[1, 0, 0, 0],
@@ -133,9 +134,55 @@ class CenterOfMass():
             total_CoM += mass * centroid
             total_mass += mass
 
+        # now calculate all other branches from the torso
+        branches = [("LLeg" if leg == "RLeg" else "RLeg"), "LArm", "RArm", "Head"]
+        for branch in branches:
+            branch_com, branch_mass = com_from_torso(deepcopy(T), branch)
+            
+            total_CoM += branch_com
+            total_mass += branch_mass
+
         # the final CoM is the total weighted CoM location divided by the total
         # weight
         return total_CoM / float(total_mass)
+
+    # returns the center of mass and total weight of a specific bodypart
+    def com_from_torso(T, part):
+        path = {
+                "LLeg" : ("Torso", "LHipYawPitch", "LHipRoll", "LHipPitch", "LKneePitch",
+                    "LAnklePitch", "LAnkleRoll"),
+                "RLeg" : ("Torso", "RHipYawPitch", "RHipRoll", "RHipPitch", "RKneePitch",
+                    "RAnklePitch", "RAnkleRoll"),
+                "LArm" : ("Torso", "LShoulderPitch", "LShoulderRoll", "LElbowYaw",
+                    "LElbowRoll", "LWristYaw"),
+                "RArm" : ("Torso", "RShoulderPitch", "RShoulderRoll", "RElbowYaw",
+                    "RElbowRoll", "RWristYaw"),
+                "Head" : ("Torso", "HeadYaw", "HeadPitch")
+                }.get(part)
+
+        # loop through every element except the first, along with its
+        # previous element
+        mass = 0
+        for current, previous in ((path[i], path[i-1]) 
+                for i in xrange(1, len(path))):
+            # update the transformation matrix to calculate the centroid location
+            T = T * self.transformation_matrix(previous, current)
+
+            # FIXME: debug
+            print current + ":"
+            print T * matrix([0, 0, 0, 1]).transpose()
+
+            # multiply the transformed centroid with its weight and update the
+            # total CoM and mass
+            centroid, mass = self.jointCOM[current]
+            centroid = matrix(centroid + [1]).transpose()
+            centroid = T * centroid
+
+            total_CoM += mass * centroid
+            total_mass += mass
+
+        return total_CoM, total_mass
+
 
     # constructs a transformation matrx for shifting from the previous
     # coordinate-system to the current one
