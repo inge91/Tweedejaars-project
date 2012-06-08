@@ -32,7 +32,7 @@ class CenterOfMass():
                 "RShoulderPitch"  : ( [-1.78,  24.96,  0.18],  0.06996 ),
                 "LShoulderPitch"  : ( [-1.78,  -24.96,  0.18],  0.06996 ),
                 "HeadYaw"         : ( [-0.02,  0.17,  -25.56],  0.05930),
-                "Torso"           : ( [-4.15,  0.07,   42.58,   1.03948]),
+                "Torso"           : ( [-4.15,  0.07,   42.58],   1.03948),
                 ######### Misschien niet de juiste versie################
                 "HeadPitch"       : ( [1.20,  -0.84,   53.53],  0.52065)}
      
@@ -136,7 +136,7 @@ class CenterOfMass():
         # now calculate all other branches from the torso
         branches = [("LLeg" if leg == "RLeg" else "RLeg"), "LArm", "RArm", "Head"]
         for branch in branches:
-            branch_com, branch_mass = com_from_torso(deepcopy(T), branch)
+            branch_com, branch_mass = self.com_from_torso(deepcopy(T), branch)
 
             total_CoM += branch_com
             total_mass += branch_mass
@@ -146,22 +146,23 @@ class CenterOfMass():
         return total_CoM / float(total_mass)
 
     # returns the center of mass and total weight of a specific bodypart
-    def com_from_torso(T, part):
+    def com_from_torso(self, T, part):
         path = {
                 "LLeg" : ("Torso", "LHipYawPitch", "LHipRoll", "LHipPitch", "LKneePitch",
                     "LAnklePitch", "LAnkleRoll"),
                 "RLeg" : ("Torso", "RHipYawPitch", "RHipRoll", "RHipPitch", "RKneePitch",
                     "RAnklePitch", "RAnkleRoll"),
                 "LArm" : ("Torso", "LShoulderPitch", "LShoulderRoll", "LElbowYaw",
-                    "LElbowRoll", "LWristYaw"),
+                    "LElbowRoll"),
                 "RArm" : ("Torso", "RShoulderPitch", "RShoulderRoll", "RElbowYaw",
-                    "RElbowRoll", "RWristYaw"),
+                    "RElbowRoll"),
                 "Head" : ("Torso", "HeadYaw", "HeadPitch")
                 }.get(part)
 
         # loop through every element except the first, along with its
         # previous element
-        mass = 0
+        total_mass = 0
+        total_CoM = T * matrix([[0], [0], [0], [1]]) # start at the torso location
         for current, previous in ((path[i], path[i-1]) 
                 for i in xrange(1, len(path))):
             # update the transformation matrix to calculate the centroid location
@@ -190,7 +191,11 @@ class CenterOfMass():
         offsets = self.jointOffsets[(previous, current)]
 
         # get the 3x3 rotation matrix using the angle of the previous joint
-        angle = self.motion_proxy.getAngles(previous, False)[0]
+        # there's a special exception for the Torso, which isn't a joint
+        if previous != "Torso":
+            angle = self.motion_proxy.getAngles(previous, False)[0]
+        else:
+            angle = 0
 
         # special case for the crazy-ass hip
         # we split the angle up in two components, the yaw and pitch, and
@@ -224,6 +229,11 @@ class CenterOfMass():
         elif "Yaw" in previous:
             rotation = [[cos(angle), -sin(angle), 0],
                         [sin(angle), cos(angle), 0],
+                        [0, 0, 1]]
+        # the silly Torso isn't a joint
+        elif "Torso" in previous:
+            rotation = [[1, 0, 0],
+                        [0, 1, 0],
                         [0, 0, 1]]
 
         # merge the rotation and translation together
