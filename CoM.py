@@ -6,6 +6,7 @@ sys.path.append("SDK")
 from numpy import matrix
 from naoqi import ALProxy
 from math import cos, sin
+from copy import deepcopy
 
 class CenterOfMass():
     #TODO: voor Linker joints y even inverse waarde geven
@@ -92,14 +93,13 @@ class CenterOfMass():
         self.motion_proxy = ALProxy("ALMotion", ip_address, port)
 
     # returns the center of mass of a given part
-    def get_CoM(self, part):
-        # TODO: add the HipYawPitches to the lists
+    def get_CoM(self, leg):
         path = {
                 "LLeg" : ("LAnkleRoll", "LAnklePitch", "LKneePitch", "LHipPitch",
-                    "LHipRoll"),
+                    "LHipRoll", "LHipYawPitch", "Torso"),
                 "RLeg" : ("RAnkleRoll", "RAnklePitch", "RKneePitch", "RHipPitch",
-                    "RHipRoll")
-                }.get(part)
+                    "RHipRoll", "RHipYawPitch", "Torso")
+                }.get(leg)
 
         # initial transformation matrix
         T = matrix([[1, 0, 0, 0],
@@ -109,10 +109,6 @@ class CenterOfMass():
 
         # initial weighted CoM location based on the first element of the path
         centroid, mass = self.jointCOM[path[0]]
-        print "\n\ncenter of mass and mass of AnkleRoll" 
-        print centroid
-        print mass
-
         centroid = matrix(centroid + [1]).transpose()
         total_CoM = mass * centroid
         total_mass = mass
@@ -121,29 +117,71 @@ class CenterOfMass():
         # previous element
         for current, previous in ((path[i], path[i-1]) 
                 for i in xrange(1, len(path))):
-            print "current: " + current
-            print "previous: " + previous
             # update the transformation matrix to calculate the centroid location
             T = T * self.transformation_matrix(previous, current)
 
             # FIXME: debug
             print current + ":"
             print T * matrix([0, 0, 0, 1]).transpose()
+
+            # multiply the transformed centroid with its weight and update the
             # total CoM and mass
             centroid, mass = self.jointCOM[current]
-
-            print "\n\ncenter of mass and mass of" + current 
-            print centroid
-            print mass
             centroid = matrix(centroid + [1]).transpose()
             centroid = T * centroid
 
             total_CoM += mass * centroid
             total_mass += mass
 
+        # now calculate all other branches from the torso
+        branches = [("LLeg" if leg == "RLeg" else "RLeg"), "LArm", "RArm", "Head"]
+        for branch in branches:
+            branch_com, branch_mass = com_from_torso(deepcopy(T), branch)
+
+            total_CoM += branch_com
+            total_mass += branch_mass
+
         # the final CoM is the total weighted CoM location divided by the total
         # weight
         return total_CoM / float(total_mass)
+
+    # returns the center of mass and total weight of a specific bodypart
+    def com_from_torso(T, part):
+        path = {
+                "LLeg" : ("Torso", "LHipYawPitch", "LHipRoll", "LHipPitch", "LKneePitch",
+                    "LAnklePitch", "LAnkleRoll"),
+                "RLeg" : ("Torso", "RHipYawPitch", "RHipRoll", "RHipPitch", "RKneePitch",
+                    "RAnklePitch", "RAnkleRoll"),
+                "LArm" : ("Torso", "LShoulderPitch", "LShoulderRoll", "LElbowYaw",
+                    "LElbowRoll", "LWristYaw"),
+                "RArm" : ("Torso", "RShoulderPitch", "RShoulderRoll", "RElbowYaw",
+                    "RElbowRoll", "RWristYaw"),
+                "Head" : ("Torso", "HeadYaw", "HeadPitch")
+                }.get(part)
+
+        # loop through every element except the first, along with its
+        # previous element
+        mass = 0
+        for current, previous in ((path[i], path[i-1]) 
+                for i in xrange(1, len(path))):
+            # update the transformation matrix to calculate the centroid location
+            T = T * self.transformation_matrix(previous, current)
+
+            # FIXME: debug
+            print current + ":"
+            print T * matrix([0, 0, 0, 1]).transpose()
+
+            # multiply the transformed centroid with its weight and update the
+            # total CoM and mass
+            centroid, mass = self.jointCOM[current]
+            centroid = matrix(centroid + [1]).transpose()
+            centroid = T * centroid
+
+            total_CoM += mass * centroid
+            total_mass += mass
+
+        return total_CoM, total_mass
+
 
     # constructs a transformation matrx for shifting from the previous
     # coordinate-system to the current one
@@ -153,15 +191,27 @@ class CenterOfMass():
 
         # get the 3x3 rotation matrix using the angle of the previous joint
         angle = self.motion_proxy.getAngles(previous, False)[0]
-        print "\n\n angle of" + previous + ":"
-        print angle
-
-        print "\n\n offset of" + previous + " to " + current 
-        print offsets
 
         # special case for the crazy-ass hip
+        # we split the angle up in two components, the yaw and pitch, and
+        # divide the angle evenly between them (the joint is set at a 45
+        # degree angle)
+        #
+        # FIXME: might need to do something extra to handle the 45 degree 
+        # rotation
         if "YawPitch" in previous:
-            pass #TODO
+            h_angle = angle / 2.0
+            yaw_component = matrix([[cos(h_angle), -sin(h_angle), 0],
+                                    [sin(h_angle), cos(h_angle), 0],
+                                    [0, 0, 1]])
+
+            pitch_component = matrix([[cos(h_angle), 0, -sin(h_angle)],
+                                      [0, 1, 0],
+                                      [sin(h_angle), 0, cos(h_angle)]])
+
+            # convert it back to a list representation for the next part of the
+            # function
+            rotation = (yaw_component * pitch_component).tolist()
 
         elif "Roll" in previous:
             rotation = [[1, 0, 0],
@@ -185,5 +235,5 @@ class CenterOfMass():
         return matrix(rotation)
 
 if __name__ == '__main__':
-    com = CenterOfMass("10.0.0.35", 9559)
+    com = CenterOfMass("10.0.0.38", 9559)
     com.get_CoM("RLeg")
