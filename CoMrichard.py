@@ -1,5 +1,6 @@
 from naoqi import ALProxy
 from math import cos, sin
+from copy import deepcopy
 		
 class CenterOfMass():
     #TODO: voor Linker joints y even inverse waarde geven
@@ -41,7 +42,8 @@ class CenterOfMass():
             ("LElbowToLShoulder" ) : [-105.00, -15.00, 0.00],        
             ("LElbowToLWrist")     : [55.95, 0, 0 ],
             ("LWristToLElbow")     : [-55.95, 0, 0 ],
-			("RShoulderToTorso")   : [0.0, 98.0, 100.00 ],
+			("TorsoToRShoulder")   : [0.0, -98.0, 100.00 ],
+			("RShoulderToTorso")   : [0.0, 98.0, -100.00 ],
             ("RShoulderToRElbow" ) : [105.00, -15.00, 0.00],        
             ("RElbowToRShoulder" ) : [-105.00, 15.00, 0.00],        
             ("RElbowToRWrist")     : [55.95, 0, 0 ],
@@ -111,53 +113,112 @@ class CenterOfMass():
 		
 		#############################################################################################
 		
-		#if supportLeg == "R":
-		#	checkupdown = -1
-		#else:
-		#	checkupdown = 1
+		if supportLeg == "R":
+			checkupdown = -1
+		else:
+			checkupdown = 1
 		
 		X = self.mot.getAngles("LAnkleRoll", False)[0] * checkupdown   
-		self.LAnkleRoll =   [[1,			0,			0,			0],
-						[0,			cos(X),		sin(X),		0],
-						[0,			-sin(X),	cos(X),		0],
-						[0,			0,			0,			1]]
+		self.LAnkleRoll =  [[1,			0,			0,			0],
+							[0,			cos(X),		sin(X),		0],
+							[0,			-sin(X),	cos(X),		0],
+							[0,			0,			0,			1]]
 
 		X = self.mot.getAngles("LAnklePitch", False)[0] * checkupdown
 		self.LAnklePitch =  [[cos(X),	0,			-sin(X),	0],
-						[0,			1,			0,			0],
-						[sin(X),	0,			cos(X),		0],
-						[0,			0,			0,			1]]
+							[0,			1,			0,			0],
+							[sin(X),	0,			cos(X),		0],
+							[0,			0,			0,			1]]
 
 		X = self.mot.getAngles("LKneePitch", False)[0] * checkupdown
 		self.LKneePitch =   [[cos(X),	0,			-sin(X),	0],
-						[0,			1,			0,			0],
-						[sin(X),	0,			cos(X),		0],
-						[0,			0,			0,			1]]
+							[0,			1,			0,			0],
+							[sin(X),	0,			cos(X),		0],
+							[0,			0,			0,			1]]
 
 		X = self.mot.getAngles("LHipPitch", False)[0] * checkupdown	
 		self.LHipPitch =    [[cos(X),	0,			-sin(X),	0],
-						[0,			1,			0,			0],
-						[sin(X),	0,			cos(X),		0],
-						[0,			0,			0,			1]]
+							[0,			1,			0,			0],
+							[sin(X),	0,			cos(X),		0],
+							[0,			0,			0,			1]]
 
 		X = self.mot.getAngles("LHipRoll", False)[0] * checkupdown
-		self.LHipRoll = 	   [[1,			0,			0,			0],
-						[0,			cos(X),		-sin(X),	0],
-						[0,			sin(X),		cos(X),		0],
-						[0,			0,			0,			1]]
+		self.LHipRoll = 	[[1,			0,			0,		0],
+							[0,			cos(X),		-sin(X),	0],
+							[0,			sin(X),		cos(X),		0],
+							[0,			0,			0,			1]]
 
 		X = self.mot.getAngles("LHipYawPitch", False)[0] * checkupdown		
-		self.LHipYaw =      [[cos(X/2),	-sin(X/2),	0,			0],
+		self.LHipYaw =  [[cos(X/2),	-sin(X/2),	0,			0],
 						[0,			1,			0,			0],
 						[sin(X/2),	cos(X/2),	0,			0],
 						[0,			0,			0,			1]]
 
-		#X = self.mot.getAngles("RHipYawPitch", False)[0] * checkupdown	
 		self.LHipYawPitch = [[cos(X/2),	0,			-sin(X/2),	0],
-						[0,			1,			0,			0],
-						[sin(X/2),	0,			cos(X/2),	0],
-						[0,			0,			0,			1]]
-						
+							[0,			1,			0,			0],
+							[sin(X/2),	0,			cos(X/2),	0],
+							[0,			0,			0,			1]]
+		
+		X = self.mot.getAngles("LHipYawPitch", False)[0]
+		self.RShoulderPitch =   [[cos(X),	0,			-sin(X),	0],
+								[0,			1,			0,			0],
+								[sin(X),	0,			cos(X),		0],
+								[0,			0,			0,			1]]
+		
+		X = self.mot.getAngles("RShoulderRoll", False)[0]
+		self.RShoulderRoll = 	[[1,		0,			0,		0],
+								[0,			cos(X),		-sin(X),	0],
+								[0,			sin(X),		cos(X),		0],
+								[0,			0,			0,			1]]
+		
+		X = self.mot.getAngles("ElbowYaw ", False)[0]
+		self.RElbowYaw =      	[[cos(X),	-sin(X),	0,			0],
+								[0,			1,			0,			0],
+								[sin(X),	cos(X),		0,			0],
+								[0,			0,			0,			1]]
+								
+		X = self.mot.getAngles("RElbowRoll", False)[0]
+		self.RElbowRoll = 	   [[1,			0,			0,			0],
+								[0,			cos(X),		-sin(X),	0],
+								[0,			sin(X),		cos(X),		0],
+								[0,			0,			0,			1]]
+		
+		X = self.mot.getAngles("LShoulderPitch", False)[0]
+		self.LShoulderPitch =   [[cos(X),	0,		-sin(X),	0],
+								[0,			1,		0,			0],
+								[sin(X),	0,		cos(X),		0],
+								[0,			0,		0,			1]]
+		
+		X = self.mot.getAngles("LShoulderRoll", False)[0]
+		self.LShoulderRoll = 	[[1,			0,			0,		0],
+								[0,			cos(X),		-sin(X),	0],
+								[0,			sin(X),		cos(X),		0],
+								[0,			0,			0,			1]]
+		
+		X = self.mot.getAngles("LElbowYaw", False)[0]
+		self.LElbowYaw =      	[[cos(X),	-sin(X),	0,			0],
+								[0,			1,			0,			0],
+								[sin(X),	cos(X),	0,			0],
+								[0,			0,			0,			1]]
+		
+		X = self.mot.getAngles("LElbowRoll", False)[0]
+		self.LElbowRoll = 	   [[1,			0,			0,			0],
+								[0,			cos(X),		-sin(X),	0],
+								[0,			sin(X),		cos(X),		0],
+								[0,			0,			0,			1]]
+								
+		X = self.mot.getAngles("HeadYaw", False)[0]
+		self.HeadYaw =      	[[cos(X),	-sin(X),	0,			0],
+								[0,			1,			0,			0],
+								[sin(X),	cos(X),	0,			0],
+								[0,			0,			0,			1]]
+								
+		X = self.mot.getAngles("HeadPitch", False)[0]
+		self.HeadPitch = 		[[cos(X),	0,			-sin(X),	0],
+								[0,			1,			0,			0],
+								[sin(X),	0,			cos(X),		0],
+								[0,			0,			0,			1]]
+	
     def CoM(self):
 	    self.update()
 	    Chains = []
@@ -174,7 +235,10 @@ class CenterOfMass():
 		
 	    Chains.append(["RAnkleRoll","RAnklePitch","AnkleToKnee","RKneePitch","KneeToHip","RHipPitch","RHipRoll","RHipYaw","RHipYawPitch","RHipToTorso"])
 	    Chains.append(["TorsoToLHip","LHipYawPitch","LHipYaw","LHipRoll","LHipPitch","HipToKnee","LKneePitch","KneeToAnkle","LAnklePitch","LAnkleRoll"])
-
+	    Chains.append(["TorsoToRShoulder","RShoulderPitch","RShoulderRoll","RShoulderToRElbow","RElbowYaw","RElbowRoll"])
+	    Chains.append(["TorsoToLShoulder","LShoulderPitch","LShoulderRoll","LShoulderToLElbow","LElbowYaw","LElbowRoll"])
+	    Chains.append(["TorsoToHead","HeadYaw", "HeadPitch"])
+		
 	    Transform = [[1,0,0,0],
 					 [0,1,0,0],
 					 [0,0,1,0],
@@ -182,7 +246,13 @@ class CenterOfMass():
 		
 	    JointCOMs = []
 	    JointMasses = []
-
+		
+	    plot0 = []
+	    plot1 = []
+	    plot2 = []
+	    plot3 = []
+	    plot4 = []
+		
 	    for element in Chains[0]:
 		    if element in self.jointCOM:
 			    Transform = self.mult(Transform, eval("self." + element))
@@ -195,7 +265,17 @@ class CenterOfMass():
 			    Transform[2][3] += self.jointOffsets[element][2]
 			    print "transform (translate):"		
 		    print Transform
-	    transformToTorso = Transform
+		    [[temp1],[temp2],[temp3],[temp4]] = self.mult(Transform, [[0],[0],[0],[1]])
+		    plot0.append(temp1)
+		    plot0.append(temp2)
+		    plot0.append(temp3)
+		#Torso has been reached
+	    self.NullToTorso = deepcopy(Transform)
+	    #Add the torso to the plot
+	    [[temp1],[temp2],[temp3],[temp4]] = self.mult(Transform, [[0],[0],[0],[1]])
+	    plot1.append(temp1)
+	    plot1.append(temp2)
+	    plot1.append(temp3)
 	    for element in Chains[1]:
 		    if element in self.jointCOM:
 			    Transform = self.mult(Transform, eval("self." + element))
@@ -208,18 +288,107 @@ class CenterOfMass():
 			    Transform[2][3] += self.jointOffsets[element][2]
 			    print "transform (translate):"		
 		    print Transform
+		    [[temp1],[temp2],[temp3],[temp4]] = self.mult(Transform, [[0],[0],[0],[1]])
+		    plot1.append(temp1)
+		    plot1.append(temp2)
+		    plot1.append(temp3)
+		#back to Torso
+	    Transform = deepcopy(self.NullToTorso)
+	    #Add the torso to the plot
+	    [[temp1],[temp2],[temp3],[temp4]] = self.mult(Transform, [[0],[0],[0],[1]])
+	    plot2.append(temp1)
+	    plot2.append(temp2)
+	    plot2.append(temp3)
+	    for element in Chains[2]:
+		    if element in self.jointCOM:
+			    Transform = self.mult(Transform, eval("self." + element))
+			    JointCOMs.append(self.mult(Transform, [[self.jointCOM[element][0][0]],[self.jointCOM[element][0][1]],[self.jointCOM[element][0][2]],[1]]))
+			    JointMasses.append(self.jointCOM[element][1])
+			    print "transform (rotation):"
+		    else:
+			    Transform[0][3] += self.jointOffsets[element][0]
+			    Transform[1][3] += self.jointOffsets[element][1]
+			    Transform[2][3] += self.jointOffsets[element][2]
+			    print "transform (translate):"		
+		    print Transform
+		    [[temp1],[temp2],[temp3],[temp4]] = self.mult(Transform, [[0],[0],[0],[1]])
+		    plot2.append(temp1)
+		    plot2.append(temp2)
+		    plot2.append(temp3)
+		#back to Torso
+	    Transform = deepcopy(self.NullToTorso)	    
+		#Add the torso to the plot
+	    [[temp1],[temp2],[temp3],[temp4]] = self.mult(Transform, [[0],[0],[0],[1]])
+	    plot3.append(temp1)
+	    plot3.append(temp2)
+	    plot3.append(temp3)
+	    for element in Chains[3]:
+		    if element in self.jointCOM:
+			    Transform = self.mult(Transform, eval("self." + element))
+			    JointCOMs.append(self.mult(Transform, [[self.jointCOM[element][0][0]],[self.jointCOM[element][0][1]],[self.jointCOM[element][0][2]],[1]]))
+			    JointMasses.append(self.jointCOM[element][1])
+			    print "transform (rotation):"
+		    else:
+			    Transform[0][3] += self.jointOffsets[element][0]
+			    Transform[1][3] += self.jointOffsets[element][1]
+			    Transform[2][3] += self.jointOffsets[element][2]
+			    print "transform (translate):"		
+		    print Transform
+		    [[temp1],[temp2],[temp3],[temp4]] = self.mult(Transform, [[0],[0],[0],[1]])
+		    plot3.append(temp1)
+		    plot3.append(temp2)
+		    plot3.append(temp3)
+		#back to Torso 
+	    Transform = deepcopy(self.NullToTorso)
+		#Add the torso to the plot
+	    [[temp1],[temp2],[temp3],[temp4]] = self.mult(Transform, [[0],[0],[0],[1]])
+	    plot4.append(temp1)
+	    plot4.append(temp2)
+	    plot4.append(temp3)
+	   
+	    for element in Chains[4]:
+		    if element in self.jointCOM:
+			    Transform = self.mult(Transform, eval("self." + element))
+			    JointCOMs.append(self.mult(Transform, [[self.jointCOM[element][0][0]],[self.jointCOM[element][0][1]],[self.jointCOM[element][0][2]],[1]]))
+			    JointMasses.append(self.jointCOM[element][1])
+			    print "transform (rotation):"
+		    else:
+			    Transform[0][3] += self.jointOffsets[element][0]
+			    Transform[1][3] += self.jointOffsets[element][1]
+			    Transform[2][3] += self.jointOffsets[element][2]
+			    print "transform (translate):"		
+		    print Transform
+		    [[temp1],[temp2],[temp3],[temp4]] = self.mult(Transform, [[0],[0],[0],[1]])
+		    plot4.append(temp1)
+		    plot4.append(temp2)
+		    plot4.append(temp3)
 	    print "JointCOMs: " 
 	    print JointCOMs
 	    print "masses: "
 	    print JointMasses	
 	    COM = [0.0,0.0,0.0]
+	    plot = []
 	    for i in range(len(JointMasses)):
 		    COM[0] += JointCOMs[i][0][0] * JointMasses[i]
 		    COM[1] += JointCOMs[i][1][0] * JointMasses[i]
 		    COM[2] += JointCOMs[i][2][0] * JointMasses[i]
-		
+		    plot.append(JointCOMs[i][0][0])
+		    plot.append(JointCOMs[i][1][0])
+		    plot.append(JointCOMs[i][2][0])				
 	    COM = [a/sum(JointMasses) for a in COM]
-	    print "COM:"
+	    print "plot:"
+	    print plot
+	    print "plot0:"
+	    print plot0
+	    print "plot1:"
+	    print plot1
+	    print "plot2:"
+	    print plot2
+	    print "plot3:"
+	    print plot3
+	    print "plot4:"
+	    print plot4
+	    print "COM:"      
 	    return COM
 	
     def zero(self,m,n):
