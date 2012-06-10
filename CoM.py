@@ -1,4 +1,5 @@
 import sys
+import re
 from cStringIO import StringIO
 
 # adding the Naoqi Python SDK to the path
@@ -252,9 +253,6 @@ class CenterOfMass():
 
 # a debug wrapper for the CenterOfMass class
 # prints a dictionary of joint locations to the file "debug_com.txt"
-#
-# TODO: get rid of the comma in the last dictionary element (currently requires
-# manual removal)
 class DebugCoM(CenterOfMass):
     def __init__(self, ip_address, port):
         CenterOfMass.__init__(self, ip_address, port)
@@ -274,8 +272,10 @@ class DebugCoM(CenterOfMass):
         sys.stdout = old_stdout
 
         # write the captured output to a file
+        output = stringout.getvalue()
+        output = re.sub(r",\n}", '\n}', output)
         with open("debug_com.txt", 'w') as f:
-            f.write( stringout.getvalue() )
+            f.write(output)
 
         # return the regular value
         return com
