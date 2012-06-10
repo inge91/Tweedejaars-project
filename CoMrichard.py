@@ -68,37 +68,50 @@ class CenterOfMass():
 		else:
 			checkupdown = -1
 
-		X = self.mot.getAngles("RAnkleRoll", False)[0] * checkupdown   
+		print "Angles: "
+		X = self.mot.getAngles("RAnkleRoll", False)[0] * checkupdown
+		print "RAnkleRoll: " 
+		print X
 		self.RAnkleRoll =   [[1,			0,			0,			0],
 						[0,			cos(X),		sin(X),		0],
 						[0,			-sin(X),	cos(X),		0],
 						[0,			0,			0,			1]]
 
 		X = self.mot.getAngles("RAnklePitch", False)[0] * checkupdown
+		print "RAnklePitch: " 
+		print X
 		self.RAnklePitch =  [[cos(X),	0,			-sin(X),	0],
 						[0,			1,			0,			0],
-						[sin(X),	0,			cos(X),		0],
+						[sin(X),	0,			cos(X),		102.9],
 						[0,			0,			0,			1]]
 
 		X = self.mot.getAngles("RKneePitch", False)[0] * checkupdown
+		print "RKneePitch: " 
+		print X
 		self.RKneePitch =   [[cos(X),	0,			-sin(X),	0],
 						[0,			1,			0,			0],
-						[sin(X),	0,			cos(X),		0],
+						[sin(X),	0,			cos(X),		100.0],
 						[0,			0,			0,			1]]
 
-		X = self.mot.getAngles("RHipPitch", False)[0] * checkupdown	
+		X = self.mot.getAngles("RHipPitch", False)[0] * checkupdown
+		print "RHipPitch"
+		print X
 		self.RHipPitch =    [[cos(X),	0,			-sin(X),	0],
 						[0,			1,			0,			0],
 						[sin(X),	0,			cos(X),		0],
 						[0,			0,			0,			1]]
 
 		X = self.mot.getAngles("RHipRoll", False)[0] * checkupdown
+		print "RHipRoll: "
+		print X
 		self.RHipRoll = 	   [[1,			0,			0,			0],
 						[0,			cos(X),		-sin(X),	0],
 						[0,			sin(X),		cos(X),		0],
 						[0,			0,			0,			1]]
 
-		X = self.mot.getAngles("RHipYawPitch", False)[0] * checkupdown		
+		X = self.mot.getAngles("RHipYawPitch", False)[0] * checkupdown
+		print "RHipYawPitch: "
+		print X
 		self.RHipYaw =      [[cos(X/2),	-sin(X/2),	0,			0],
 						[0,			1,			0,			0],
 						[sin(X/2),	cos(X/2),	0,			0],
@@ -171,7 +184,7 @@ class CenterOfMass():
 								[0,			sin(X),		cos(X),		0],
 								[0,			0,			0,			1]]
 		
-		X = self.mot.getAngles("ElbowYaw ", False)[0]
+		#X = self.mot.getAngles("ElbowYaw", False)[0]
 		self.RElbowYaw =      	[[cos(X),	-sin(X),	0,			0],
 								[0,			1,			0,			0],
 								[sin(X),	cos(X),		0,			0],
@@ -195,7 +208,7 @@ class CenterOfMass():
 								[0,			sin(X),		cos(X),		0],
 								[0,			0,			0,			1]]
 		
-		X = self.mot.getAngles("LElbowYaw", False)[0]
+		#X = self.mot.getAngles("LElbowYaw", False)[0]
 		self.LElbowYaw =      	[[cos(X),	-sin(X),	0,			0],
 								[0,			1,			0,			0],
 								[sin(X),	cos(X),	0,			0],
@@ -231,9 +244,10 @@ class CenterOfMass():
 		 
 		#Chains[2] = ["RShoulderPitch","RShoulderRoll","RElbowYaw","RElbowRoll"]
 		#Chains[3] = ["LShoulderPitch","LShoulderRoll","LElbowYaw","LElbowRoll"]
-		#Chains[4] = ["HeadYaw", "HeadPitch"]
+		#Chains[4] = ["HeadYaw", "HeadPitch"]	    
 		
-	    Chains.append(["RAnkleRoll","RAnklePitch","AnkleToKnee","RKneePitch","KneeToHip","RHipPitch","RHipRoll","RHipYaw","RHipYawPitch","RHipToTorso"])
+		#First chain has no separate translations the rest HAS!
+	    Chains.append(["RAnkleRoll","RAnklePitch","RKneePitch","RHipPitch","RHipRoll","RHipYaw","RHipYawPitch","RHipToTorso"])
 	    Chains.append(["TorsoToLHip","LHipYawPitch","LHipYaw","LHipRoll","LHipPitch","HipToKnee","LKneePitch","KneeToAnkle","LAnklePitch","LAnkleRoll"])
 	    Chains.append(["TorsoToRShoulder","RShoulderPitch","RShoulderRoll","RShoulderToRElbow","RElbowYaw","RElbowRoll"])
 	    Chains.append(["TorsoToLShoulder","LShoulderPitch","LShoulderRoll","LShoulderToLElbow","LElbowYaw","LElbowRoll"])
@@ -253,11 +267,15 @@ class CenterOfMass():
 	    plot3 = []
 	    plot4 = []
 		
+		#for the first chain i switched the order of finding the coordinate of the joint and applying the transformation
+	    plot0.append(0)
+	    plot0.append(0)
+	    plot0.append(0)
 	    for element in Chains[0]:
-		    if element in self.jointCOM:
-			    Transform = self.mult(Transform, eval("self." + element))
+		    if element in self.jointCOM:			    
 			    JointCOMs.append(self.mult(Transform, [[self.jointCOM[element][0][0]],[self.jointCOM[element][0][1]],[self.jointCOM[element][0][2]],[1]]))
 			    JointMasses.append(self.jointCOM[element][1])
+			    Transform = self.mult(Transform, eval("self." + element))
 			    print "transform (rotation):"
 		    else:
 			    Transform[0][3] += self.jointOffsets[element][0]
