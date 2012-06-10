@@ -1,8 +1,0 @@
-.. _example-index:
-
-Examples
-========
-
-- :ref:`cpp-examples`
-- :ref:`python-examples`
-
