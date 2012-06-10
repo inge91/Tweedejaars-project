@@ -122,7 +122,7 @@ class CenterOfMass():
             T = T * self.transformation_matrix(previous, current)
 
             # FIXME: debug
-            print current + ":"
+            print '"' + current + '"' + ":"
             print T * matrix([0, 0, 0, 1]).transpose(), ","
 
             # multiply the transformed centroid with its weight and update the
@@ -170,7 +170,7 @@ class CenterOfMass():
             T = T * self.transformation_matrix(previous, current)
 
             # FIXME: debug
-            print current + ":"
+            print '"' + current + '"' + ":"
             print T * matrix([0, 0, 0, 1]).transpose(), ","
 
             # multiply the transformed centroid with its weight and update the
