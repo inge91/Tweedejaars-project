@@ -273,7 +273,16 @@ class DebugCoM(CenterOfMass):
 
         # write the captured output to a file
         output = stringout.getvalue()
-        output = re.sub(r",\n}", '\n}', output)
+
+        # adds commas to the places that need one
+        comma_regex = re.compile(r"""
+            ([^\]])         # any character that is not a ']'
+            ]               # followed by a ']'
+            ([^\]])         # any character that is not a ']'
+            """, re.VERBOSE)
+        
+        output = re.sub(comma_regex, r'\1],\2', output)
+        output = re.sub(r",\n}", '\n}', output)  # remove the last comma
         with open("debug_com.txt", 'w') as f:
             f.write(output)
 
