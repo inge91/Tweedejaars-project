@@ -1,9 +1,20 @@
-import sys
-import re
+import sys, re, platform
 from cStringIO import StringIO
 
-# adding the Naoqi Python SDK to the path
-sys.path.append("SDK")
+# adding the correct Naoqi Python SDK to the path
+
+# linux
+if 'linux' in sys.platform:
+    if platform.machine() == 'x86_64':
+        sys.path.append("SDK-64bit")
+    else:
+        sys.path.append("SDK")
+
+# windows
+else:
+    # could potentially add the windows SDK here
+    pass
+
 
 from numpy import matrix
 from naoqi import ALProxy
