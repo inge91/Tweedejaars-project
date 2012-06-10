@@ -1,0 +1,1658 @@
+Architecture of the pref file Device.xml / of key/values in ALMemory
+====================================================================
+
+:ref:`Overview <dcm>` | :ref:`API <dcm-api>`  | :ref:`Tutorial <dcm-tuto>`
+
+BaseName
+--------
+
+The baseName value for all devices is: Device/DeviceList/
+
+The baseName value for all subdevices is:
+Device/SubDeviceList/
+
+This last one is the most useful. You can also ask them by a
+"getPrefix" request to the DCM
+
+Default ALMemory keys for all subDevices
+----------------------------------------
+
+(Actuator and sensors have the same)
+
+- **Value (float)**
+
+  A subDevice always has a main value.
+  Sensors has a value that is the return of the sensor, and actuator has a value
+  that is the last command sent to the actuator (by the DCM).
+
+  For example, a Joint has (at least) 2 subdevices, the actuator (the angle we
+  want to reach) and the sensor (the angle where we are, at the sensor precision).
+  The value has a last update time (this is automatically done by ALMemory).
+
+  Usually, this value is an integer (8 bits, 16 bits, or others, and signed or unsigned)
+  sent/received by the electronic boards, and changed to/read as a float by the DCM (using
+  gain and offset). Actuators are first changed to int values, then the timed-command
+  algorithm is applied, and then the last value is set in ALMemory. This is why if you ask
+  0.4 as a float value to a LED with a timed command, you can have 0.398 as the last sent
+  command in ALMemory.
+
+  To access the value of a subDevice in ALMemory, simply add the baseName to the subDevice
+  name and add "/Value". For example:  "Device/SubDeviceList//HeadPitch/Position/Actuator/Value".
+  Use "/Value" to access this value.
+
+- **Gain and Offset (float)**
+
+  The gain and the offset are applied to the device return/send value.
+
+  When a sensor returns a value (usually an integer), it's automaticall
+  multiplied by the gain, and the offset is added. When there is a command
+  sent to an actuator, the offset is first removed, then it's divided by the
+  gain. Then, the value is sent to the device (after the timed-command algorithm).
+
+  Use "/Gain" and "/Offset" keys to access these values.
+  In a normal use, you do not need to change these keys.
+
+- **Ack and Nack (int)**
+  Each subDevice has also an "Ack" (device answered) and a "Nack" (device did not
+  answer) value, that are simple counters. This value is an integer increment
+  for all ack/nack received.
+
+  Ack is incremented each time there is a successful message sent/received to the
+  (sub)Device, and Nack is incremented each time there is a communication error
+  (or no return) from the (sub)Device. If there is no communication, there is no
+  increase of ACK and NACK.
+
+  Be careful it could return to negative values or 0. Here, the upper level can
+  also use the last update time.
+  Nack means that the device is probably lost or not present, at least for a
+  while (it could be just one communication issue), unless special feature.
+  Use "/Ack" and "/Nack" keys to read these values.
+
+  .. note::
+
+     Right now, only Devices has Ack/Nack information, and a ack
+     or a nack received for the device is not forwarded to its
+     subDevices. So you have to check the Devices Ack/Nack...
+
+- **Error**
+
+  Each device/sub-device also has an error list. Each error has a time, a 0-7
+  level number, and a string. There is a 30 second time limit for each of these
+  values. So only the 30 seconds old errors are kept (if there are any).
+
+  Levels are:
+
++-------+--------------------------------------------------------+
+| Level | Meaning                                                |
++=======+========================================================+
+| 7     | Fatal error, could not be used (as with an Nack)       |
++-------+--------------------------------------------------------+
+| 6     | Fatal error, but could still be used in a very bad way |
++-------+--------------------------------------------------------+
+| 5     | Error with bad effect on the main feature              |
++-------+--------------------------------------------------------+
+| 4     | Error                                                  |
++-------+--------------------------------------------------------+
+| 3     | Warning                                                |
++-------+--------------------------------------------------------+
+| 2     | Light warning                                          |
++-------+--------------------------------------------------------+
+| 1     | Comment                                                |
++-------+--------------------------------------------------------+
+| 0     | Everything is ok                                       |
++-------+--------------------------------------------------------+
+
+  > Use the "/Error" key to read this value.
+
+  .. note::
+
+     Right now, this is not used. There are only errors for motor
+     board devices, and the value is a special 8 bits int (see next
+     chapter).
+
+- **Min and Max**
+
+  There is also a mandatory Min and Max value.
+  Each timed command sent to an actuator is majored/minored by the min and max value.
+  For sensors, their meaning depends on the subDevice type. There could have also specific use for some actuators.
+  Use "/Min" and "/Max" keys to read these values.
+  These values should not be changed.
+
+- **Other configurations values**: "Type", "Device", "SubDeviceNumber"
+
+  "Type" is a string that describes the kind of SubDevice.
+  "Device" is the string name of the Device that controls this subDevice.
+  "SubDeviceNumber" is an int, starting at "1" that is the subdevice number of this subDevice in this Device.
+  These values should not be changed.
+
+These are only mandatory keys. Depending on the type, every
+subDevices could have other "information" (such as changed sensor
+values) or "configuration" keys.
+
+They are described in next chapters with the precise meaning of
+all keys.
+
+Default value for all devices
+-----------------------------
+
+Devices, unlike subdevices, do not have a "Value" in ALMemory, and
+also "Gain", "Offset", "Min" and "Max". But they have "Ack/Nack" and
+"error list".
+
+They also have:
+
+- "Type" is a string, that is the kind of Device.
+
+- "Bus" is a string, that is the communication bus name where the
+  Device is connected.
+
+- "Address" is a 0-255 number that is the slave address of the
+  device in the bus.
+
+These values should not be changed.
+
+It is possible to have other specific information, depending the
+Device type. See precise list in next chapter.
+
+Specific ALMemory keys for each device type
+-------------------------------------------
+
+MotorBoard
+++++++++++
+
+.. note::
+
+   There is no specific meaning for mandatory keys.
+
+Specific keys:
+
+- StructVersion: an integer that is the version of the configuration structure
+  for the motor board. This value is returned by the Device
+
+- BoardId: an integer value used as ID for the electronic board.
+
+  .. note::
+
+     This will change in the future
+
+- BoardId2: a second integer value used as ID for the electronic board.
+
+  .. note::
+
+     This will change in the future
+
+- BootLoaderVersion: an integer value with the motor board bootloader version.
+
+  .. note::
+
+     This will change in the future
+
+- ProgVersion: an integer value with the motor board program version.
+
+  .. note::
+
+     This will change in the future
+
+- Bid: a number from 1 to number max of board in the specific bus used in RS485
+  broadcast communication. This number is automatically given by the DCM at
+  startup, and sent to the motor board in the config struct.
+
+- Error: One byte returns each cycle by the motor board. If there is more than
+  one error, the motor board will send a different one every cycle. Be careful
+  that motor and MRE numbers are physical numbers and not subdevice numbers.
+
+  .. note::
+
+     MRE means Magnetic Rotary Encoders and are the main sensors
+     for joints (there is one on the joint itself, and there could be
+     another one that is directly on the motor for more precision in
+     some other joints). Most of the MRE errors are directly sent by
+     the MRE sensor.
+
+- Error codes for motor board:
+
+  - **ERROR COM**
+
+    +-----------------+-----------------------+------------------+-------------+-------------+-----------------+-------------+------------------------+
+    | Kind            | 1st value (7-4 bits)  | Bit 3            | Bit 2       | Bit 1       | Bit 0           | Value       | Test only after config |
+    +=================+=======================+==================+=============+=============+=================+=============+========================+
+    | RS485 protocol  | 10                    | READ UNFINISHED  | RCRC ERROR  | UNFINISHED  | READ CRC ERROR  | 161 to 175  | No                     |
+    +-----------------+-----------------------+------------------+-------------+-------------+-----------------+-------------+------------------------+
+
+    +--------+----------------------------------------------------------------------------------+
+    | Note   | Text                                                                             |
+    +========+==================================================================================+
+    | Bit 3  | Start of a read request to this PIC, then ask for another address before the end |
+    +--------+----------------------------------------------------------------------------------+
+    | Bit 2  | Read CRC (write to this dsPIC point of view) was wrong                           |
+    +--------+----------------------------------------------------------------------------------+
+    | Bit 1  | New address found while message was not finished                                 |
+    +--------+----------------------------------------------------------------------------------+
+    | Bit 0  | Message read by the dsPIC as a CRC error                                         |
+    +--------+----------------------------------------------------------------------------------+
+
+  - **ERROR_UART_SPI**
+
+    +------------------------+-----------------------+--------+--------+--------+-------------+-------------+------------------------+
+    | Kind                   | 1st value (7-4 bits)  | Bit 3  | Bit 2  | Bit 1  | Bit 0       | Value       | Test only after config |
+    +========================+=======================+========+========+========+=============+=============+========================+
+    | Com RS485 / SPI (MRE)  | 11                    | OERR   | FERR   | PERR   | SPI_SPIROV  | 177 to 191  | No                     |
+    +------------------------+-----------------------+--------+--------+--------+-------------+-------------+------------------------+
+
+    +--------+---------------------------------------------------------------------------+
+    | Note   | Text                                                                      |
+    +========+===========================================================================+
+    | Bit 3  | Overrun Error bit: Received FIFO full (5 bytes)                           |
+    +--------+---------------------------------------------------------------------------+
+    | Bit 2  | Framing Error bit: bad stop bit                                           |
+    +--------+---------------------------------------------------------------------------+
+    | Bit 1  | Parity Error bit: bad parity                                              |
+    +--------+---------------------------------------------------------------------------+
+    | Bit 0  | SPI Overflow: a byte in the SPI was lost (SPI used for MRE communication) |
+    +--------+---------------------------------------------------------------------------+
+
+  - **ERROR_MRE_BAD_OCF**
+
+    +-------+-----------------------+--------+--------+--------+--------+-------------+-------------------------+-----------------------------------------------+
+    | Kind  | 1st value (7-4 bits)  | Bit 3  | Bit 2  | Bit 1  | Bit 0  | Value       | Test only after config  | Text                                          |
+    +=======+=======================+========+========+========+========+=============+=========================+===============================================+
+    | MRE   | 9                     | MRE 4  | MRE 3  | MRE 2  | MRE 1  | 145 to 159  | Yes                     | MRE: the offset compensation is not finished. |
+    |       |                       |        |        |        |        |             |                         | Not tested if ERROR_NO_DATA or ERROR_PARITY   |
+    +-------+-----------------------+--------+--------+--------+--------+-------------+-------------------------+-----------------------------------------------+
+
+  - **ERROR_MRE_BAD_COF**
+
+    +-----------+-----------------------+--------+--------+--------+--------+-----------+-------------------------+------------------------------------------+
+    | Kind      | 1st value (7-4 bits)  | Bit 3  | Bit 2  | Bit 1  | Bit 0  | Value     | Test only after config  | Text                                     |
+    +===========+=======================+========+========+========+========+===========+=========================+==========================================+
+    | MRE       | 5                     | MRE 4  | MRE 3  | MRE 2  | MRE 1  | 81 to 95  | Yes                     | MRE: data invalid due to cordic overflow |
+    |           |                       |        |        |        |        |           |                         | (magnet above XYZ limit). Not tested if  |
+    |           |                       |        |        |        |        |           |                         | ERROR_NO_DATA or ERROR_PARITY            |
+    +-----------+-----------------------+--------+--------+--------+--------+-----------+-------------------------+------------------------------------------+
+
+  - **ERROR_MRE_WARNING_BAD_LIN**
+
+    +-------+-----------------------+--------+--------+--------+--------+------------+-------------------------+---------------------------------------------+
+    | Kind  | 1st value (7-4 bits)  | Bit 3  | Bit 2  | Bit 1  | Bit 0  | Value      | Test only after config  | Text                                        |
+    +=======+=======================+========+========+========+========+============+=========================+=============================================+
+    | MRE   | 6                     | MRE 4  | MRE 3  | MRE 2  | MRE 1  | 97 to 111  | Yes                     | MRE: Linearity alarm: Data could be invalid |
+    |       |                       |        |        |        |        |            |                         | (magnet above XYZ limit). Not tested if     |
+    |       |                       |        |        |        |        |            |                         | ERROR_NO_DATA or ERROR_PARITY               |
+    +-------+-----------------------+--------+--------+--------+--------+------------+-------------------------+---------------------------------------------+
+
+  - **ERROR_MRE_WARNING_BAD_MAG**
+
+    +-------+-----------------------+--------+--------+--------+--------+-------------+-------------------------+-----------------------------------------------+
+    | Kind  | 1st value (7-4 bits)  | Bit 3  | Bit 2  | Bit 1  | Bit 0  | Value       | Test only after config  | Text                                          |
+    +=======+=======================+========+========+========+========+=============+=========================+===============================================+
+    | MRE   | 7                     | MRE 4  | MRE 3  | MRE 2  | MRE 1  | 113 to 127  | Yes                     | MRE: magnetic input field invalid (too large  |
+    |       |                       |        |        |        |        |             |                         | or too small). Not tested if ERROR_NO_DATA or |
+    |       |                       |        |        |        |        |             |                         | ERROR_PARITY                                  |
+    +-------+-----------------------+--------+--------+--------+--------+-------------+-------------------------+-----------------------------------------------+
+
+  - **ERROR_MRE_ERROR_PARITY**
+
+    +-------+-----------------------+--------+--------+--------+--------+-------------+-------------------------+----------------------------------------------+
+    | Kind  | 1st value (7-4 bits)  | Bit 3  | Bit 2  | Bit 1  | Bit 0  | Value       | Test only after config  | Text                                         |
+    +=======+=======================+========+========+========+========+=============+=========================+==============================================+
+    | MRE   | 8                     | MRE 4  | MRE 3  | MRE 2  | MRE 1  | 129 to 143  | Yes                     | MRE: Parity of the SPI message is false. Not |
+    |       |                       |        |        |        |        |             |                         | tested if ERROR_NO_DATA                      |
+    +-------+-----------------------+--------+--------+--------+--------+-------------+-------------------------+----------------------------------------------+
+
+  - **ERROR_MRE_ERROR_NO_DATA**
+
+    +-------+-----------------------+--------+--------+--------+--------+-----------+-------------------------+---------------------------------+
+    | Kind  | 1st value (7-4 bits)  | Bit 3  | Bit 2  | Bit 1  | Bit 0  | Value     | Test only after config  | Text                            |
+    +=======+=======================+========+========+========+========+===========+=========================+=================================+
+    | MRE   | 4                     | MRE 4  | MRE 3  | MRE 2  | MRE 1  | 65 to 79  | Yes                     | MRE: Message is only 0 (no SPI) |
+    +-------+-----------------------+--------+--------+--------+--------+-----------+-------------------------+---------------------------------+
+
+  - **ERROR_TEMPERATURE**
+
+    +--------------+-----------------------+----------+----------+---------------+-------------------------+------------------------------------------------+
+    | Kind         | 1st value (7-4 bits)  | Bit 1    | Bit 0    | Value         | Test only after config  | Text                                           |
+    +==============+=======================+==========+==========+===============+=========================+================================================+
+    | Temperature  | 2                     | Motor 2  | Motor 1  | 33, 34 or 35  | Yes                     | Motor temperature too high, current limitation |
+    |              |                       |          |          |               |                         | is decreased                                   |
+    +--------------+-----------------------+----------+----------+---------------+-------------------------+------------------------------------------------+
+
+  - **ERROR_CURRENT_NO_MOTOR**
+
+    +--------+-----------------------+----------------+----------------+---------------+-------------------------+--------------------------------------------+
+    | Kind   | 1st value (7-4 bits)  | Bit 1          | Bit 0          | Value         | Test only after config  | Text                                       |
+    +========+=======================+================+================+===============+=========================+============================================+
+    | Motor  | 1                     | Motor 2 ERROR  | Motor 1 ERROR  | 17, 18 or 19  | Yes                     | Error sent when there is no current for a  |
+    |        |                       |                |                |               |                         | while on the mother while the PWM is >10%. |
+    |        |                       |                |                |               |                         | Divide PWM by two, until there is current  |
+    |        |                       |                |                |               |                         | back for a while.                          |
+    +--------+-----------------------+----------------+----------------+---------------+-------------------------+--------------------------------------------+
+
+  - **ERROR_ASSERV_ERROR_TOO_BIG_MOTOR**
+
+    +----------------+-----------------------+----------+----------+---------------+-------------------------+------------------------+---------------------+
+    | Kind           | 1st value (7-4 bits)  | Bit 1    | Bit 0    | Value         | Test only after config  | Note                   | Text                |
+    +================+=======================+==========+==========+===============+=========================+========================+=====================+
+    | Motor control  | 3                     | Motor 2  | Motor 1  | 49, 50 or 51  | Yes                     | Must be 100% hardness  | Motor control error |
+    |                |                       |          |          |               |                         |                        | greater than x deg  |
+    +----------------+-----------------------+----------+----------+---------------+-------------------------+------------------------+---------------------+
+
+  - **WARNING_CURRENT_LIMITATION**
+
+    +--------+-----------------------+----------+----------+------------------+-------------------------+------------------------------------------+
+    | Kind   | 1st value (7-4 bits)  | Bit 1    | Bit 0    | Value            | Test only after config  | Text                                     |
+    +========+=======================+==========+==========+==================+=========================+==========================================+
+    | Motor  | 13                    | Motor 2  | Motor 1  | 209, 210 or 211  | Yes                     | Motor current too big, PWM is decreased. |
+    +--------+-----------------------+----------+----------+------------------+-------------------------+------------------------------------------+
+
+  - **ERROR_MOTOR1_NOT_ASSERV_BECAUSE_MRE**
+
+    +------+------------+-----------------------+-----------------------+-------------------+-------------------+------------+--------------+-------------------+
+    | Kind | 1st value  | Bit 3                 | Bit 2                 | Bit 1             | Bit 0             | Value      | Test only    | Text              |
+    |      | (7-4 bits) |                       |                       |                   |                   |            | after config |                   |
+    +======+============+=======================+=======================+===================+===================+============+==============+===================+
+    | MRE  | 14         | MRE joint OTHER ISSU  | MRE motor OTHER ISSUE | MRE joint NO DATA | MRE motor NO DATA | 225 to 239 | Yes          | Position control  |
+    |      |            |                       |                       |                   |                   |            |              | cut for the motor |
+    |      |            |                       |                       |                   |                   |            |              | one because of a  |
+    |      |            |                       |                       |                   |                   |            |              | MRE issue         |
+    +------+------------+-----------------------+-----------------------+-------------------+-------------------+------------+--------------+-------------------+
+
+  - **ERROR_MOTOR2_NOT_ASSERV_BECAUSE_MRE**
+
+    +-------+------------+-----------------------+-----------------------+-------------------+-------------------+------------+--------------+-------------------+
+    | Kind  | 1st value  | Bit 3                 | Bit 2                 | Bit 1             | Bit 0             | Value      | Test only    | Text              |
+    |       | (7-4 bits) |                       |                       |                   |                   |            | after config |                   |
+    +=======+============+=======================+=======================+===================+===================+============+==============+===================+
+    | MRE   | 15         | MRE joint OTHER ISSUE | MRE motor OTHER ISSUE | MRE joint NO DATA | MRE motor NO DATA | 241 to 255 | Yes          | Position control  |
+    |       |            |                       |                       |                   |                   |            |              | cut for the motor |
+    |       |            |                       |                       |                   |                   |            |              | because of a MRE  |
+    |       |            |                       |                       |                   |                   |            |              | issue             |
+    +-------+------------+-----------------------+-----------------------+-------------------+-------------------+------------+--------------+-------------------+
+
+Battery
++++++++
+
+- ManufactureDate : Manufacture date (DD-MM-YYYY) (string)
+
+- Manufacturer (Ausgabe: "FSM-BMZ") (string)
+
+- Device Name (Ausgabe: "AR-NAO ") (string)
+
+- Firmware Version (Ausgabe: "V1.01") (string)
+
+- Serial number (int: 2 bytes)
+
+  .. note::
+
+     None of these values are implemented, except for the new Sanyo battery, where the serial number is now a string like
+     "ALDE000039___PD00100600",
+     with "ALDE000039___PD00" + year ("10") + month ("06") + 2 bytes serial in hexa "0x00".
+     The manufacturer is "SANYO".
+
+Chest Board
++++++++++++
+
+There are the mandatory keys, plus:
+
+- BodyId: official ID of the robot as a string. This string is stored in the chestBoard, and so linked to the body.
+
+- BodyNickName: string with the nick name of the robot, usually "NaoX", X is the NAO number. This string is stored in the chestBoard, and so linked to the body.
+
+- ProgVersion: this is a string with the program version.
+
+- ChainResult: this is a string describing the chaining of motorBoard result. The chaining process is the way to give address to the motorBoard.
+
+  .. note::
+
+     This value is not correct right now.
+
+.. note::
+
+   A Nack increment from the chestBoard usually means that the USB
+   connection is lost. This is a very important error.
+
+Other devices
++++++++++++++
+
+Other devices only have the mandatory keys.
+
+Description of the mandatory and specific ALMemory keys for each subDevice type
+-------------------------------------------------------------------------------
+
+LEDs (actuator)
++++++++++++++++
+
+Value:
+
+Every LED is a simple actuator that has a float value from 0.0
+(no light) to 1.0 (full light). Each LED has only one color, but there
+could be 3 LEDs (RGB) at the same place to have a full color RGB LED.
+But for the DCM point of view it's always 3 LEDs.
+
+In the robot, there is 16 possible blue value for the LEDs in
+the ears. There is 64 possible values for every LEDs near the eyes.
+And 255 possible values for the chest and foot ones.
+
+The main Value is the last value sent to the LED, using
+timed-command. This value is first converted to the suitable integer
+value (depending on the resolution), sent to the actuator, and then
+converted back to 0.0-1.0 value in ALMemory.
+
+.. warning::
+
+   Unfortunately, having 3 RGB LEDs set to "1.0" does not mean
+   that you'll see a perfect white: one or two LEDs will be brighter
+   than others.
+
+List of LEDs values keys
+
+.. code-block:: guess
+
+  Device/SubDeviceList/ChestBoard/Led/Blue/Actuator/Value
+  Device/SubDeviceList/ChestBoard/Led/Green/Actuator/Value
+  Device/SubDeviceList/ChestBoard/Led/Red/Actuator/Value
+  Device/SubDeviceList/Ears/Led/Left/0Deg/Actuator/Value
+  Device/SubDeviceList/Ears/Led/Left/108Deg/Actuator/Value
+  Device/SubDeviceList/Ears/Led/Left/144Deg/Actuator/Value
+  Device/SubDeviceList/Ears/Led/Left/180Deg/Actuator/Value
+  Device/SubDeviceList/Ears/Led/Left/216Deg/Actuator/Value
+  Device/SubDeviceList/Ears/Led/Left/252Deg/Actuator/Value
+  Device/SubDeviceList/Ears/Led/Left/288Deg/Actuator/Value
+  Device/SubDeviceList/Ears/Led/Left/324Deg/Actuator/Value
+  Device/SubDeviceList/Ears/Led/Left/36Deg/Actuator/Value
+  Device/SubDeviceList/Ears/Led/Left/72Deg/Actuator/Value
+  Device/SubDeviceList/Ears/Led/Right/0Deg/Actuator/Value
+  Device/SubDeviceList/Ears/Led/Right/108Deg/Actuator/Value
+  Device/SubDeviceList/Ears/Led/Right/144Deg/Actuator/Value
+  Device/SubDeviceList/Ears/Led/Right/180Deg/Actuator/Value
+  Device/SubDeviceList/Ears/Led/Right/216Deg/Actuator/Value
+  Device/SubDeviceList/Ears/Led/Right/252Deg/Actuator/Value
+  Device/SubDeviceList/Ears/Led/Right/288Deg/Actuator/Value
+  Device/SubDeviceList/Ears/Led/Right/324Deg/Actuator/Value
+  Device/SubDeviceList/Ears/Led/Right/36Deg/Actuator/Value
+  Device/SubDeviceList/Ears/Led/Right/72Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Blue/Left/0Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Blue/Left/135Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Blue/Left/180Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Blue/Left/225Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Blue/Left/270Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Blue/Left/315Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Blue/Left/45Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Blue/Left/90Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Blue/Right/0Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Blue/Right/135Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Blue/Right/180Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Blue/Right/225Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Blue/Right/270Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Blue/Right/315Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Blue/Right/45Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Blue/Right/90Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Green/Left/0Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Green/Left/135Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Green/Left/180Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Green/Left/225Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Green/Left/270Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Green/Left/315Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Green/Left/45Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Green/Left/90Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Green/Right/0Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Green/Right/135Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Green/Right/180Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Green/Right/225Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Green/Right/270Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Green/Right/315Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Green/Right/45Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Green/Right/90Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Red/Left/0Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Red/Left/135Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Red/Left/180Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Red/Left/225Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Red/Left/270Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Red/Left/315Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Red/Left/45Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Red/Left/90Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Red/Right/0Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Red/Right/135Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Red/Right/180Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Red/Right/225Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Red/Right/270Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Red/Right/315Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Red/Right/45Deg/Actuator/Value
+  Device/SubDeviceList/Face/Led/Red/Right/90Deg/Actuator/Value
+  Device/SubDeviceList/Head/Led/Front/Left/0/Actuator/Value
+  Device/SubDeviceList/Head/Led/Front/Left/1/Actuator/Value
+  Device/SubDeviceList/Head/Led/Front/Right/0/Actuator/Value
+  Device/SubDeviceList/Head/Led/Front/Right/1/Actuator/Value
+  Device/SubDeviceList/Head/Led/Middle/Left/0/Actuator/Value
+  Device/SubDeviceList/Head/Led/Middle/Right/0/Actuator/Value
+  Device/SubDeviceList/Head/Led/Rear/Left/0/Actuator/Value
+  Device/SubDeviceList/Head/Led/Rear/Left/1/Actuator/Value
+  Device/SubDeviceList/Head/Led/Rear/Left/2/Actuator/Value
+  Device/SubDeviceList/Head/Led/Rear/Right/0/Actuator/Value
+  Device/SubDeviceList/Head/Led/Rear/Right/1/Actuator/Value
+  Device/SubDeviceList/Head/Led/Rear/Right/2/Actuator/Value
+  Device/SubDeviceList/LFoot/Led/Blue/Actuator/Value
+  Device/SubDeviceList/LFoot/Led/Green/Actuator/Value
+  Device/SubDeviceList/LFoot/Led/Red/Actuator/Value
+  Device/SubDeviceList/RFoot/Led/Blue/Actuator/Value
+  Device/SubDeviceList/RFoot/Led/Green/Actuator/Value
+  Device/SubDeviceList/RFoot/Led/Red/Actuator/Value
+
+Switch (sensor)
++++++++++++++++
+
+Value:
+
+Switches are simple sensors that return a 2 state float value
+0.0 (unpressed) or 1.0 (pressed).
+
+Beware that the value is read only every 10ms, and very fast
+change may be unseen.
+
+.. warning::
+
+   It's better to use a logical "or" between the two switches of
+   the same foot, and use it as one bumper only.
+
+List of switchs values keys
+
+.. code-block:: guess
+
+  Device/SubDeviceList/ChestBoard/Button/Sensor/Value
+  Device/SubDeviceList/LFoot/Bumper/Left/Sensor/Value
+  Device/SubDeviceList/LFoot/Bumper/Right/Sensor/Value
+  Device/SubDeviceList/RFoot/Bumper/Left/Sensor/Value
+  Device/SubDeviceList/RFoot/Bumper/Right/Sensor/Value
+
+Joint (Position/Actuator)
++++++++++++++++++++++++++
+
+This actuator is the subdevice giving the angle (in radian) to
+reach for joints. You need to send a timed command to this actuator,
+and you'll see in ALMemory the last value sent to the sensor. The
+value is sent to the motor board device as integer in 16 bits
+precision (0-360deg are 0-65535). In ALMemory and in timed-command
+everything is in radian only.You can use the hardness value (see
+below) to control the max current sent to the motor.
+
+There is a special case: when the hardness is <=0, the
+position is automatically set to the Position/Sensor with the same
+subDevice number on the device.
+
+Here are some information about the control-loop for joint
+position:
+
+Control-loop in the robot use one or two MRE sensors (Magnetic
+Rotary Encoder, used like potentiometer/optical encoder). These
+sensors are a small chip that detects the angle of rotation with a
+magnet. The magnet and the MRE could be on the motor or on the joint,
+after the gear. The angle is returned as a 12bit integer (0 to 360 deg
+-> 0 to 4095). The value is quite precise (even if a 1° absolute
+error is not something exceptional) and has little errors. NAO
+articulations use 2 kinds of motors. The biggest is for all
+joints in the bottom (Hip and above).
+
+There are two cases in the robot: you can have either one big
+motor that have 2 MRE, one on the motor and one on the joint
+(this is for the bottom part), or you can have one small motor with
+one MRE, on the joint (this is for the top part of the robot).
+
+The first solution is more precise and gives more accurate
+position, and very smooth movements even at low speed. On both
+solutions, the control loop is a kind of PID control, with
+modifications. For the 2 MRE version, the control is done with the MRE
+on the motor.
+
+The MRE joint needs a calibration to know the "0" deg position.
+This is done by pushing the joint in the mechanical limit stop and
+send a special request. This calibration value is stored in the chest
+board (see preferences chapter), it's a 0-4095 integer that is the 0
+position of the joint for the MRE. When the motor board starts, it has
+no address and no data about motors and MRE. They received everything
+after a configuration process done by the DCM.
+
+There are many error cases where the control loop is disabled
+(or decreased):
+
+- If there are more than 50 consecutive errors (not warnings) on
+  one of the two sensors (if there is two), the control loop is
+  disabled. It starts again if there is no more error. A MRE value
+  with an error is forgotten, and the last value is used. You'll need
+  to wait 50 errors before disabling the control loop.
+
+- If there is no current detected, and the PWM>10%, the dsPIC
+  thinks that the motor is unplugged, and reduces the control
+  loop.
+
+- If there is a temperature issue (see temperature sensor). This
+  reduces the max current.
+
+- There is no calibration (calibration value is 0).
+
+- If the motorBoard did not receive any order from 500ms, the control loop is automatically stopped.
+
+  .. warning::
+
+     This is important: if the DCM process/thread dies, the
+     control loop of each motor will be stopped half a second later,
+     and only the electromagnetic break will remain. Your robot will
+     fall slowly...
+
+- If the hardness is not set to 100% (see hardness actuator).
+  This reduces the max current.
+
+- If the electric current is too high compared to the limitation
+  value (see current sensor).
+
+Others keys are:
+
+- ImportanceLevel1...7
+
+  These keys are not used right now.
+
+- InvertControlDirection
+
+  Boolean. Set it to true if you want the control loop to be inverted for the motor rotation. This configuration value is read at startup by the DCM and then sent to the motherboard during the configuration process.
+
+  .. warning::
+
+     This value must never be changed!
+
+- Kp, Ki, Kp
+
+  These integer values are coefficients for the modified PID. This configuration value is read at startup by the DCM and then sent to the motherboard during the configuration process.
+
+  .. warning::
+
+     Do not change these configuration values. A high value may
+     destroy the joint.
+
+- MotorNumber
+
+  Integer value. 0 means no motor for this subDevice. 1 or 2 are the motor number. This configuration value is read at startup by the DCM and then sent to the motherboard during the configuration process.
+
+  .. warning::
+
+     Do not change this configuration value.
+
+List of position/actuator values keys
+
+.. code-block:: guess
+
+  Device/SubDeviceList/HeadPitch/Position/Actuator/Value
+  Device/SubDeviceList/HeadYaw/Position/Actuator/Value
+  Device/SubDeviceList/LAnklePitch/Position/Actuator/Value
+  Device/SubDeviceList/LAnkleRoll/Position/Actuator/Value
+  Device/SubDeviceList/LElbowRoll/Position/Actuator/Value
+  Device/SubDeviceList/LElbowYaw/Position/Actuator/Value
+  Device/SubDeviceList/LHand/Position/Actuator/Value
+  Device/SubDeviceList/LHipPitch/Position/Actuator/Value
+  Device/SubDeviceList/LHipRoll/Position/Actuator/Value
+  Device/SubDeviceList/LHipYawPitch/Position/Actuator/Value
+  Device/SubDeviceList/LKneePitch/Position/Actuator/Value
+  Device/SubDeviceList/LShoulderPitch/Position/Actuator/Value
+  Device/SubDeviceList/LShoulderRoll/Position/Actuator/Value
+  Device/SubDeviceList/LWristYaw/Position/Actuator/Value
+  Device/SubDeviceList/RAnklePitch/Position/Actuator/Value
+  Device/SubDeviceList/RAnkleRoll/Position/Actuator/Value
+  Device/SubDeviceList/RElbowRoll/Position/Actuator/Value
+  Device/SubDeviceList/RElbowYaw/Position/Actuator/Value
+  Device/SubDeviceList/RHand/Position/Actuator/Value
+  Device/SubDeviceList/RHipPitch/Position/Actuator/Value
+  Device/SubDeviceList/RHipRoll/Position/Actuator/Value
+  Device/SubDeviceList/RHipYawPitch/Position/Actuator/Value
+  Device/SubDeviceList/RKneePitch/Position/Actuator/Value
+  Device/SubDeviceList/RShoulderPitch/Position/Actuator/Value
+  Device/SubDeviceList/RShoulderRoll/Position/Actuator/Value
+  Device/SubDeviceList/RWristYaw/Position/Actuator/Value
+
+
+.. _jointHardness:
+
+jointHardness (Hardness/Actuator)
++++++++++++++++++++++++++++++++++
+
+This is a special actuator that defines the hardness (named as
+stiffness in the Motion module) of the joint. The value is from 0.0 to
+1.0, 0 means 0% and 1 means 100% (full power). In the motorboard, this
+percentage is directly applied to the max current. Setting the
+hardness to 0.5 means that the electric current limitation is reduced
+to 50%.
+
+.. note::
+
+   Previous use of the hardness has an effect on the PWM.
+
+The effect is not linear. A hardness set to 0.5 means that there
+is less power left to the motor.
+
+There is a special case: when the hardness is <=0, the
+position is automatically set to the Position/Sensor with the same
+subDevice number on the device.
+
+There is another special case: when there is no calibration (
+Position/Sensor/jointZeroPosition is 0, see in jointPosition sensor)
+the hardness cannot be greater than 0.0.
+
+The hardness is sent to the motor board every DCM cycle time, so
+you can decrease/increase the control loop very fast.
+
+.. warning::
+
+   Increasing the hardness very fast could result on a very
+   strong movement on the robot, depending on the difference between
+   the last actuator command and the real position, given by the
+   sensor.
+
+The hardness is usually used to smooth the start of the control
+loop when the robot is powered. It's also used as a security. For
+example when the DCM has a cycle time error for more than 500ms, all
+hardness are set to 0 and then increased back to their former values
+in two seconds. You can also decrease it slowly at the end.
+
+When the hardness is 0.0 (default value - that includes when the
+motorboard just started) the motor is in short circuit, so there is an
+electromagnetic break. This is a security to avoid the robot falling
+(it'll fall anyway, but slower).
+
+If the hardness is <0, the motor is free (no electromagnetic break), but due to hardware limitation,
+it's only possible when the two motors of the same board are <0
+(both are then free). If not, it's still electromagnetic break.
+
+If the current from the battery is over the limit (see below) the hardness of all joints will be
+decreased (slowly) to avoid the battery to shut off.
+
+List of hardness values keys
+
+.. code-block:: guess
+
+  Device/SubDeviceList/HeadPitch/Hardness/Actuator/Value
+  Device/SubDeviceList/HeadYaw/Hardness/Actuator/Value
+  Device/SubDeviceList/LAnklePitch/Hardness/Actuator/Value
+  Device/SubDeviceList/LAnkleRoll/Hardness/Actuator/Value
+  Device/SubDeviceList/LElbowRoll/Hardness/Actuator/Value
+  Device/SubDeviceList/LElbowYaw/Hardness/Actuator/Value
+  Device/SubDeviceList/LHand/Hardness/Actuator/Value
+  Device/SubDeviceList/LHipPitch/Hardness/Actuator/Value
+  Device/SubDeviceList/LHipRoll/Hardness/Actuator/Value
+  Device/SubDeviceList/LHipYawPitch/Hardness/Actuator/Value
+  Device/SubDeviceList/LKneePitch/Hardness/Actuator/Value
+  Device/SubDeviceList/LShoulderPitch/Hardness/Actuator/Value
+  Device/SubDeviceList/LShoulderRoll/Hardness/Actuator/Value
+  Device/SubDeviceList/LWristYaw/Hardness/Actuator/Value
+  Device/SubDeviceList/RAnklePitch/Hardness/Actuator/Value
+  Device/SubDeviceList/RAnkleRoll/Hardness/Actuator/Value
+  Device/SubDeviceList/RElbowRoll/Hardness/Actuator/Value
+  Device/SubDeviceList/RElbowYaw/Hardness/Actuator/Value
+  Device/SubDeviceList/RHand/Hardness/Actuator/Value
+  Device/SubDeviceList/RHipPitch/Hardness/Actuator/Value
+  Device/SubDeviceList/RHipRoll/Hardness/Actuator/Value
+  Device/SubDeviceList/RHipYawPitch/Hardness/Actuator/Value
+  Device/SubDeviceList/RKneePitch/Hardness/Actuator/Value
+  Device/SubDeviceList/RShoulderPitch/Hardness/Actuator/Value
+  Device/SubDeviceList/RShoulderRoll/Hardness/Actuator/Value
+  Device/SubDeviceList/RWristYaw/Hardness/Actuator/Value
+
+jointPosition (Position/Sensor)
++++++++++++++++++++++++++++++++
+
+These sensors return the angle of the joint in radian in the
+"Value" key. As seen in Joint (Position/Actuator), there is 1 or 2 MRE
+for each joint. The value returned here is always the MRE on the
+joint. It's a 12bits precise value (from 0 to 4095) change in
+rad.Refer to the Joint (Position/Actuator) for more details about the
+use of MRE sensors in control loop.
+
+The sensor value is always returned, at each DCM cycle time. The
+value returned here uses a calibration that is stored in on special
+key ("jointZeroPosition"). MRE sensor values are quite precise and
+have very low error.
+
+Others keys are:
+
+- "GearRatio"
+
+  This key is a float with the gear ratio between the motor and the joint. The control loop uses it. This configuration value is read at startup by the DCM and then sent to the motherboard during the configuration process.
+
+  .. warning::
+
+     Do not change this configuration value.
+
+- "SensorType"
+
+  This key is the description the kind of sensor. For now it could be only one or two MRE for the joint. This configuration value is read at startup by the DCM and then sent to the motherboard during the configuration process.
+
+  .. warning::
+
+     Do not change this configuration value.
+
+- "jointZeroPosition"
+
+  This key is the calibration value for the MRE on the joint. It's an integer from 0 to 4095. A 0 value means that there is no calibration (default state) and so the hardness cannot be set. Usually, the value of this key is at "0" in the Device.xml standard file, but another value different from 0 is set by the configuration file in the chest board. This chest board file is of course linked to the body of the robot, and is specific to it. This configuration value is read at startup by the DCM and then sent to the motherboard during the configuration process.
+
+  .. warning::
+
+     Do not change this configuration value in the chest board
+     and/or in the Device.xml.
+
+- "positionChainMREJoint"
+
+  This key is a integer 0-4 number that indicates the position of the MRE sensor for the joint in the MRE chain linked to the motorboard. 0 means that there is no
+  sensor.This configuration value is read at startup by the DCM and then send to the motherboard during the configuration process.
+
+  .. warning::
+
+     Do not change this configuration value.
+
+- "positionChainMREMotor"
+
+  This key is an integer 0-4 number that indicates the position of the MRE sensor for the motor in the MRE chain linked to the motorboard. 0 means that there is no
+  sensor. It's the case for all joints up to the robot. This configuration value is read at startup by the DCM and then sent to the motherboard during the configuration process.
+
+  .. warning::
+
+     Do not change this configuration value.
+
+List of Position/Sensor values keys
+
+.. code-block:: guess
+
+  Device/SubDeviceList/HeadPitch/Position/Sensor/Value
+  Device/SubDeviceList/HeadYaw/Position/Sensor/Value
+  Device/SubDeviceList/LAnklePitch/Position/Sensor/Value
+  Device/SubDeviceList/LAnkleRoll/Position/Sensor/Value
+  Device/SubDeviceList/LElbowRoll/Position/Sensor/Value
+  Device/SubDeviceList/LElbowYaw/Position/Sensor/Value
+  Device/SubDeviceList/LHand/Position/Sensor/Value
+  Device/SubDeviceList/LHipPitch/Position/Sensor/Value
+  Device/SubDeviceList/LHipRoll/Position/Sensor/Value
+  Device/SubDeviceList/LHipYawPitch/Position/Sensor/Value
+  Device/SubDeviceList/LKneePitch/Position/Sensor/Value
+  Device/SubDeviceList/LShoulderPitch/Position/Sensor/Value
+  Device/SubDeviceList/LShoulderRoll/Position/Sensor/Value
+  Device/SubDeviceList/LWristYaw/Position/Sensor/Value
+  Device/SubDeviceList/RAnklePitch/Position/Sensor/Value
+  Device/SubDeviceList/RAnkleRoll/Position/Sensor/Value
+  Device/SubDeviceList/RElbowRoll/Position/Sensor/Value
+  Device/SubDeviceList/RElbowYaw/Position/Sensor/Value
+  Device/SubDeviceList/RHand/Position/Sensor/Value
+  Device/SubDeviceList/RHipPitch/Position/Sensor/Value
+  Device/SubDeviceList/RHipRoll/Position/Sensor/Value
+  Device/SubDeviceList/RHipYawPitch/Position/Sensor/Value
+  Device/SubDeviceList/RKneePitch/Position/Sensor/Value
+  Device/SubDeviceList/RShoulderPitch/Position/Sensor/Value
+  Device/SubDeviceList/RShoulderRoll/Position/Sensor/Value
+  Device/SubDeviceList/RWristYaw/Position/Sensor/Value
+
+Current (Current/Sensor)
+++++++++++++++++++++++++
+
+There is 2 different Devices that send a current: the MotorBoard
+(updated every 10ms), and the Battery (updated every 20ms). For the
+battery, the value is signed: positive if the robot is charging,
+negative in case of discharge. For motorboard, the value key has the
+electric current in the motor in Ampere.
+
+Every motorboard has a current sensor for each motor that is a
+very small resistor between the H-Bridge and the 0v.
+
+The resistor voltage value is read by the micro-controller ADC
+at a precise moment in the PWM. If there is no PWM, there is no
+current seen, even if the motor has current (for example if you move
+the motor by hand).
+
+Every motorBoard has an electric current limitation: if the
+current reach the "Max" value ("ElectricCurrent/Sensor/Max") the PWM
+(return by the control loop) will be decreased a bit until it returns
+under the maximum value, and it's increased again after. This is a
+kind of current control loop around the maximum value.
+
+The aim of this limitation is to protect the motor, the
+electronic board, and the mechanical part of the joint.
+
+This configuration value is read at startup by the DCM and then
+send to the motherboard during the configuration process.
+
+The battery has also a current limitation: if the current from
+the battery is over the limit (max value) the hardness of all joints
+will be decreased (slowly) by the DCM to avoid the battery to shut
+off.
+
+.. warning::
+
+   Never increase these configuration values!
+
+.. note::
+
+   For the new Sanyo battery, the current is updated every 3.5s.
+
+There is no special key for current subDevice type, but the
+"Max'" value is the value used for the current limitation.
+
+List of current values keys
+
+.. code-block:: guess
+
+  Device/SubDeviceList/Battery/Current/Sensor/Value
+  Device/SubDeviceList/HeadPitch/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/HeadYaw/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/LAnklePitch/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/LAnkleRoll/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/LElbowRoll/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/LElbowYaw/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/LHand/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/LHipPitch/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/LHipRoll/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/LHipYawPitch/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/LKneePitch/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/LShoulderPitch/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/LShoulderRoll/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/LWristYaw/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/RAnklePitch/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/RAnkleRoll/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/RElbowRoll/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/RElbowYaw/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/RHand/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/RHipPitch/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/RHipRoll/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/RHipYawPitch/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/RKneePitch/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/RShoulderPitch/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/RShoulderRoll/ElectricCurrent/Sensor/Value
+  Device/SubDeviceList/RWristYaw/ElectricCurrent/Sensor/Value
+
+Temperature
++++++++++++
+
+There are two different Devices that return a temperature: the
+MotorBoard, and the Battery. For both, the temperature returned in
+"Value" is in deg Celsius. The motor temperature is a simulated one,
+using electric current value of the motor. Even when the robot just
+starts, the temperature is quite high (50°C).The simulation starts at
+this value mainly due to the internal temperature value. The motor
+board implements a temperature limitation: as long as the simulated
+temperature reaches 75°C, the current limitation is decreased to stay
+under 85°C.
+
+List of temperature values keys
+
+.. code-block:: guess
+
+  Device/SubDeviceList/Battery/Temperature/Sensor/Value
+  Device/SubDeviceList/HeadPitch/Temperature/Sensor/Value
+  Device/SubDeviceList/HeadYaw/Temperature/Sensor/Value
+  Device/SubDeviceList/LAnklePitch/Temperature/Sensor/Value
+  Device/SubDeviceList/LAnkleRoll/Temperature/Sensor/Value
+  Device/SubDeviceList/LElbowRoll/Temperature/Sensor/Value
+  Device/SubDeviceList/LElbowYaw/Temperature/Sensor/Value
+  Device/SubDeviceList/LHand/Temperature/Sensor/Value
+  Device/SubDeviceList/LHipPitch/Temperature/Sensor/Value
+  Device/SubDeviceList/LHipRoll/Temperature/Sensor/Value
+  Device/SubDeviceList/LHipYawPitch/Temperature/Sensor/Value
+  Device/SubDeviceList/LKneePitch/Temperature/Sensor/Value
+  Device/SubDeviceList/LShoulderPitch/Temperature/Sensor/Value
+  Device/SubDeviceList/LShoulderRoll/Temperature/Sensor/Value
+  Device/SubDeviceList/LWristYaw/Temperature/Sensor/Value
+  Device/SubDeviceList/RAnklePitch/Temperature/Sensor/Value
+  Device/SubDeviceList/RAnkleRoll/Temperature/Sensor/Value
+  Device/SubDeviceList/RElbowRoll/Temperature/Sensor/Value
+  Device/SubDeviceList/RElbowYaw/Temperature/Sensor/Value
+  Device/SubDeviceList/RHand/Temperature/Sensor/Value
+  Device/SubDeviceList/RHipPitch/Temperature/Sensor/Value
+  Device/SubDeviceList/RHipRoll/Temperature/Sensor/Value
+  Device/SubDeviceList/RKneePitch/Temperature/Sensor/Value
+  Device/SubDeviceList/RShoulderPitch/Temperature/Sensor/Value
+  Device/SubDeviceList/RShoulderRoll/Temperature/Sensor/Value
+  Device/SubDeviceList/RWristYaw/Temperature/Sensor/Value
+
+Charge, for the battery
++++++++++++++++++++++++
+
+- Value: relative state of charge in % ( from 0.0 to 1.0, 1.0
+  means 100%). This value is directly sent by the battery.
+
+  .. warning::
+
+     The value on the old BMZ battery is not very precise,
+     due to an imprecision on calibration and integration of power.
+
+- Accu Voltage in V after last learning cycle
+
+  Not implemented
+
+- Remaining Capacity in Ah
+
+  Not implemented
+
+- "FullChargeCapacity" in Ah
+
+  FCC: Implemented
+
+- Cycle Counts (0-0xffff)
+
+  Not implemented
+
+- Design Capacity in Ah
+
+  Not implemented
+
+- Design Voltage in V
+
+  Not implemented
+
+- Cell Voltage in mV max
+
+  Implemented: the mV value of the maximum voltage of all 6 cells in the battery.
+
+- Cell Voltage in mV min
+
+  Implemented: the mV value of the minimum voltage of all 6 cells in the battery. The battery has security that stop it if < 2.7V.
+
+- DelayForDischargeErrorReset (in s)
+
+  Not implemented
+
+- Count of cycles after last learning cycle
+
+  Not implemented
+
+- Status of the battery
+
+  Implemented. See below
+
+.. note::
+
+   On the new Sanyo battery, the min/max value of cell voltage
+   are now both an average of the 6 cells values.
+
+Boolean values:
+
+These boolean value are not implemented. However, the direct
+bits are available through the "Status" key, as a 2 byte integer word.
+Use bit mask to found the true/false result for each bits.
+
+- End off Discharge flag ( = 3.0V/cell) (bit 0)
+  Use the Cell Voltage min
+
+- Near End off Discharge flag ( = 3.2V/cell) (bit 1)
+  Use the Cell Voltage min
+
+- Charge FET on (bit 2)
+
+- Discharge FET on (bit 3)
+
+- Accu learn flag (bit 4)
+
+- Discharging flag (bit 5)
+
+- full charge flag (bit 6)
+
+- charge flag (bit 7)
+
+- Charge Temperature Alarm (bit 8)
+
+- Over Charge Alarm (bit 9)
+
+- Discharge Alarm (bit 10)
+
+- Charge Over Current Alarm (bit 11)
+
+- Discharge Over Current Alarm >14A (bit 12)
+  Means that the battery will cut itself in a few ms
+
+- Discharge Over Current Alarm > 6A (bit 13)
+  Means that the battery will cut itself in a few ms
+
+- Discharge Temperature Alarm (bit 14)
+
+- Power-Supply for charging is present (bit 15)
+
+There is a different status on the new Sanyo battery. It is one byte with:
+
+- Reserved (bit 0)
+  Undefined
+
+- Reserved (bit 1)
+  Undefined
+
+- Reserved (bit 2)
+  Undefined
+
+- Reserved (bit 3)
+  Undefined
+
+- LEARNF (bit 4)
+  Learn Flag When set to 1, a charge cycle can be used to learn battery capacity.
+  Set to 1 when: ( VOLT falls from above VAE to below VAE ) AND ( CURRENT > IAE )
+  Cleared to 0 when: ( CHGTF = 1 ) OR ( CURRENT negative ) OR ( ACR = 0 \**) OR ( ACR written or recalled from EEPROM) OR ( SLEEP Entered )
+
+- SEF (bit 5)
+  Standby Empty Flag   Set to 1 when: RSRC less than  10%
+  Cleared to 0 when: RSRC > 15%
+
+- AEF (bit 6)
+  Active Empty Flagset to 1 when: VOLT less than VAE
+  Cleared to 0 when: RARC > 5%
+
+- CHGTF (bit 7)
+  Charge Termination Flag
+  Set to 1 when: ( VOLT > VCHG ) AND (  IAVG between 0 and IMIN )
+  continuously for a period between two IAVG register updates
+  ( 28s to 56s ). Cleared to 0 when: RARC less than 90%
+
+.. note::
+
+   RemainingCapacity is updated in the SANYO battery, with values in Ah.
+
+.. note::
+
+   FullChargeCapacity is nupdated in the SANYO battery, with values in Ah.
+   The value is the division of the RemainingCapacity by the charge %.
+   It is not updated if the charge is less than 10%.
+
+.. note::
+
+   There is a new "Age" value for the SANYO battery, with values in %.
+   This is an estimation of the age of the battery (depending on cycles).
+   Better is 100%.
+
+US/Actuator/Value
++++++++++++++++++
+
+Send a value to this actuator to send a wave. With the value,
+you can choose what is the transmitter (left or right) and what is the
+receiver (left or right) for the US wave.
+
+Choosing the side of the receiver/transmitter has an influence
+on detection cone, and gives you information about the obstacle
+presence.
+
+The result is written approximately 10ms after in
+US/Sensor/Value. It's in meters. <=0 or >=2.55m means error from
+the sensor or echo not detected.
+
+- The first bit of this value lets you choose which receiver you
+  want to use. 0 for left and 1 for right.
+
+- The second bit lets you choose the transmitter. Again, 0
+  meaning left and 1 meaning right.
+
++-------+-------------+----------+
+| Value | Transmitter | Receiver |
++=======+=============+==========+
+| 0.0   | Left        | Left     |
++-------+-------------+----------+
+| 1.0   | Left        | Right    |
++-------+-------------+----------+
+| 2.0   | Right       | Left     |
++-------+-------------+----------+
+| 3.0   | Right       | Right    |
++-------+-------------+----------+
+
+.. note::
+
+   Since the new firmware (version 2) there are new modes of
+   measuring object distances with ultrasounds. You can check the
+   firmware version in /Device/USBoard/ProgVersion
+
+- The third bit (value 4) means that two captures will be made
+  with only one command, left and right. The results will be available
+  in two new subDevices: US/Left/Sensor and US/Right/Sensor. Now, 10
+  values are available for each sensor, corresponding to the distance
+  of the first 10 echoes detected.
+
+- The fourth bit (value 8) orders the use of two transmitters at
+  the same time.
+
+- The seventh bit (value 64) is used to register for a periodic
+  capture. It means that you need to send the read request to the DCM
+  just once, then you simply read the values every 100 ms in
+  ALMemory. To stop the periodic mode, you can send a new reading
+  command without that bit.
+
+All the bits combinations are not useful, even possible. Here
+are examples:
+
++-------------------+----------------+----------------+
+| Value             | Transmitter    | Receiver       |
++===================+================+================+
+| 4.0               | Right and Left | Right and Left |
++-------------------+----------------+----------------+
+| 12.0 (8.0 + 4.0)  | Right and Left | Right and Left |
++-------------------+----------------+----------------+
+| 68.0 (64.0 + 4.0) | Right and Left | Right and Left |
++-------------------+----------------+----------------+
+
+US actuator value key
+
+.. code-block:: guess
+
+  Device/SubDeviceList/US/Actuator/Value
+
+US/Sensor/Value
++++++++++++++++
+
+This is the value returned by the UltraSound Device sensor (one
+of the two sensors in the chest). The value is changed about 10ms
+after sending the wave using the US actuator.
+
+This request decides which transmitter/receiver is used.
+
+The result is in meters. If you've got 0 or >=2.55 m, this is
+an error (same if there is a NACK).
+
+Here is some more information about ultrasonic sensor:
+
+The maximum distance for detection is approximately 1.20m (for
+the old version), but you'll likely detect the ground before.
+
+Be careful you can detect the robot arms!
+
+The emission cone depends on the size of the object in front of
+the robot.
+
+The quality of the detection will depends on the object (or
+obstacle): size, surface, orientation.
+
+US sensor value key
+
+.. code-block:: guess
+
+  Device/SubDeviceList/US/Sensor/Value
+
+US/Right/Sensor/Value and US/Left/Sensor/Value
+++++++++++++++++++++++++++++++++++++++++++++++
+
+These are the new sensors respectively dedicated to the left or
+right receivers. They are used if the third bit is set in the value
+sent to the actuator (only available for V2 cards).
+
+The results of the first echo detected on each receiver are in
+Value, the 9 following echoes are from Value1 to Value9.
+
+A value of 0 means an error, the minimum valid value/distance is
+0,25m. A value of 2,55 means no echo, the maximum detectable distance
+is 2,54m.
+
+For example, if Value contains 0,40, Value1 1,2 and Value2 2,55,
+the following values (3 to 9) will contain 2,55 too. It probably means
+you have the echo of the ground at 0,40m and another object at 1,2m.
+Left and Right sensors work the same way and allow you to locate
+objects.
+
+List of us left/right sensor values keys
+
+.. code-block:: guess
+
+  Device/SubDeviceList/US/Left/Sensor/Value
+  Device/SubDeviceList/US/Left/Sensor/Value1
+  Device/SubDeviceList/US/Left/Sensor/Value2
+  Device/SubDeviceList/US/Left/Sensor/Value3
+  Device/SubDeviceList/US/Left/Sensor/Value4
+  Device/SubDeviceList/US/Left/Sensor/Value5
+  Device/SubDeviceList/US/Left/Sensor/Value6
+  Device/SubDeviceList/US/Left/Sensor/Value7
+  Device/SubDeviceList/US/Left/Sensor/Value8
+  Device/SubDeviceList/US/Left/Sensor/Value9
+  Device/SubDeviceList/US/Right/Sensor/Value
+  Device/SubDeviceList/US/Right/Sensor/Value1
+  Device/SubDeviceList/US/Right/Sensor/Value2
+  Device/SubDeviceList/US/Right/Sensor/Value3
+  Device/SubDeviceList/US/Right/Sensor/Value4
+  Device/SubDeviceList/US/Right/Sensor/Value5
+  Device/SubDeviceList/US/Right/Sensor/Value6
+  Device/SubDeviceList/US/Right/Sensor/Value7
+  Device/SubDeviceList/US/Right/Sensor/Value8
+  Device/SubDeviceList/US/Right/Sensor/Value9
+
+Gyrometer
++++++++++
+
+The robot has a two axis gyrometer, in the center of the body.
+There is in fact 3 subDevices as there is also a reference
+value.
+
+.. COMMENT: A verif
+
+These sensors give the rotation speed around the robot X axis
+and around the robot Y axis.
+
+When the robot does not move, you've got a "no rotation" value,
+that is not 0 and needs a calibration, usually around -2000. The main
+difficulty here is to calibrate this 0.
+
+Then, the change of the value is around 2.7
+increment/°/s.
+
+You can have more information reading the sensor datasheet (
+IDG300Q ).
+
+The value is then read by an micro-controller ADC (12 bits, from
+a 0-3.3v range), with a few average, and send back directly (just
+multiply by -1 to be in the good direction).
+
+List of gyro values keys
+
+.. code-block:: guess
+
+  Device/SubDeviceList/InertialSensor/GyrRef/Sensor/Value
+  Device/SubDeviceList/InertialSensor/GyrX/Sensor/Value
+  Device/SubDeviceList/InertialSensor/GyrY/Sensor/Value
+
+
+.. _dcm_accelerometer:
+  
+Accelerometer
++++++++++++++
+
+The robot has a digital 8-bits 3 axis accelerometer, in the
+center of the body.
+
+The 3 values are the return from the 3 axis acceleration sensor,
+with a light filter. 0 value means no acceleration at all for this
+axis. The value of g is about 56.
+
+You can have more information reading the sensor datasheet (
+LIS302DL ). The value is digital, and directly return in ALMemory
+(with just a \*-1 for the Y value).
+
+List of acc values keys
+
+.. code-block:: guess
+
+  Device/SubDeviceList/InertialSensor/AccX/Sensor/Value
+  Device/SubDeviceList/InertialSensor/AccY/Sensor/Value
+  Device/SubDeviceList/InertialSensor/AccZ/Sensor/Value
+
+Angles
+++++++
+
+The inertial board computes 2 inclination angles of the robot
+body with the gyro and accelero data.
+
+Both angles are in radians.
+
+List of angles values keys
+
+.. code-block:: guess
+
+  Device/SubDeviceList/InertialSensor/AngleX/Sensor/Value
+  Device/SubDeviceList/InertialSensor/AngleY/Sensor/Value
+
+FSR
++++
+
+FSR stands for Force Sensing Resistor. There are 8 FSR
+subDevices in the robot, 4 in each foot. See hardware documentation
+for precise localization (there are also in the keys /XPosition and
+/YPosition, in m).
+
+The value returned for each FSR is similar to Kg. If FSR are
+calibrated (see robot configuration keys), the value in kg is about
+20% precision (depending time and real force position). Without
+calibration the error could be more important, and is specific to each
+sensor.
+
+.. note::
+
+   The former raw values could be computed again inverting the
+   formula: New value = ((1.0/old raw value) - offset)*gain.
+
+The total weight value is the sum of all 4 FSR of the
+foot.
+
+List of FSR values keys
+
+.. code-block:: guess
+
+  Device/SubDeviceList/LFoot/FSR/FrontLeft/Sensor/Value
+  Device/SubDeviceList/LFoot/FSR/FrontRight/Sensor/Value
+  Device/SubDeviceList/LFoot/FSR/RearLeft/Sensor/Value
+  Device/SubDeviceList/LFoot/FSR/RearRight/Sensor/Value
+  Device/SubDeviceList/LFoot/FSR/TotalWeight/Sensor/Value
+  Device/SubDeviceList/RFoot/FSR/FrontLeft/Sensor/Value
+  Device/SubDeviceList/RFoot/FSR/FrontRight/Sensor/Value
+  Device/SubDeviceList/RFoot/FSR/RearLeft/Sensor/Value
+  Device/SubDeviceList/RFoot/FSR/RearRight/Sensor/Value
+  Device/SubDeviceList/RFoot/FSR/TotalWeight/Sensor/Value
+
+CenterOfPressure
+++++++++++++++++
+
+CenterOfPressure values are computed barycenter of FSR (using
+individual weight and position) for each foot. The value returned is
+in m for X and Y, from the foot reference, see the hardware
+documentation.
+
+Using centerOfPressure and weight from both foot, you can
+compute a barycenter for all weight on the robot.
+
+.. warning::
+
+   When the weight on the foot is very low, the center of
+   pressure will likely be bad.
+
+.. warning::
+
+   If the real center of pressure go outside the 4 FSR
+   parallelogram, the value of weight and centre of pressure could
+   become bad, due to internal mechanical constraint.
+
+The total weight value is the sum of all 4 FSR of the
+foot.
+
+List of CenterOfPressure values keys
+
+.. code-block:: guess
+
+  Device/SubDeviceList/LFoot/FSR/CenterOfPressure/X/Sensor/Value
+  Device/SubDeviceList/LFoot/FSR/CenterOfPressure/Y/Sensor/Value
+  Device/SubDeviceList/RFoot/FSR/CenterOfPressure/X/Sensor/Value
+  Device/SubDeviceList/RFoot/FSR/CenterOfPressure/Y/Sensor/Value
+
+Touch switch
+++++++++++++
+
+3 tactile proximity switches are present on the top of the head
+of NAO Academics Edition. They can detect a human finger or hand. The
+LEDs near the sensors are switched on when sensors detect
+something.
+
+From the 3.3 version of NAO, 3 tactile sensors are also present
+on each hands, on both side and on the upper part.
+
+.. warning::
+
+   When the battery charger is plugged in, the tactile sensor may
+   be too sensitive during a short period of time.
+
+List of touch values keys
+
+.. code-block:: guess
+
+  Device/SubDeviceList/Head/Touch/Front/Sensor/Value
+  Device/SubDeviceList/Head/Touch/Middle/Sensor/Value
+  Device/SubDeviceList/Head/Touch/Rear/Sensor/Value
+  Device/SubDeviceList/LHand/Touch/Back/Sensor/Value
+  Device/SubDeviceList/LHand/Touch/Left/Sensor/Value
+  Device/SubDeviceList/LHand/Touch/Right/Sensor/Value
+  Device/SubDeviceList/RHand/Touch/Back/Sensor/Value
+  Device/SubDeviceList/RHand/Touch/Left/Sensor/Value
+  Device/SubDeviceList/RHand/Touch/Right/Sensor/Value
+
+Configuration keys for robots
+-----------------------------
+
+Configurations keys are specific ALMemory entries that describe
+the hardware of the robot. Theses keys are stored in two separate
+location: One is in the Geode board internal flash, and concern the
+configuration of the head, and the other is in the chestboard (same
+place as calibration) and deal with the configuration of the
+body.
+
+.. note::
+
+   This is only available for this new version of NAO, and new keys
+   will be created while the robot is updated.
+
+Keys for the head:
+
++------------------------------+--------------------+------------------------------------------------------------------------------------------------------+
+| Key                          | Value              | Description                                                                                          |
++==============================+====================+======================================================================================================+
+| RobotConfig/Head/BaseVersion | V3Plus             | "Base" configuration of the V3+ head.                                                                |
++------------------------------+--------------------+------------------------------------------------------------------------------------------------------+
+|                              | V3PlusExtendedHead | Special head with more extension (USB, serial...) and specific design. A laser range finder could be |
+|                              |                    | included or not.                                                                                     |
++------------------------------+--------------------+------------------------------------------------------------------------------------------------------+
+|                              | V3.2               | "Base" configuration of the V3.2 head                                                                |
++------------------------------+--------------------+------------------------------------------------------------------------------------------------------+
+|                              | V3.3               | "Base" configuration of the V3.3 head                                                                |
++------------------------------+--------------------+------------------------------------------------------------------------------------------------------+
+
++--------------------------------------------+-------------+-----------------------------------------------------------+
+| Key                                        | Value       | Description                                               |
++============================================+=============+===========================================================+
+| RobotConfig/Head/Device/TouchBoard/Version | 0 (or none) | No capacitive sensor                                      |
++--------------------------------------------+-------------+-----------------------------------------------------------+
+|                                            | 1           | First version of capacitive sensor. Same for V3.3 version |
++--------------------------------------------+-------------+-----------------------------------------------------------+
+
++-------------------------------------------------+-------------+--------------------------------------------+
+| Key                                             | Value       | Description                                |
++=================================================+=============+============================================+
+| RobotConfig/Head/Device/FaceBoard/Leds/Rotation | 0 (or none) | Old version (less or equal than 3.2)       |
++-------------------------------------------------+-------------+--------------------------------------------+
+|                                                 | 1           | New version (>=3.2), with rotation of LEDs |
++-------------------------------------------------+-------------+--------------------------------------------+
+
++--------------------------------------------------+-------------+-------------------------------------------------------------------------+
+| Key                                              | Value       | Description                                                             |
++==================================================+=============+=========================================================================+
+| RobotConfig/Head/Device/LaserRangeFinder/Version | 0 (or none) | No laser range finder                                                   |
++--------------------------------------------------+-------------+-------------------------------------------------------------------------+
+|                                                  | 1           | URG-04LX laser range finder included (only possible with extended head) |
++--------------------------------------------------+-------------+-------------------------------------------------------------------------+
+
++----------------------------------------+-------------+------------------------------------------------------------------+
+| Key                                    | Value       | Description                                                      |
++========================================+=============+==================================================================+
+| RobotConfig/Head/Device/Camera/Version | 0 (or none) | Version anterior or equal to 3.2)                                |
++----------------------------------------+-------------+------------------------------------------------------------------+
+|                                        | 1           | Version 3.3 with camera up down of 8° and camera down up to 8°   |
++----------------------------------------+-------------+------------------------------------------------------------------+
+|                                        | 2           | Version 3.3 with the angles of the 3.2                           |
++----------------------------------------+-------------+------------------------------------------------------------------+
+
+Keys for the body:
+
++------------------------------+--------+----------------------------------------------------------------------------------+
+| Key                          | Value  | Description                                                                      |
++==============================+========+==================================================================================+
+| RobotConfig/Body/BaseVersion | V3Plus | "Base" version for the body.                                                     |
++------------------------------+--------+----------------------------------------------------------------------------------+
+|                              | V3.2   | "Base" version for the body V3.2.                                                |
++------------------------------+--------+----------------------------------------------------------------------------------+
+|                              | V3.3   | "Base" version for the body V3.3. Extended arms has to be tested with key below. |
++------------------------------+--------+----------------------------------------------------------------------------------+
+
++-------------------------------------------+-------------+-------------------------------------------+
+| Key                                       | Value       | Description                               |
++===========================================+=============+===========================================+
+| RobotConfig/Body/Device/Hand/Left/Version | 0 (or none) | No left hand                              |
++-------------------------------------------+-------------+-------------------------------------------+
+|                                           | 1           | V3 academics hand version                 |
++-------------------------------------------+-------------+-------------------------------------------+
+|                                           | 2           | Hand version V3+/V3.2                     |
++-------------------------------------------+-------------+-------------------------------------------+
+|                                           | 3           | Hand version V3.3 with capacitive sensor. |
++-------------------------------------------+-------------+-------------------------------------------+
+
++--------------------------------------------+-------------+-------------------------------------------+
+| Key                                        | Value       | Description                               |
++============================================+=============+===========================================+
+| RobotConfig/Body/Device/Hand/Right/Version | 0 (or none) | No right hand                             |
++--------------------------------------------+-------------+-------------------------------------------+
+|                                            | 1           | V3 academics hand version                 |
++--------------------------------------------+-------------+-------------------------------------------+
+|                                            | 2           | Hand version V3+/V3.2                     |
++--------------------------------------------+-------------+-------------------------------------------+
+|                                            | 3           | Hand version V3.3 with capacitive sensor. |
++--------------------------------------------+-------------+-------------------------------------------+
+
++-------------------------------------------------+-------------+-------------------------------------------------------+
+| Key                                             | Value       | Description                                           |
++=================================================+=============+=======================================================+
+| RobotConfig/Body/Device/FSR/Calibration/Version | 0 (or none) | No calibration on FSR                                 |
++-------------------------------------------------+-------------+-------------------------------------------------------+
+|                                                 | 1           | FSR calibrated (version 1 of the calibration process) |
++-------------------------------------------------+-------------+-------------------------------------------------------+
+|                                                 | 2           | FSR calibrated (version 2 of the calibration process) |
++-------------------------------------------------+-------------+-------------------------------------------------------+
+
++----------------------------------------------------+-------+--------------------------------------+
+| Key                                                | Value | Description                          |
++====================================================+=======+======================================+
+| RobotConfig/Body/Device/Joints/Calibration/Version | 2     | Version 2 of the calibration process |
++----------------------------------------------------+-------+--------------------------------------+
+
++-----------------------------------------+-------------+-----------------------------------------------------------------------------+
+| Key                                     | Value       | Description                                                                 |
++=========================================+=============+=============================================================================+
+| RobotConfig/Body/Device/LeftArm/Version | 1 (or none) | Left arm normal version                                                     |
++-----------------------------------------+-------------+-----------------------------------------------------------------------------+
+|                                         | -1          | No left arm                                                                 |
++-----------------------------------------+-------------+-----------------------------------------------------------------------------+
+|                                         | 2           | Extended arms (introduce with 3.3 version, but also available for some 3.2) |
++-----------------------------------------+-------------+-----------------------------------------------------------------------------+
+
++------------------------------------------+-------------+-----------------------------------------------------------------------------+
+| Key                                      | Value       | Description                                                                 |
++==========================================+=============+=============================================================================+
+| RobotConfig/Body/Device/RightArm/Version | 1 (or none) | Right arm normal version                                                    |
++------------------------------------------+-------------+-----------------------------------------------------------------------------+
+|                                          | -1          | No right arm                                                                |
++------------------------------------------+-------------+-----------------------------------------------------------------------------+
+|                                          | 2           | Extended arms (introduce with 3.3 version, but also available for some 3.2) |
++------------------------------------------+-------------+-----------------------------------------------------------------------------+
+
++--------------------------------------+-------------+---------------------+
+| Key                                  | Value       | Description         |
++======================================+=============+=====================+
+| RobotConfig/Body/Device/Legs/Version | 1 (or none) | Legs normal version |
++--------------------------------------+-------------+---------------------+
+|                                      | -1          | No legs             |
++--------------------------------------+-------------+---------------------+
+
++-------------------------------------------+-------------+--------------+
+| Key                                       | Value       | Description  |
++===========================================+=============+==============+
+| RobotConfig/Body/Device/Foot/Left/Version | 1 (or none) | Normal foot  |
++-------------------------------------------+-------------+--------------+
+|                                           | 0           | No left foot |
++-------------------------------------------+-------------+--------------+
+
++--------------------------------------------+-------------+---------------+
+| Key                                        | Value       | Description   |
++============================================+=============+===============+
+| RobotConfig/Body/Device/Foot/Right/Version | 1 (or none) | Normal foot   |
++--------------------------------------------+-------------+---------------+
+|                                            | 0           | No right foot |
++--------------------------------------------+-------------+---------------+
+
++--------------------------+---------------------+----------------------------------+
+| Key                      | Value               | Description                      |
++==========================+=====================+==================================+
+| RobotConfig/Body/Version | For exemple "3.3.0" | Version of the body of the robot |
++--------------------------+---------------------+----------------------------------+
+
++-----------------------+-------+-------------------+
+| Key                   | Value | Description       |
++=======================+=======+===================+
+| RobotConfig/Body/Type | NAO   | Type of the robot |
++-----------------------+-------+-------------------+
+
++--------------------------------------+-------------------+--------------------------------------------------------+
+| Key                                  | Value             | Description                                            |
++======================================+===================+========================================================+
+| RobotConfig/Body/SoftwareRequirement | For exemple 1.8.0 | Minimal software version compatible with this hardware |
++--------------------------------------+-------------------+--------------------------------------------------------+

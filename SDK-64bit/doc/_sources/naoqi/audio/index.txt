@@ -1,0 +1,45 @@
+.. _naoqi-audio:
+
+NAOqi Audio
+=============
+
+.. toctree::
+   :hidden:
+
+   alaudiodevice
+   alaudioplayer
+   alaudiorecorder
+   alaudiosourcelocalization
+   alsounddetection
+   alspeechrecognition
+   altexttospeech
+
+
+This section describes the audio software components
+of your robot.
+
+NAOqi currently contains the following audio modules:
+
+- :ref:`ALAudioDevice <alaudiodevice>`: manages audio inputs and outputs.
+
+- :ref:`ALAudioPlayer <alaudioplayer>`: allows playing audio files on NAO.
+
+- :ref:`ALAudioRecorder <alaudiorecorder>`: allows recording audio files on NAO.
+
+- :ref:`ALTextToSpeech <altexttospeech>`:  allows NAO to speak.
+
+- :ref:`ALSpeechRecognition <alspeechrecognition>`: allows NAO to understand
+  what we say.
+
+- :ref:`ALSoundDetection <alsounddetection>`: allows detecting sound
+  events.
+
+- :ref:`ALAudioSourceLocalization <alaudiosourcelocalization>`:
+  allows localizing sounds detected by the ALSoundDetection module.
+
+These modules are interdependent and organized as described in the figure below:
+
+.. image:: /medias/dev/modules/audio/audio_modules_synoptic_small.png
+   :height: 408 px
+   :width: 600 px
+

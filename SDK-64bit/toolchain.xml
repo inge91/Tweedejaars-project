@@ -1,0 +1,9 @@
+
+<!--  QiBuild configuration file for linux64 -->
+<toolchain>
+    <package
+        name="naoqi-sdk-linux64"
+        directory="."
+        
+    />
+</toolchain>

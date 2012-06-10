@@ -1,0 +1,1362 @@
+.. _dcm-tuto:
+
+DCM Tutorial
+============
+
+:ref:`Overview <dcm>` | :ref:`API <dcm-api>`  | Tutorial
+
+--------
+
+
+Python example
+--------------
+
+This is a very small example of a "set" method to ask for a new
+value (1.0) in 10s ( dcm.getTime(10000) ) for the value of the subDevice
+red LED on the chest (ChestBoard.Led.Red.Actuator/Value).
+
+.. code-block:: guess
+
+  import naoqi
+  from naoqi import ALProxy
+  dcm = ALProxy("DCM","127.0.0.1",9559)
+  t = dcm.getTime(0)
+  dcm.set(\["ChestBoard/Led/Red/Actuator/Value"  , "Merge", \[[0.0, t ] ]])
+  dcm.set(\["ChestBoard/Led/Blue/Actuator/Value" , "Merge", \[[0.0, t ] ]])
+  dcm.set(\["ChestBoard/Led/Green/Actuator/Value", "Merge", \[[0.0, t ] ]])
+  dcm.set(\["ChestBoard/Led/Red/Actuator/Value"  , "Merge", \[[1.0, t + 3000]] ])
+
+This request will switch off all chest's LEDs and increase value of the red LED from 0.0 to 1.0, in the next 3s.
+
+C++ example
+-----------
+
+This is a very small example of a "set" method to ask for a new
+value (1.0) in 10s ( dcm.getTime(10000) ) for the value of the subDevice
+red LED on the chest (ChestBoard.Led.Red.Actuator/Value).
+
+.. code-block:: guess
+
+  // Program running in a module. Do not forget the #include "dcmproxy.h"
+  try
+  {
+  DCMProxy* dcm = new DCMProxy(pBroker);
+  ALValue commands;
+  commands.arraySetSize(3);
+  commands[0] = string("ChestBoard/Led/Red/Actuator/Value");
+  commands[1] = string("Merge");
+  commands[2].arraySetSize(1);
+  commands[2][0].arraySetSize(2);
+  commands[2][0][0] = 1.0;
+  commands[2][0][1] = dcm->getTime(10000);
+  dcm->set(commands);
+  }
+  AL_CATCH_ERR(return false;);
+
+This request, and if the previous order was 0, you'll see the
+increase of the value of the LED from 0 to 1.0, in the next 10s.
+
+DCM bound methods
+=================
+
+Note
+----
+
+.. note::
+
+   For all the commands involving actuators, you can either send
+   the prefix ("Device/SubDeviceList/") for their name or not.
+
+getTime
+-------
+
+.. note::
+
+   All examples here use dcm.getTime() to get all time for
+   timed-command request. This is just an example, and there are better
+   ways to use it. For example, you can just do one dcm.getTime() at
+   startup and after increment the integer value for each ms. Or you can
+   use the CPU clock if you have a module running on the robot.
+
+Return the absolute time used for all timed command in the DCM,
+with a number of ms to add or remove to this time.
+
+This time returned is an integer (signed), with 1 ms precision. Be
+careful: it can roll-over.
+
+.. code-block:: guess
+
+  /\**
+  * Return the DCM time
+  *
+  * @param time pParams has the optional time in ms (signed) to add/remove
+  *
+  * @return An integer (could be signed) with the DCM time
+  *
+  \*/
+  int DCM::getTime(int pTime)
+
+Python example
+++++++++++++++
+
+.. code-block:: guess
+
+  import naoqi
+  from naoqi import ALProxy
+  dcm = ALProxy("DCM","127.0.0.1",9559)
+  print dcm.getTime(10000)
+
+Returns the absolute time in 10s.
+
+.. code-block:: guess
+
+  import naoqi
+  from naoqi import ALProxy
+  dcm = ALProxy("DCM","127.0.0.1",9559)
+  print dcm.getTime(0)
+
+Returns the current time (more the communication delay).
+
+C++ example
++++++++++++
+
+.. code-block:: guess
+
+  // Program running in a module. Do not forget the #include "dcmproxy.h"
+  try
+  {
+  DCMProxy* dcm = new DCMProxy(pBroker);
+  int time = dcm->getTime(10000);
+  cout << time << endl;
+  }
+  AL_CATCH_ERR(return false;);
+
+Returns the absolute time in 10s.
+
+.. code-block:: guess
+
+  // Program running in a module. Do not forget the #include "dcmproxy.h"
+  try
+  {
+  DCMProxy* dcm = new DCMProxy(pBroker);
+  int time = dcm->getTime(0);
+  cout << time << endl;
+  }
+  AL_CATCH_ERR(return false;);
+
+Returns the current time (more the communication delay).
+
+getPrefix
+---------
+
+Returns the ALMemory base name for all devices and
+subDevices.
+
+.. code-block:: guess
+
+  /\**
+  * @return Return the ALMemory base name for all device/sensors (1st string in the array)
+  * and all devices (2nd string in the array)
+  \*/
+  ALValue DCM::getPrefix(void)
+
+By now, the answer is an array with strings
+"Device/SubDeviceList/" and "Device/DeviceList/".
+
+Python
+++++++
+
+.. code-block:: guess
+
+  import naoqi
+  from naoqi import ALProxy
+  dcm = ALProxy("DCM","127.0.0.1",9559)
+  print dcm.getPrefix(0)
+
+This program returns:
+\['Device/SubDeviceList/', 'Device/DeviceList/']
+
+C++
++++
+
+.. code-block:: guess
+
+  // Program running in a module. Do not forget the #include "dcmproxy.h"
+  try
+  {
+  DCMProxy* dcm = new DCMProxy(pBroker);
+  cout << dcm->getPrefix().toString() << endl;
+  }
+  AL_CATCH_ERR(return false;);
+
+Set
+---
+
+Overview
+++++++++
+
+This is the basic command to send one or more order (timed
+command) to an actuator.
+
+It could also be an alias name instead of an actuator name (see
+below). In this case, every actuator in the alias will be updated with
+the same commands.
+
+.. code-block:: guess
+
+  /\**
+  * Call this function to send a timed-command list to an actuator
+  * Command send from an other module
+  *
+  * @param pCommands ALValue with all data
+  * pCommands[0] has the actuator name (with or without the base name)
+  * pCommands[1] Is the kind of update:
+  *    "Merge": Just add new timed command.
+  *    "ClearAll": Delete all timed command before adding this one.
+  *    "ClearAfter": Delete all commands that are after the time of the 1st one on the list (the soonest)
+  *    "ClearBefore": Delete all commands that are before the time of the last one on the list (the oldest)
+  * pCommands[2][x] is a list of x timed-command
+  * pCommands[2][x][0] is the float command (offset and gain are then used)
+  * pCommands[2][x][1] is the DCM Time for the command to be applied
+  * pCommands[2][x][2] is the optional importance level. Minimum if not specified
+  *
+  \*/
+  void DCM::set(ALValue& pCommands)
+
+Kind of update
+++++++++++++++
+
+As you can see, there are 4 possible kinds of updates:
+"ClearAll", "Merge", "ClearAfter" and "ClearBefore".
+
+These are used to specify to the DCM how new commands will be
+added when timed commands are already in its internal buffer for the
+same actuator (sent by an other module or by the same module).
+
+- "ClearAll" is the simple one. Formers commands (for this
+  actuator) are simply deleted and changed by the new ones. Use
+  clearAll with no new commands to delete everything. The last sent
+  value will be kept.
+
+  .. image:: /medias/dev/tutos/dcm/dcm_command_new.gif
+
+- "Merge" is also simple: new commands are just mixed with
+  formers ones (Be careful if there is two commands at exactly the
+  same time):
+
+  .. image:: /medias/dev/tutos/dcm/dcm_command_add.gif
+
+- "ClearAfter" means that every former command that is after the
+  first new command will be deleted:
+
+  .. image:: /medias/dev/tutos/dcm/dcm_command_after.gif
+
+- "ClearBefore" means that every former command that is before the last new command will be deleted:
+
+  .. image:: /medias/dev/tutos/dcm/dcm_command_before.gif
+
+Importance level
+++++++++++++++++
+
+The importance level is not implemented right now. Please set it
+to "0" if you use it.
+
+Example of use
+++++++++++++++
+
+Python:
+
+.. code-block:: guess
+
+  import naoqi
+  from naoqi import ALProxy
+  dcm = ALProxy("DCM","127.0.0.1",9559)
+  dcm.set(\["ChestBoard/Led/Red/Actuator/Value", "Merge", \[[1.0,dcm.getTime(10000)]] ])
+
+C++
+
+.. code-block:: guess
+
+  // Program running in a module. Do not forget the #include "dcmproxy.h"
+  try
+  {
+  DCMProxy* dcm = new DCMProxy(pBroker);
+  ALValue commands;
+  commands.arraySetSize(3);
+  commands[0] = string("ChestBoard/Led/Red/Actuator/Value");
+  commands[1] = string("Merge");
+  commands[2].arraySetSize(1);
+  commands[2][0].arraySetSize(2);
+  commands[2][0][0] = 1.0;
+  commands[2][0][1] = dcm->getTime(10000);
+  dcm->set(commands);
+  }
+  AL_CATCH_ERR(return false;);
+
+The new value for the red LED in the chest will be 1.0 in 10s.
+The DCM will interpolate with the currently sent value.
+
+Python:
+
+.. code-block:: guess
+
+  import naoqi
+  from naoqi import ALProxy
+  dcm = ALProxy("DCM","127.0.0.1",9559)
+  dcm.set([
+  "ChestBoard/Led/Red/Actuator/Value",
+  "ClearAll",
+  [
+  \[1.0, dcm.getTime(2000) ],
+  \[0.0, dcm.getTime(4000) ],
+  \[1.0, dcm.getTime(6000) ],
+  \[0.0, dcm.getTime(8000) ]
+  ]
+  ])
+
+C++
+
+.. code-block:: guess
+
+  // Program running in a module. Do not forget the #include "dcmproxy.h"
+  try
+  {
+  DCMProxy* dcm = new DCMProxy(pBroker);
+  ALValue commands;
+  commands.arraySetSize(3);
+  commands[0] = string("ChestBoard/Led/Red/Actuator/Value");
+  commands[1] = string("ClearAll");
+  commands[2].arraySetSize(4);
+  commands[2][0].arraySetSize(2);
+  commands[2][0][0] = 1.0;
+  commands[2][0][1] = dcm->getTime(2000);
+  commands[2][1].arraySetSize(2);
+  commands[2][1][0] = 0.0;
+  commands[2][1][1] = dcm->getTime(4000);
+  commands[2][2].arraySetSize(2);
+  commands[2][2][0] = 1.0;
+  commands[2][2][1] = dcm->getTime(6000);
+  commands[2][3].arraySetSize(2);
+  commands[2][3][0] = 0.0;
+  commands[2][3][1] = dcm->getTime(8000);
+  dcm->set(commands);
+  }
+  AL_CATCH_ERR(return false;);
+
+This is a list of 4 commands sent to the green chest LED.
+
+In 2sec, the LED value will be at 1.0. In 4sec, it will be at 0.
+In 6sec at 1.0 again, and back to 0 in 8sec.
+
+So you will see a soft increase/decrease of LED twice in
+80s.
+
+.. note::
+
+   All examples here use dcm.getTime() to get all time for
+   timed-command request. This is just an example, and there are better
+   ways to use it. For example, you can just do one dcm.getTime() at
+   startup and after increment the integer value for each ms. Or you
+   can use the CPU clock if you have a module running on the
+   robot.
+
+Python:
+
+.. code-block:: guess
+
+  import naoqi
+  from naoqi import ALProxy
+  dcm = ALProxy("DCM","127.0.0.1",9559)
+  dcm.set([
+  "US/Actuator/Value",
+  "ClearAll",
+  [
+  \[64.0+4.0, dcm.getTime(0)    ],
+  \[32.0    , dcm.getTime(3000) ]
+  ]
+  ])
+
+C++
+
+.. code-block:: guess
+
+  // Program running in a module. Do not forget the #include "dcmproxy.h"
+  try
+  {
+  DCMProxy* dcm = new DCMProxy(pBroker);
+  ALValue commands;
+  commands.arraySetSize(3);
+  commands[0] = string("US/Actuator/Value");
+  commands[1] = string("ClearAll");
+  commands[2].arraySetSize(2);
+  commands[2][0].arraySetSize(2);
+  commands[2][0][0] = 68.0;
+  commands[2][0][1] = dcm->getTime(0);
+  commands[2][1].arraySetSize(2);
+  commands[2][1][0] = 32.0;
+  commands[2][1][1] = dcm->getTime(3000);
+  dcm->set(commands);
+  }
+  AL_CATCH_ERR(return false;);
+
+This will make measurement every 100 ms on both side (Left and Right) for 3 seconds.
+
+For each measure 10 echoes are placed in ALmemory for both side in:
+
+Device/SubDeviceList/US/Left/Sensor/Value, Device/SubDeviceList/US/Right/Sensor/Value,
+
+Device/SubDeviceList/US/Left/Sensor/Value1, Device/SubDeviceList/US/Right1/Sensor/Value1,
+
+Device/SubDeviceList/US/Left/Sensor/Value2, Device/SubDeviceList/US/Right1/Sensor/Value2,...
+
+Create Alias
+------------
+
+Alias
++++++
+
+Aliases are a way to send faster commands to many actuators at
+the same time.
+
+They are defined dynamically by a "createAlias" to the DCM They
+also could be changed.
+
+Every Alias has a name, and is a list of actuator names.
+
+Then, with a "setAlias" method, you can ask for an update of all
+actuator with different timed command, with only one method, and
+without giving back all actuators names.
+
+.. warning::
+
+   Be careful, right now alias changes are not thread
+   safe.
+
+.. warning::
+
+   Right now, the DCM is not optimized for a huge number of
+   alias.
+
+"createAlias" method
+++++++++++++++++++++
+
+.. code-block:: guess
+
+  /\**
+  * Create or change the alias
+  * An alias is create to update many actuator (as with set) at the same time
+  *
+  * @param pParams ALValue with all data
+  * pParams[0] Is the alias name (a new one or an already created one)
+  * Then there is a list of x actuator name
+  * pParams[1][0] The name of the 1st actuator
+  * pParams[1][1] The name of the 2nd actuator
+  * pParams[1][2]...
+  *
+  * @result Same as param, but with the name removed if the actuator is not found
+  *
+  \*/
+  ALValue DCM::createAlias(ALValue& pParams)
+
+The result is a copy of the input param, but where not found
+actuators names are changed to by "". You can use this return to know
+if one or more actuator names are wrong.
+
+The most useful method to send commands to alias is the
+"setAlias". But you can also use a "set", with the same commands sent
+to every actuator. See example below.
+
+Example of use
+++++++++++++++
+
+Python:
+
+.. code-block:: guess
+
+  import naoqi
+  from naoqi import ALProxy
+  dcm = ALProxy("DCM","127.0.0.1",9559)
+  dcm.createAlias([
+  "ChestLeds",
+  [
+  "ChestBoard/Led/Red/Actuator/Value",
+  "ChestBoard/Led/Green/Actuator/Value",
+  "ChestBoard/Led/Blue/Actuator/Value"
+  ]
+  ])
+
+C++
+
+.. code-block:: guess
+
+  // Program running in a module. Do not forget the #include "dcmproxy.h"
+  try
+  {
+  DCMProxy* dcm = new DCMProxy(pBroker);
+  ALValue commands;
+  commands.arraySetSize(2);
+  commands[0] = string("ChestLeds");
+  commands[1].arraySetSize(3);
+  commands[1][0] = string("ChestBoard/Led/Red/Actuator/Value");
+  commands[1][1] = string("ChestBoard/Led/Green/Actuator/Value");
+  commands[1][2] = string("ChestBoard/Led/Blue/Actuator/Value");
+  ALValue result = dcm->createAlias(commands);
+  cout << result.toString() << endl;
+  }
+  AL_CATCH_ERR(return false;);
+
+Define a new alias name "ChestLeds" with 3 actuator (3 LEDs), in
+this order: red, green, blue.
+
+Here is a "set" example: All LEDs are smoothly set on and set off, 2 times
+
+Python:
+
+.. code-block:: guess
+
+  import naoqi
+  from naoqi import ALProxy
+  dcm = ALProxy("DCM","127.0.0.1",9559)
+  dcm.createAlias([
+  "ChestLeds",
+  [
+  "ChestBoard/Led/Red/Actuator/Value",
+  "ChestBoard/Led/Green/Actuator/Value",
+  "ChestBoard/Led/Blue/Actuator/Value"
+  ]
+  ])
+  dcm.set([
+  "ChestLeds",
+  "ClearAll",
+  [
+  \[1.0, dcm.getTime(1000)],
+  \[0.0, dcm.getTime(2000)],
+  \[1.0, dcm.getTime(3000)],
+  \[0.0, dcm.getTime(4000)]
+  ]
+  ])
+
+C++:
+
+.. code-block:: guess
+
+  // Program running in a module. Do not forget the #include "dcmproxy.h"
+  try
+  {
+  DCMProxy* dcm = new DCMProxy(pBroker);
+  ALValue commandsAlias;
+  ALValue commands;
+  commandsAlias.arraySetSize(2);
+  commandsAlias[0] = string("ChestLeds");
+  commandsAlias[1].arraySetSize(3);
+  commandsAlias[1][0] = string("ChestBoard/Led/Red/Actuator/Value");
+  commandsAlias[1][1] = string("ChestBoard/Led/Green/Actuator/Value");
+  commandsAlias[1][2] = string("ChestBoard/Led/Blue/Actuator/Value");
+  dcm->createAlias(commandsAlias);
+  commands.arraySetSize(3);
+  commands[0] = string("ChestLeds");
+  commands[1] = string("ClearAll");
+  commands[2].arraySetSize(4);
+  commands[2][0].arraySetSize(2);
+  commands[2][0][0] = 1.0;
+  commands[2][0][1] = dcm->getTime(1000);
+  commands[2][1].arraySetSize(2);
+  commands[2][1][0] = 0.0;
+  commands[2][1][1] = dcm->getTime(2000);
+  commands[2][2].arraySetSize(2);
+  commands[2][2][0] = 1.0;
+  commands[2][2][1] = dcm->getTime(3000);
+  commands[2][3].arraySetSize(2);
+  commands[2][3][0] = 0.0;
+  commands[2][3][1] = dcm->getTime(4000);
+  dcm->set(commands);
+  }
+  AL_CATCH_ERR(return false;);
+
+.. note::
+
+   All examples here use dcm.getTime() to get all times for
+   timed-command request. This is just an example, and there are better
+   ways to use it. For example, you can just do one dcm.getTime() at
+   startup and afterwards increment the integer value for each ms. Or
+   you can use the CPU clock if you have a module running on the
+   robot.
+
+setAlias
+--------
+
+Overview
+++++++++
+
+This is a method to send many different timed commands to many
+actuators.
+
+There are two ways to do that:
+
+- Time-mixed: you send a specific time to each actuator
+  timed-command
+
+- Time-separate: you send first the list of all time (for
+  example for times: 10ms, 20ms, 30ms, 40ms) and then all commands
+  for these times (If there is 4 times, always send 4 commands for
+  each actuator). This way is a bit more efficient.
+
+Method
+++++++
+
+.. code-block:: guess
+
+  /\**
+  * Call this function to send timed-command list to an alias
+  * An alias is used to update many actuator (as with set) at the same time,
+  * just giving the name of the alias, and not the name of actuators.
+  *
+  * @param pCommands ALValue with all data
+  * pCommands[0] Is the Alias name
+  * pCommands[1] Is the kind of update:
+  *    "Merge": Just add new timed command.
+  *    "ClearAll": Delete all timed command before adding this one.
+  *    "ClearAfter": Delete all command that are after the time of the 1st one on the list (the soonest)
+  *    "ClearBefore": Delete all command that are before the time of the last one on the list (the oldest)
+  * pCommands[2] Type of command: could be "time-mixed" or "time-separate"
+  *
+  * For pParams[3] there is 2 options:
+  * if it's "time-mixed":
+  * pCommands[3][x] is a list of x actuator. Each x is an actuator member of the alias
+  * pCommands[3][x][y] is a list of y timed-command for this actuator
+  * pCommands[3][x][y][0] is the float command (offset and gain are then used)
+  * pCommands[3][x][y][1] is the DCM Time for the command to be applied
+  * pCommands[3][x][y][2] is the optional importance level. Minimum if not specified
+  *
+  * For pCommands[3] there is 2 options:
+  * if it's "time-separate":
+  * pCommands[3] is the importance level of all these commands
+  *
+  * pCommands[4] is a list of T time.
+  * pCommands[4][0] is the 1st time
+  * pCommands[4][1] is the 2nd time
+  * pCommands[4][2]...
+  * pCommands[4][T] T time
+  *
+  * pCommands[5][x] is a list of x command list. Each x is an actuator member of the alias
+  * pCommands[5][x][0] 1st command for this actuator, and at the 1st time
+  * pCommands[5][x][1] 2nd command for this actuator, and at the 2nd time
+  * pCommands[5][x][2]...
+  * pCommands[5][x][T] T command
+  *
+  *
+  \*/
+  void DCM::setAlias(ALValue& pCommands)
+
+Example of use
+++++++++++++++
+
+With time-mixed
+
+Python:
+
+.. code-block:: guess
+
+  import naoqi
+  from naoqi import ALProxy
+  dcm = ALProxy("DCM","127.0.0.1",9559)
+  dcm.createAlias([
+  "ChestLeds",
+  [
+  "ChestBoard/Led/Red/Actuator/Value",
+  "ChestBoard/Led/Green/Actuator/Value",
+  "ChestBoard/Led/Blue/Actuator/Value"
+  ]
+  ])
+  dcm.setAlias([
+  "ChestLeds",
+  "ClearAll",
+  "time-mixed",
+  [
+  [
+  \[1.0, dcm.getTime(4000)],
+  \[0.0, dcm.getTime(6000)]
+  ],
+  [
+  \[0.25, dcm.getTime(3000)]
+  ],
+  [
+  \[0.125,dcm.getTime(2000)]
+  ]
+  ]
+  ])
+
+C++
+
+.. code-block:: guess
+
+  // Program running in a module. Do not forget the #include "dcmproxy.h"
+  try
+  {
+  DCMProxy* dcm = new DCMProxy(pBroker);
+  ALValue commandsAlias;
+  ALValue commands;
+  commandsAlias.arraySetSize(2);
+  commandsAlias[0] = string("ChestLeds");
+  commandsAlias[1].arraySetSize(3);
+  commandsAlias[1][0] = string("ChestBoard/Led/Red/Actuator/Value");
+  commandsAlias[1][1] = string("ChestBoard/Led/Green/Actuator/Value");
+  commandsAlias[1][2] = string("ChestBoard/Led/Blue/Actuator/Value");
+  dcm->createAlias(commandsAlias);
+  commands.arraySetSize(4);
+  commands[0] = string("ChestLeds");
+  commands[1] = string("ClearAll");
+  commands[2] = string("time-mixed");
+  commands[3].arraySetSize(3);
+  //ChestBoard/Led/Red/Actuator/Value
+  commands[3][0].arraySetSize(2);
+  commands[3][0][0].arraySetSize(2);
+  commands[3][0][0][0] = 1.0;
+  commands[3][0][0][1] = dcm->getTime(4000);
+  commands[3][0][1].arraySetSize(2);
+  commands[3][0][1][0] = 0.0;
+  commands[3][0][1][1] = dcm->getTime(6000);
+  //ChestBoard/Led/Green/Actuator/Value
+  commands[3][1].arraySetSize(1);
+  commands[3][1][0].arraySetSize(2);
+  commands[3][1][0][0] = 0.25;
+  commands[3][1][0][1] = dcm->getTime(3000);
+  //ChestBoard/Led/Blue/Actuator/Value
+  commands[3][2].arraySetSize(1);
+  commands[3][2][0].arraySetSize(2);
+  commands[3][2][0][0] = 0.125;
+  commands[3][2][0][1] = dcm->getTime(2000);
+  dcm->setAlias(commands);
+  }
+  AL_CATCH_ERR(return false;);
+
+Send 2 commands for the red LED (value 1.0 in 4s, and value 0.0
+in 6s) and 1 command for the 2 others (value 0.25 in 3s for the
+green, and value 0.125 in 2s for the blue).
+
+With time-separate:
+
+Python:
+
+.. code-block:: guess
+
+  import naoqi
+  from naoqi import ALProxy
+  dcm = ALProxy("DCM","127.0.0.1",9559)
+  dcm.createAlias([
+  "ChestLeds",
+  [
+  "ChestBoard/Led/Red/Actuator/Value",
+  "ChestBoard/Led/Green/Actuator/Value",
+  "ChestBoard/Led/Blue/Actuator/Value"
+  ]
+  ])
+  t = dcm.getTime(0)
+  dcm.setAlias([
+  "ChestLeds",
+  "ClearAll",
+  "time-separate",
+  0,
+  \[t,t+2000, t+3000, t+4000, t+5000,t+6000],
+  [
+  \[1.0,0.0,1.0,0.0,1.0,0.0],
+  \[1.0,0.5,1.0,0.25,0.125,0.0],
+  \[0.0625,0.125,0.25,0.50,0.75,1.0]
+  ]
+  ])
+
+C++:
+
+.. code-block:: guess
+
+  // Program running in a module. Do not forget the #include "dcmproxy.h"
+  try
+  {
+  DCMProxy* dcm = new DCMProxy(pBroker);
+  ALValue commandsAlias;
+  ALValue commands;
+  commandsAlias.arraySetSize(2);
+  commandsAlias[0] = string("ChestLeds");
+  commandsAlias[1].arraySetSize(3);
+  commandsAlias[1][0] = string("ChestBoard/Led/Red/Actuator/Value");
+  commandsAlias[1][1] = string("ChestBoard/Led/Green/Actuator/Value");
+  commandsAlias[1][2] = string("ChestBoard/Led/Blue/Actuator/Value");
+  dcm->createAlias(commandsAlias);
+  commands.arraySetSize(6);
+  commands[0] = string("ChestLeds");
+  commands[1] = string("ClearAll");
+  commands[2] = string("time-separate");
+  commands[3] = 0;
+  commands[4].arraySetSize(6);
+  commands[4][0] = dcm->getTime(10000);
+  commands[4][1] = dcm->getTime(20000);
+  commands[4][2] = dcm->getTime(30000);
+  commands[4][3] = dcm->getTime(40000);
+  commands[4][4] = dcm->getTime(50000);
+  commands[4][5] = dcm->getTime(60000);
+  commands[5].arraySetSize(3);
+  // ChestBoard/Led/Red/Actuator/Value
+  commands[5][0].arraySetSize(6);
+  commands[5][0][0] = 1.0;
+  commands[5][0][1] = 0.0;
+  commands[5][0][2] = 1.0;
+  commands[5][0][3] = 0.0;
+  commands[5][0][4] = 1.0;
+  commands[5][0][5] = 0.0;
+  // ChestBoard/Led/Green/Actuator/Value
+  commands[5][1].arraySetSize(6);
+  commands[5][1][0] = 1.0;
+  commands[5][1][1] = 0.5;
+  commands[5][1][2] = 1.0;
+  commands[5][1][3] = 0.25;
+  commands[5][1][4] = 0.125;
+  commands[5][1][5] = 0.0;
+  // ChestBoard/Led/Blue/Actuator/Value
+  commands[5][2].arraySetSize(6);
+  commands[5][2][0] = 0.0625;
+  commands[5][2][1] = 0.125;
+  commands[5][2][2] = 0.25;
+  commands[5][2][3] = 0.50;
+  commands[5][2][4] = 0.75;
+  commands[5][2][5] = 1.0;
+  dcm->setAlias(commands);
+  }
+  AL_CATCH_ERR(return false;);
+
+Send 6 commands to every LEDs, in 10s, 20s, 30s, 40s, 50s, and
+60s.
+
+For the red one, they are 1, 0, 1, 0, 1, 0.
+
+For the green one, they are 1, 0.5, 1.0, 0.25, 0.125, 0.
+
+For the blue one, they are 0.0625, 0.125, 0.25, 0.50, 0.75,
+1.0.
+
+.. note::
+
+   All examples here use dcm.getTime() to get all time for
+   timed-command request. This is just an example, and there are better
+   ways to use it. For example you can just do one dcm.getTime() at
+   startup and after increment the integer value for each ms. Or you
+   can use the CPU clock if you have a module running on the
+   robot
+
+.. note::
+
+   It's possible to send a "NAN" float number ("Not A Number") to
+   actuator values using C++ (only from the same process). NAN are not
+   taking into account. It may be useful to send a NAN command to an
+   alias of many joints for just some joints, so that they do not
+   move.
+
+.. note::
+
+   For speed improvement in C++, it's better not to create the
+   AlValue at each request, but to keep it and just change values
+   inside if you send to the same alias. Creating and resizing ALValue
+   are heavy operation, while change an already allocated value is a
+   small one.
+
+.. COMMENT: <presentation id="calibration">
+            <title>Calibration</title>
+            <para>Use this method to calibrate the robot. Right now only joints are
+            concerned.</para>
+            <info type="warning">
+            <para>The calibration of robots is done after manufacturing. The
+            calibration process must not be done outside Aldebaran robotics unless
+            special request. A bad calibration will result in severe damage on the
+            robot. More clearly: do not use the calibration method unless you are
+            asked to.</para>
+            </info>
+            <info type="warning">
+            <para>After a calibration change, do not use the full hardness (or
+            Stiffness if you use motion). Do AT LEAST one test with half
+            hardness.</para>
+            </info>
+            <subsection>
+            <subtitle>Method</subtitle>
+            <para><code>
+            /\**
+            * Call this function to send a calibration order to a joint
+            * In Auto mode hardness must be set prior to command, joint will go slowly to a mechanical stop update position reference in ALMemory and DCM and put hardness to 0
+            * Be careful the new position is not saved, you have to call oSaveDCMprefFile() to save reference in file.
+            *
+            * @param calibrationInput ALValue with all data
+            *  calibrationInput[0] has the actuator to calibrate
+            *  calibrationInput[1] has the string "Manual" or "Auto". In manual mode the joint do not move, and the calibration is done in the current position
+            *   (on "0" position or on the mechanical stop, see next parameter)
+            *   On "Auto" mode, the calibration is done by an automatic move (speed control loop) until the mechanical stop is found and stop the move.
+            *  calibrationInput[2]:
+            *   In "Manual" mode: Could be "InLimit" or "InPlace". InPlace means that the joint is currently on it's standard "0" position.
+            *  Inlimit means that the robot is currently on the mechanical stop. Be careful that there is 2 mechanical stop on each joint, and only one is available.
+            *   In "Auto" mode: this argument is the electric current limit used when the joint move to the mechanical stop.
+            *     When this limit is reached for 10 consecutive cycles, current position is the new "InLimit" position.
+            *
+            * @param pResult None
+            *
+            \*/iif
+            void DCM::calibration(ALValue&amp; calibrationInput)
+            </code></para>
+            <info type="warning">
+            <para>The automatic calibration is only partially working right now.
+            Do not use it.</para>
+            </info>
+            <para>Here is the position of all mechanical stops to use:</para>
+            <para><image alt="Joint names" src="medias/hardware_jointname.jpg" /></para>
+            <para>This drawing shows the "0" position for all joints. Each joints
+            can be put in "0" position and calibrate with a "InPlace" calibration
+            request. However, it is less precise than using the "InLimit" command
+            and position (unless for ankle roll, see below).</para>
+            <para>For the "InLimit" command, the joint needs to be in the good
+            mechanical stop (check for signs!). Put it by hand, and then send the
+            calibration command. You need to save the result after (see
+            preferences in the next section).</para>
+            <para><table>
+            <row>
+            <cell_title>Joint Name</cell_title>
+            <cell_title>Mechanical stops (degrees)</cell_title>
+            <cell_title>Mechanical stop to use in "InLimit"
+            calibration</cell_title>
+            <cell_title>Limit used in DCM (Min/Max in degrees)</cell_title>
+            </row>
+            <row>
+            <cell>HeadPitch</cell>
+            <cell>-43 (without head) or -37 (with head) / +31</cell>
+            <cell>+31</cell>
+            <cell>Same as mechanical stop</cell>
+            </row>
+            <row>
+            <cell>HeadYaw</cell>
+            <cell>-120 (will be changed to -90, and back to -120 in the
+            NAO V3) / +120</cell>
+            <cell>+120</cell>
+            <cell>Same as mechanical stop</cell>
+            </row>
+            <row>
+            <cell>RShoulderRoll</cell>
+            <cell>0 / -95</cell>
+            <cell>-95</cell>
+            <cell>Same as mechanical stop</cell>
+            </row>
+            <row>
+            <cell>LShoulderRoll</cell>
+            <cell>+95 / 0</cell>
+            <cell>+95</cell>
+            <cell>Same as mechanical stop</cell>
+            </row>
+            <row>
+            <cell>RShoulderPitch</cell>
+            <cell>-120 / +120</cell>
+            <cell>-120</cell>
+            <cell>Same as mechanical stop</cell>
+            </row>
+            <row>
+            <cell>LShoulderPitch</cell>
+            <cell>-120 / +120</cell>
+            <cell>-120</cell>
+            <cell>Same as mechanical stop</cell>
+            </row>
+            <row>
+            <cell>RElbowRoll</cell>
+            <cell>-100 / +90</cell>
+            <cell>+90</cell>
+            <cell>Same as mechanical stop</cell>
+            </row>
+            <row>
+            <cell>LElbowRoll</cell>
+            <cell>-90 / +100</cell>
+            <cell>-90</cell>
+            <cell>Same as mechanical stop</cell>
+            </row>
+            <row>
+            <cell>RElbowYaw</cell>
+            <cell>-120 / +120</cell>
+            <cell>-120</cell>
+            <cell>Same as mechanical stop</cell>
+            </row>
+            <row>
+            <cell>LElbowYaw</cell>
+            <cell>-120 / +120</cell>
+            <cell>+120</cell>
+            <cell>Same as mechanical stop</cell>
+            </row>
+            <row>
+            <cell>HipYawPitch</cell>
+            <cell>-55 (with shell) -68 (without shell) / +44</cell>
+            <cell>+44 (change v3 &amp; NAOqi 1.0, old one was
+            -68)</cell>
+            <cell>-66.12/42.95</cell>
+            </row>
+            <row>
+            <cell>RHipPitch</cell>
+            <cell>* / +28.55</cell>
+            <cell>+28.55</cell>
+            <cell>-102.05/28.32</cell>
+            </row>
+            <row>
+            <cell>LHipPitch</cell>
+            <cell>* / +28.55</cell>
+            <cell>+28.55</cell>
+            <cell>-102.14/28.24</cell>
+            </row>
+            <row>
+            <cell>RHipRoll</cell>
+            <cell>-45 / \*</cell>
+            <cell>-45</cell>
+            <cell>-42.8/24.26</cell>
+            </row>
+            <row>
+            <cell>LHipRoll</cell>
+            <cell>* / +45</cell>
+            <cell>+45</cell>
+            <cell>-22.24/45.79</cell>
+            </row>
+            <row>
+            <cell>RKneePitch</cell>
+            <cell>-5 / \*</cell>
+            <cell>-5</cell>
+            <cell>-6.41/121.98</cell>
+            </row>
+            <row>
+            <cell>LKneePitch</cell>
+            <cell>-5 / \*</cell>
+            <cell>-5</cell>
+            <cell>-5.79/121.54</cell>
+            </row>
+            <row>
+            <cell>RAnklePitch</cell>
+            <cell>-70.52 / \*</cell>
+            <cell>-70.52</cell>
+            <cell>-68.48/53.9</cell>
+            </row>
+            <row>
+            <cell>LAnklePitch</cell>
+            <cell>-70.52 / \*</cell>
+            <cell>-70.52</cell>
+            <cell>-68.65/53.37</cell>
+            </row>
+            <row>
+            <cell>RAnkleRoll</cell>
+            <cell>-45 / +45</cell>
+            <cell>-45 \*** Bad stop \*** see warning below</cell>
+            <cell>-22.7/45.53</cell>
+            </row>
+            <row>
+            <cell>LAnkleRoll</cell>
+            <cell>-45 / +45</cell>
+            <cell>-45 \*** Bad stop \*** see warning below</cell>
+            <cell>-44.56/23.3</cell>
+            </row>
+            </table></para>
+            <para>The mechanical stop for the RAnkleRoll and the LAnkleRoll are
+            not precise. To calibrate them, the best way is to put all joints in 0
+            position except the ankle rolls. When this is done, put the robot
+            stand on its feet and make it stand upright. Then, send an "InPlace"
+            calibration command for ankle rolls, since they are precisely in their
+            0 position.</para>
+            <para>New limitations (NAO V3) for ankles:</para>
+            <para>These new limitations are hard coded in the DCM right now. The
+            tow angles (pitch and roll) are given below.</para>
+            <para>There is continuously a projection of the position (pitch, roll)
+            to stay in the limit. The projection is made so that only the roll is
+            changed.</para>
+            <para><table>
+            <row>
+            <cell_title>Ankle Pitch</cell_title>
+            <cell_title>Ankle Roll min</cell_title>
+            <cell_title>Ankle Roll Max</cell_title>
+            </row>
+            <row>
+            <cell>-70</cell>
+            <cell>-3</cell>
+            <cell>3</cell>
+            </row>
+            <row>
+            <cell>-65</cell>
+            <cell>-3</cell>
+            <cell>3</cell>
+            </row>
+            <row>
+            <cell>-60</cell>
+            <cell>-4</cell>
+            <cell>3</cell>
+            </row>
+            <row>
+            <cell>-55</cell>
+            <cell>-4</cell>
+            <cell>4</cell>
+            </row>
+            <row>
+            <cell>-50</cell>
+            <cell>-5</cell>
+            <cell>4</cell>
+            </row>
+            <row>
+            <cell>-45</cell>
+            <cell>-7</cell>
+            <cell>7</cell>
+            </row>
+            <row>
+            <cell>-40</cell>
+            <cell>-9</cell>
+            <cell>7</cell>
+            </row>
+            <row>
+            <cell>-35</cell>
+            <cell>-13</cell>
+            <cell>9</cell>
+            </row>
+            <row>
+            <cell>-25</cell>
+            <cell>-23</cell>
+            <cell>15</cell>
+            </row>
+            <row>
+            <cell>-20</cell>
+            <cell>-34</cell>
+            <cell>25</cell>
+            </row>
+            <row>
+            <cell>-15</cell>
+            <cell>-45</cell>
+            <cell>25</cell>
+            </row>
+            <row>
+            <cell>-10</cell>
+            <cell>-45</cell>
+            <cell>25</cell>
+            </row>
+            <row>
+            <cell>-5</cell>
+            <cell>-45</cell>
+            <cell>25</cell>
+            </row>
+            <row>
+            <cell>0</cell>
+            <cell>-45</cell>
+            <cell>25</cell>
+            </row>
+            <row>
+            <cell>5</cell>
+            <cell>-45</cell>
+            <cell>25</cell>
+            </row>
+            <row>
+            <cell>10</cell>
+            <cell>-45</cell>
+            <cell>25</cell>
+            </row>
+            <row>
+            <cell>15</cell>
+            <cell>-40</cell>
+            <cell>25</cell>
+            </row>
+            <row>
+            <cell>20</cell>
+            <cell>-35</cell>
+            <cell>25</cell>
+            </row>
+            <row>
+            <cell>25</cell>
+            <cell>-25</cell>
+            <cell>20</cell>
+            </row>
+            <row>
+            <cell>30</cell>
+            <cell>-25</cell>
+            <cell>20</cell>
+            </row>
+            <row>
+            <cell>35</cell>
+            <cell>-20</cell>
+            <cell>20</cell>
+            </row>
+            <row>
+            <cell>40</cell>
+            <cell>-15</cell>
+            <cell>10</cell>
+            </row>
+            <row>
+            <cell>45</cell>
+            <cell>-10</cell>
+            <cell>6</cell>
+            </row>
+            </table></para>
+            </subsection>
+            <subsection>
+            <subtitle>Example of use</subtitle>
+            <para>Python:</para>
+            <para><code>
+            import naoqi
+            import time
+            from naoqi import ALProxy
+            dcm = ALProxy("DCM","127.0.0.1",9559)
+            # Manual calibration on the mechanical stop
+            #dcm.calibration(\["RHipRoll/Position/Actuator/Value","Manual","InLimit" ])
+            # Manual calibration on 0
+            #dcm.calibration(\["RHipRoll/Position/Actuator/Value","Manual","InPlace" ])
+            # Automatic calibration of the joint.
+            #dcm.calibration(\["RHipRoll/Position/Actuator/Value","Auto" , 0.5 ])
+            time.sleep(1)
+            #here you need a dcm.preferences("Save", "Body", "", 0.0) to save new calibration
+            </code></para>
+            </subsection>
+            </presentation>
+
+Preferences
+-----------
+
+Preferences is a method to load/save preferences files, or to add
+a key in them.
+
+Read the preference chapter below for more details.
+
+.. warning::
+
+   Preferences files are not something to change unless it is
+   necessary. A bad configuration parameter may damage the robot. Using
+   this method, you can add your own configuration parameter, but do not
+   change the one already set, unless you are asked to.
+
+.. note::
+
+   Do a pause between a calibration change and the preference
+   save.
+
+.. note::
+
+   A save in the chest board will result of a stop of USB
+   communication for a few seconds. If the robot is standing, it will
+   certainly fall!
+
+Method
+++++++
+
+.. code-block:: cpp
+
+  /*
+  * Save or load the pref file or a sub pref file or change one parameter on the pref file
+  *
+  * @param pAction is a string that could be: "Save" "Load" or "Add"
+  *   Save is to save the new configuration value either in a file (Head) or in the chest board (chest)
+  *   Load is to read the configuration file again (Device_Head.xml or Device_Body.xml)
+  *   Add is to add/chage a new key/value in the pref file. It is only in the DCM memory, and a save is needed after.
+  * @param pWhere is the name of the pref/subpref files used. It could be "Body", "Head", "Main", "All"
+  * @param pKeyName is case of a add, this is the key name to add in the specific pref file. "" if this is not add.
+  * @param pKeyValue this is the value to save for the key name.
+  */
+  int DCM::preference(string pAction,
+  string pWhere,
+  string pKeyName,
+  ALValue pKeyValue)
+
+Example of use
+++++++++++++++
+
+Python:
+
+.. code-block:: python
+
+  import time
+  import naoqi
+  from naoqi import ALProxy
+  dcm = ALProxy("DCM","127.0.0.1",9559)
+  # Manual calibration on the mechanical stop
+  dcm.calibration( ["RHipRoll/Position/Actuator/Value","Manual","InLimit" ])
+  time.sleep(1)
+  dcm.preferences("Save", "Body", "", 0.0) # to save new calibration
+
+This script changes a calibration and saves it back in the chest
+board.
+
+.. warning::
+
+   This is a very dangerous script! Wrong calibration could
+   damage robot articulation.
+
+Python:
+
+.. code-block:: python
+
+  import time
+  import naoqi
+  from naoqi import ALProxy
+  dcm = ALProxy("DCM","127.0.0.1",9559)
+  dcm.preferences("Load", "Body", "", 0.0) # to load a new Device_Body.xml file
+  time.sleep(1)
+  dcm.preferences("Save", "Body", "", 0.0) # to save new calibration
+
+This script may be used to download a new sub pref file in the
+chest board.
+
+.. warning::
+
+   This is a very dangerous script! Wrong calibration could damage
+   the robot articulation.
+
+Special
+-------
+
+Special function that sends some specific orders to the
+DCM.
+
+This method has only a string as parameter.
+
+This string could be:
+
+- Reset
+  > Ask for a reset of the chest board.
+
+- Chain
+
+  Ask for a new chain process in the chest board.
+
+  .. note::
+
+     Function not tested.
+
+- Config
+
+  Ask for a new configuration of all motorBoard.
+
+  .. note::
+
+     Function not tested.
+
+- ResetMB
+
+  Turn off all motorboard, wait 3s, turn them on again and wait 15s before doing DCM cycle again.
+
+  .. warning::
+
+     Turning off motorboard power will make every joint free, and
+     so the robot may fall.
+
+Method
+++++++
+
+.. code-block:: guess
+
+  /\**
+  * Special commands
+  *
+  * @param pName one string and could be "Reset", "Chain", "ResetMB", "Config"
+  *
+  \*/
+  void DCM::special(std::string pName)
+
+Example of use
+++++++++++++++
+
+Python:
+
+.. code-block:: guess
+
+  import naoqi
+  from naoqi import ALProxy
+  dcm = ALProxy("DCM","127.0.0.1",9559)
+  dcm.special("ResetMB")
+
+This script resets the motors on the robot.
+

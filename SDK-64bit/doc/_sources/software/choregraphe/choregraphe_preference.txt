@@ -1,0 +1,77 @@
+.. |parameter-button| image:: /medias/desktop/choregraphe/parameter_button.png
+   :class: img-inline
+
+.. |search-previous| image:: /medias/desktop/choregraphe/search_previous.png
+   :class: img-inline
+
+
+.. _choregraphe-detailed-interface-preferences:
+
+Choregraphe Preferences
+=========================
+
+To open the preferences of the application, go to the menu **Edit** > **Preferences**.
+The following widget is displayed:
+
+.. image:: /medias/desktop/choregraphe/chore_edit_preferences.png
+   :height: 457 px
+   :width: 391 px
+
+The Choregraphe's preferences widget has 3 tabs containing options you can set:
+
+**General**
+   * **Motor speed (%)**: this preference corresponds to the speed of the robot's
+     motors when you move a joint in :ref:`the 3D view <3d-nao-panel>`, click on
+     a keyframe of a :ref:`Timeline <choregraphe-reference-box-timeline>`, or
+     select a pose in :ref:`the Pose Library panel <choregraphe-overview-pose-library-panel>`.
+     It is not advised to exceed 75% as it could prematurely damage the motors of the robot.
+   * **User's box libraries**: this option lets you choose one or more box
+     libraries saved on your computer which will be automatically loaded at Choregraphe
+     startup.
+   * **User's pose libraries**: this option lets you choose one or more pose libraries
+     saved on your computer which will be automatically loaded at Choregraphe startup.
+   * **Automatically save box libraries**: if this option is enabled, when you
+     exit Choregraphe the opened box libraries will be automatically saved.
+   * **Language**: select the language of the application. The interface will
+     then be translated in this language.
+   * **Background color**: select the color of the application's background.
+   * **Use smooth zoom in video monitor**: when this option is enabled, the pictures
+     from the camera are tried to be drawn with the best resolution possible.
+     The picture will have then a better quality but will take more processor to
+     be displayed.
+   * **Automatically shows the Debug Window when an error occurs**: When this
+     option is enabled, the :ref:`Debug window <choregraphe-overview-debug-panel>`
+     is automatically displayed as soon as an error occurs in the execution of a behavior.
+   * **Start Choregraphe without the 3D**: replace the 3D view with a static 2D
+     picture of the robot. So you do not have any feedback anymore about the move
+     of the robot but it does not take so much processor. Moreover, you are still
+     able to move the joints of the robot by selecting the body part you want to move.
+     See the :ref:`3D View <3d-nao-panel>` section for more information about this feature.
+   * **Show advanced load/save options**: when this option is enabled, you get
+     some more options in the File and Box library menus. You then can save or
+     open a project or a box library as a directory. If you want more information
+     about this feature go to :ref:`How to open or save a project or a box library
+     as a directory? <choregraphe-howto-open-save-directory>`.
+   * **Use monospaced font in script editor**: when this option is enabled, the
+     font used in the :ref:`script editor <choregraphe-overview-script-editor-panel>`
+     is monospaced. It means that any character will take the same space on the screen as another
+     (which is not the case of the font used by default).
+
+**Display**
+   This tab enables to choose the **graph color of each motor** in the :ref:`curve
+   editor <choregraphe-detailed-interface-timeline-editor-curves>` of the Timeline.
+
+**NAOqi's settings**
+   * **NAOqi's folder**: you can here set a folder for your local NAOqi. For example
+     if the binary NAOqi is in D:/workspace/dev/naoqi/bin, you need to
+     set D:/workspace/dev/naoqi as the folder of NAOqi. If this preference is empty,
+     it will take the default local NAOqi installed with Choregraphe.
+   * **Version**: select the model of your local NAOqi. You first have the name
+     of the robot, then the model, then the version. So for example if you want
+     to simulate your behavior on a NAO which has no leg but arms (model T14) and
+     with the version V3.3 of its hardware, you need to select NAOT14V33.xml.
+
+.. note::
+   Most of these preferences require a restart of Choregraphe to be applied.
+   So after validating your changes by clicking on **OK**, quit the application
+   and start it again for them to be applied.

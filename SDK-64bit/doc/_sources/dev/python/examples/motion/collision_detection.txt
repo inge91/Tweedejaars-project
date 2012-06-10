@@ -1,0 +1,14 @@
+.. _python-example-motion-collisiondetection:
+
+Collision detection
+===================
+
+:ref:`\<\< return to examples index <example-index>`
+
+This example shows the effect of collision detection on NAO's arms. Without
+collision detection, NAO bumps its arm on its head and torso, and with it, NAO avoids collision.
+
+:download:`motion_collisionDetection.py </examples/python/motion/motion_collisionDetection.py>`
+
+.. literalinclude:: /examples/python/motion/motion_collisionDetection.py
+   :language: py

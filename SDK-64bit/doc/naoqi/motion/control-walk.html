@@ -1,0 +1,652 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Walk control &mdash; NAO Software 1.12.3 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.12.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="NAO Software 1.12.3 documentation" href="../../index.html" />
+    <link rel="up" title="NAOqi Motion" href="index.html" />
+    <link rel="next" title="Walk control API" href="control-walk-api.html" />
+    <link rel="prev" title="Joint control Tutorial: The Pose Init" href="control-joint-tuto.html" />
+
+ 
+
+<script  type="text/javascript">
+   var _gaq = _gaq || [];
+   _gaq.push(['_setAccount', 'UA-19487749-1']);
+   _gaq.push(['_trackPageview']);
+   (function() {
+     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+   })();
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t3">
+    <div id="hd">
+      <h1><a href="../../index.html">NAO Software 1.12.3 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../index.html">Home</a>
+        
+         |
+        <a title="Site map" href="../../contents.html">Site map</a>
+        
+         |
+        <a title="Search" href="../../search.html">Search</a>
+         |
+        <a title="Index" href="../../genindex.html">Index</a>
+        
+        
+      </div>
+      <div class="nav">
+    &laquo; <a href="control-joint-tuto.html" title="Joint control Tutorial: The Pose Init">previous</a>
+     |
+    <a href="index.html" title="NAOqi Motion" accesskey="U">up</a>
+   |
+    <a href="control-walk-api.html" title="Walk control API">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="naoqi-motion-control-walk">
+            
+  <div class="section" id="walk-control">
+<span id="control-walk"></span><h1>Walk control<a class="headerlink" href="#walk-control" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p><a class="reference internal" href="index.html#naoqi-motion"><em>NAOqi Motion</em></a> || Overview | <a class="reference internal" href="control-walk-api.html#control-walk-api"><em>API</em></a> |
+<a class="reference internal" href="control-walk-tuto1.html#control-walk-tuto1"><em>foot planner Tutorial</em></a> |
+<a class="reference internal" href="control-walk-tuto2.html#control-walk-tuto2"><em>robot position Tutorial</em></a></p>
+<hr class="docutils" />
+<div class="section" id="what-it-does">
+<h2>What it does<a class="headerlink" href="#what-it-does" title="Permalink to this headline">¶</a></h2>
+<p>These API are dedicated to make NAO walk, in an omnidirectional mode.</p>
+<img alt="../../_images/motion_omniwalk.png" src="../../_images/motion_omniwalk.png" style="width: 226px; height: 313px;" />
+<p>NAO&#8217;s walk is stabilized using feedback from his joint sensors. This
+makes the walk robust against small disturbances and absorbs torso
+oscillations in the frontal and lateral planes.</p>
+<p>NAO is able to walk on multiple floor surfaces such as carpet, tiles
+and wooden floors.</p>
+<p>He can transition between these surfaces while walking. However, large
+obstacles can still make him fall, as he assumes that the ground is more
+or less flat.</p>
+</div>
+<div class="section" id="how-it-works">
+<h2>How it works<a class="headerlink" href="#how-it-works" title="Permalink to this headline">¶</a></h2>
+<p>NAO&#8217;s walk uses a simple dynamic model (Linear Inverse Pendulum) inspired by work of Kajita
+et al.<sup>(1)</sup>, and is solved using quadratic programming<sup>(2)</sup>.</p>
+<div class="line-block">
+<div class="line">Each step is composed of a double leg and a single leg support phase.</div>
+<div class="line">The double support time uses one third of the step time.</div>
+<div class="line">The foot swing trajectory uses <a class="reference internal" href="control-cartesian.html#motion-se3-interpolation"><em>SE3 Interpolation</em></a>.</div>
+<div class="line">The preview controller length is 0.8s.</div>
+<div class="line">The walk is initialized and ended with a 0.6s phase of double support.</div>
+</div>
+<p><strong>References</strong></p>
+<p><sup>(1)</sup> S. Kajita and K. Tani. Experimental study of biped dynamic walking in the linear inverted pendulum mode.
+IEEE Int. Conf. on Robotics and Automation, 1995.</p>
+<p><sup>(2)</sup> P-B. Wieber. Trajectory free linear model predictive control for stable walking in the presence of strong perturbation.
+IEEE Int. Conf. on Humanoids, 2006.</p>
+<div class="section" id="foot-step-planner">
+<h3>Foot Step planner<a class="headerlink" href="#foot-step-planner" title="Permalink to this headline">¶</a></h3>
+<p>The basic foot planner is used by the walk process, whatever the walk control you choose:
+<a class="reference internal" href="control-walk-api.html#ALMotionProxy::setWalkTargetVelocity__floatCR.floatCR.floatCR.floatCR" title="ALMotionProxy::setWalkTargetVelocity"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALMotionProxy::setWalkTargetVelocity()</span></tt></a>, <a class="reference internal" href="control-walk-api.html#ALMotionProxy::walkTo__floatCR.floatCR.floatCR" title="ALMotionProxy::walkTo"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALMotionProxy::walkTo()</span></tt></a>
+or <a class="reference internal" href="control-walk-api.html#ALMotionProxy::setFootSteps__std::vector:ss:CR.AL::ALValueCR.std::vector:float:CR.bCR" title="ALMotionProxy::setFootSteps"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALMotionProxy::setFootSteps()</span></tt></a>.</p>
+<p>It uses an ALMath::Pose2D multipication (<a class="reference external" href="../../ref/libalmath/index.html">libalmath API reference</a>).
+It is composed of a translation by pX and pY, then a rotation around the vertical z axis pTheta.</p>
+<img alt="../../_images/motion_footplanner.png" src="../../_images/motion_footplanner.png" style="width: 502px; height: 335px;" />
+<p>To avoid foot collisions during planning, we use clamp algorithm that are described in the
+<a class="reference internal" href="control-walk-tuto1.html#control-walk-tuto1"><em>foot planner Tutorial</em></a>.</p>
+</div>
+<div class="section" id="gait-parameters">
+<span id="control-walk-gait-parameters"></span><h3>Gait parameters<a class="headerlink" href="#gait-parameters" title="Permalink to this headline">¶</a></h3>
+<p>It is possible to define custom gait parameters for the walk, by giving a
+custom <strong>Gait config</strong>.</p>
+<p>A gait configuration is defined by:</p>
+<ul class="simple">
+<li><strong>MaxStepX</strong>: the maximum translation along the X axis for one step</li>
+<li><strong>MaxStepY</strong>: the maximum translation along the Y axis for one step</li>
+<li><strong>MaxStepTheta</strong>: the maximum rotation around the Z axis for one step</li>
+<li><strong>MaxStepFrequency</strong>: the maximum step frequency (normalized between 0.0 and 1.0)</li>
+<li><strong>StepHeight</strong>: the fixed height of the step</li>
+<li><strong>TorsoWx</strong>: the translation of the torso along the X axis</li>
+<li><strong>TorsoWy</strong>: the translation of the torso along the Y axis</li>
+</ul>
+<p>Programmatically, you can access to the gait parameters (Default, Max, Min), using the
+<a class="reference internal" href="control-walk-api.html#ALMotionProxy::getFootGaitConfig__ssCR" title="ALMotionProxy::getFootGaitConfig"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALMotionProxy::getFootGaitConfig()</span></tt></a> method.</p>
+<p>The table below gives the default, minimum and maximum gait parameters.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="23%" />
+<col width="23%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Default</th>
+<th class="head">Minimum</th>
+<th class="head">Maximum</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>MaxStepX</td>
+<td>0.040 meters</td>
+<td>0.001 meters</td>
+<td>0.080 meters<sup>(3)</sup></td>
+</tr>
+<tr class="row-odd"><td>MaxStepY</td>
+<td>0.140 meters</td>
+<td>0.101 meters</td>
+<td>0.160 meters</td>
+</tr>
+<tr class="row-even"><td>MaxStepTheta</td>
+<td>0.349 radians</td>
+<td>0.001 radians</td>
+<td>0.523 radians</td>
+</tr>
+<tr class="row-odd"><td>MaxStepFrequency</td>
+<td>2.381 Hz</td>
+<td>1.667 Hz</td>
+<td>2.381 Hz</td>
+</tr>
+<tr class="row-even"><td>StepHeight</td>
+<td>0.020 meters</td>
+<td>0.005 meters</td>
+<td>0.040 meters</td>
+</tr>
+<tr class="row-odd"><td>TorsoWx</td>
+<td>0.000 radians</td>
+<td>-0.122 radians</td>
+<td>0.122 radians</td>
+</tr>
+<tr class="row-even"><td>TorsoWy</td>
+<td>0.000 radians</td>
+<td>-0.122 radians</td>
+<td>0.122 radians</td>
+</tr>
+</tbody>
+</table>
+<p><sup>(3)</sup> we recommend 0.060 meters for StepX for more stability, 0.080 meters could be use on
+a flat hard floor.</p>
+<p>A custom <strong>Gait config</strong> allows the robot to modify the default walk while still
+using the usual motion API. This custom configuration can be used for both
+walkTo and setTargetVelocity methods.</p>
+<p>For example, you can make NAO lift his feet higher to try and go over some
+small cables, etc.</p>
+<p>The following examples give some custom gait for NAO:</p>
+<ul class="simple">
+<li><a class="reference download internal" href="../../_downloads/motion_walkCustomization.py"><tt class="xref download docutils literal"><span class="pre">motion_walkCustomization.py</span></tt></a></li>
+<li><a class="reference download internal" href="../../_downloads/motion_walkToCustomization.py"><tt class="xref download docutils literal"><span class="pre">motion_walkToCustomization.py</span></tt></a></li>
+</ul>
+</div>
+<div class="section" id="torso-height-trajectory">
+<h3>Torso height trajectory<a class="headerlink" href="#torso-height-trajectory" title="Permalink to this headline">¶</a></h3>
+<p>Since the 1.12 NAOqi version, we have introduced an algorithm that automatically computes
+the torso height to avoid <a class="reference internal" href="../../glossary.html#term-singularity"><em class="xref std std-term">singularity</em></a> and to be able to make longer steps.</p>
+<p>This new feature, with the same gait parameters than in 1.10 NAOqi version, creates torso oscillation
+and could increase the torque needed in the legs joints. This feature increases the battery
+consumption and generates a faster increase of the joint temperature.</p>
+</div>
+<div class="section" id="arm-motions">
+<h3>Arm motions<a class="headerlink" href="#arm-motions" title="Permalink to this headline">¶</a></h3>
+<p>The arm motion amplitude during walk is dependent on the step frequency and the step length.</p>
+<p>The motion can be activated or deactivated at any moment during a walk.</p>
+<p>Any user commands for the arms will have priority over the default arm motions during a walk.
+This enables you to control the arms as you wish during a walk. If the default arm movements are
+enabled, default movements resume once you have finished controlling arm movements.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Example showing how to disable left arm motions during a walk</span>
+<span class="n">leftArmEnable</span>  <span class="o">=</span> <span class="bp">False</span>
+<span class="n">rightArmEnable</span>  <span class="o">=</span> <span class="bp">True</span>
+<span class="n">proxy</span><span class="o">.</span><span class="n">setWalkArmsEnabled</span><span class="p">(</span><span class="n">leftArmEnable</span><span class="p">,</span> <span class="n">rightArmEnable</span><span class="p">)</span>
+<span class="c"># disable right arm motion after 10 seconds</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">rightArmEnable</span>  <span class="o">=</span> <span class="bp">False</span>
+<span class="n">proxy</span><span class="o">.</span><span class="n">setWalkArmsEnabled</span><span class="p">(</span><span class="n">leftArmEnable</span><span class="p">,</span> <span class="n">rightArmEnable</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Example showing how to get the enabled flags for the arms</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">proxy</span><span class="o">.</span><span class="n">getWalkArmsEnabled</span><span class="p">()</span>
+<span class="k">print</span> <span class="s">&#39;LeftArmEnabled: &#39;</span><span class="p">,</span>  <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">print</span> <span class="s">&#39;RightArmEnabled: &#39;</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="getting-started">
+<h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+<p>This section describes some key points to deal with walk control.</p>
+<div class="section" id="walk-initialization">
+<h3>Walk Initialization<a class="headerlink" href="#walk-initialization" title="Permalink to this headline">¶</a></h3>
+<p>Before launching the walk process, we have to check the configuration of joints,
+in order to be sure:</p>
+<ul class="simple">
+<li>to be out of <a class="reference internal" href="../../glossary.html#term-singularity"><em class="xref std std-term">singularity</em></a> and that</li>
+<li>the two feet are flat on the ground.</li>
+</ul>
+<p>If all the conditions are not satisfied, the walk process executes an initialization within an
+indeterminate time, depending on the actual config of the robot.</p>
+<p>The execution of the <a class="reference internal" href="control-walk-api.html#ALMotionProxy::walkInit" title="ALMotionProxy::walkInit"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALMotionProxy::walkInit()</span></tt></a> does the same initialization stuff.
+And by calling this function before the walk process, you make sure that the walk process will not
+take an indeterminate time at the beginning.</p>
+</div>
+<div class="section" id="robot-position">
+<h3>Robot Position<a class="headerlink" href="#robot-position" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference internal" href="control-walk-api.html#ALMotionProxy::getRobotPosition__bCR" title="ALMotionProxy::getRobotPosition"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALMotionProxy::getRobotPosition()</span></tt></a> method gives you the position of NAO in the
+<a class="reference internal" href="control-cartesian.html#motion-effectors-space"><em>SPACE_WORLD</em></a>.</p>
+<p>Due to the preview control, there is some unchangeable foot step (already in the process queue).
+So, if the walk process runs and you send a new target, your change is applied after the
+unchangeable footStep. The <a class="reference internal" href="control-walk-api.html#ALMotionProxy::getNextRobotPosition" title="ALMotionProxy::getNextRobotPosition"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALMotionProxy::getNextRobotPosition()</span></tt></a> method gives you the
+position of the robot after the unchangeable foot step.</p>
+<p>The figure below illustrates this phenomenon. You can also look at the
+<a class="reference internal" href="control-walk-tuto2.html#control-walk-tuto2"><em>robot position Tutorial</em></a>.</p>
+<div class="highlight-guess"><div class="highlight"><pre><span class="c1"># created a walk task</span>
+<span class="n">motionProxy</span><span class="o">.</span><span class="n">walkInit</span><span class="p">()</span>
+<span class="n">motionProxy</span><span class="o">.</span><span class="n">post</span><span class="o">.</span><span class="n">walkTo</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+
+<span class="c1"># wait that the walk process start running</span>
+<span class="nb">time</span><span class="o">.</span><span class="nb">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+
+<span class="c1"># get robotPosition and nextRobotPosition</span>
+<span class="n">robotPosition</span>     <span class="o">=</span> <span class="n">motionProxy</span><span class="o">.</span><span class="n">getRobotPosition</span><span class="p">(</span><span class="n">False</span><span class="p">)</span>
+<span class="n">nextRobotPosition</span> <span class="o">=</span> <span class="n">motionProxy</span><span class="o">.</span><span class="n">getNextRobotPosition</span><span class="p">(</span><span class="n">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/motion_robotPosition.png" src="../../_images/motion_robotPosition.png" style="width: 600px; height: 565px;" />
+</div>
+<div class="section" id="synchronization">
+<h3>Synchronization<a class="headerlink" href="#synchronization" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="waituntilwalkisfinished">
+<h4>waitUntilWalkIsFinished<a class="headerlink" href="#waituntilwalkisfinished" title="Permalink to this headline">¶</a></h4>
+<p>The <a class="reference internal" href="control-walk-api.html#ALMotionProxy::waitUntilWalkIsFinished" title="ALMotionProxy::waitUntilWalkIsFinished"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALMotionProxy::waitUntilWalkIsFinished()</span></tt></a> method can be used to block your
+script/code execution until the walk task is totally finished.</p>
+<div class="highlight-guess"><div class="highlight"><pre><span class="c1"># Start a walk</span>
+<span class="n">proxy</span><span class="o">.</span><span class="n">post</span><span class="o">.</span><span class="n">walkTo</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="c1"># Wait for it to finish</span>
+<span class="n">proxy</span><span class="o">.</span><span class="n">waitUntilWalkIsFinished</span><span class="p">()</span>
+<span class="c1"># Then do something else</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="walkisactive">
+<h4>walkIsActive<a class="headerlink" href="#walkisactive" title="Permalink to this headline">¶</a></h4>
+<p>The <a class="reference internal" href="control-walk-api.html#ALMotionProxy::walkIsActive" title="ALMotionProxy::walkIsActive"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALMotionProxy::walkIsActive()</span></tt></a> method returns True while the walk task is active.</p>
+<div class="highlight-guess"><div class="highlight"><pre><span class="c1"># start a 1 meter walk</span>
+<span class="n">proxy</span><span class="o">.</span><span class="n">post</span><span class="o">.</span><span class="n">walkTo</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="k">while</span> <span class="n">proxy</span><span class="o">.</span><span class="n">walkIsActive</span><span class="p">():</span>
+<span class="c1"># do something</span>
+<span class="c1"># sleep a little</span>
+<span class="nb">time</span><span class="o">.</span><span class="nb">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># when finished do something else</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="stopwalk">
+<h4>stopWalk<a class="headerlink" href="#stopwalk" title="Permalink to this headline">¶</a></h4>
+<p>The <a class="reference internal" href="control-walk-api.html#ALMotionProxy::stopWalk" title="ALMotionProxy::stopWalk"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALMotionProxy::stopWalk()</span></tt></a> method ends the walk task as soon as the
+robot is in a relatively safe position, meaning that the two feet are on the
+ground. This avoids stopping in an unstable position (for example with one foot
+still in the air), contrary to the <a class="reference internal" href="tools-motion-task-api.html#ALMotionProxy::killWalk" title="ALMotionProxy::killWalk"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALMotionProxy::killWalk()</span></tt></a> method.</p>
+<p>This method is slower than the walk killing, but safer, and a faster than
+setting target velocity to 0.</p>
+</div>
+<div class="section" id="killwalk">
+<h4>killWalk<a class="headerlink" href="#killwalk" title="Permalink to this headline">¶</a></h4>
+<p>The <a class="reference internal" href="tools-motion-task-api.html#ALMotionProxy::killWalk" title="ALMotionProxy::killWalk"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALMotionProxy::killWalk()</span></tt></a> ends the walk task brutally, without attempting to
+return to a balanced state. If NAO has one foot in the air, he could
+easily fall.</p>
+<div class="highlight-guess"><div class="highlight"><pre><span class="c1"># End the walk suddenly (~20ms)</span>
+<span class="n">proxy</span><span class="o">.</span><span class="n">killWalk</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>To end the walk more gracefully, set the target velocity to zero.</p>
+<div class="highlight-guess"><div class="highlight"><pre><span class="c1"># End the walk cleanly (~0.8s)</span>
+<span class="n">proxy</span><span class="o">.</span><span class="n">setWalkTargetVelocity</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="walk-protection">
+<h3>Walk protection<a class="headerlink" href="#walk-protection" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="kill-the-walk-task-when-lifted">
+<span id="motion-kill-walk-when-lifted"></span><h4>Kill the walk task when lifted<a class="headerlink" href="#kill-the-walk-task-when-lifted" title="Permalink to this headline">¶</a></h4>
+<p>To stop the robot walking in the air, the FSRs are read to see if
+there is ground contact. When there is no ground contact, the
+walk task is killed if it is running, and not allowed to start if absent.
+This feature relies on the FSR extractor of the Sensors module, which
+is responsible for updating the memory key:</p>
+<ul class="simple">
+<li>extractors/alfsr/footContact</li>
+</ul>
+<p>By default, this feature is active. To remove this feature, follow
+this procedure:</p>
+<div class="highlight-guess"><div class="highlight"><pre><span class="c1"># Deactivate the foot contact protection</span>
+<span class="n">proxy</span><span class="o">.</span><span class="n">setMotionConfig</span><span class="p">([[</span><span class="s">&quot;ENABLE_FOOT_CONTACT_PROTECTION&quot;</span><span class="p">,</span> <span class="n">False</span><span class="p">]])</span>
+<span class="c1"># Or for change the default value,</span>
+<span class="c1"># define the new value of the key ENABLE_FOOT_CONTACT_PROTECTION</span>
+<span class="c1"># in ALMotion.xml preference file</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="kill-the-walk-task-when-the-stiffness-is-low-on-at-least-one-leg-joint">
+<h4>Kill the walk task when the stiffness is low on at least one leg joint<a class="headerlink" href="#kill-the-walk-task-when-the-stiffness-is-low-on-at-least-one-leg-joint" title="Permalink to this headline">¶</a></h4>
+<p>If the walk process is launched and the robot has stiffness off, our
+algorithm to solve the dynamics of the walk fails. This is due to
+the closed loop, where we inject sensor information into the algorithm.
+When there is no stiffness, the command and sensor values diverge.
+To prevent this, the walk process will be killed or prevented from launching,
+if one joint of the legs has a stiffness equal or less than 0,6.</p>
+<p>By default, this feature is active. To remove this feature, follow
+this procedure:</p>
+<div class="highlight-guess"><div class="highlight"><pre><span class="c1"># Deactivate the foot contact protection</span>
+<span class="n">proxy</span><span class="o">.</span><span class="n">setMotionConfig</span><span class="p">([[</span><span class="s">&quot;ENABLE_STIFFNESS_PROTECTION&quot;</span><span class="p">,</span> <span class="n">False</span><span class="p">]])</span>
+<span class="c1"># Or for change the default value,</span>
+<span class="c1"># define the new value of the key ENABLE_STIFFNESS_PROTECTION</span>
+<span class="c1"># in ALMotion.xml preference file</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="use-cases">
+<h2>Use Cases<a class="headerlink" href="#use-cases" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="case-1-velocity-control">
+<h3>Case 1: Velocity Control<a class="headerlink" href="#case-1-velocity-control" title="Permalink to this headline">¶</a></h3>
+<p>Velocity control enables the walk to be controlled reactively, allowing
+behaviors such as target tracking. It can be called as often as you
+like, as the most recent command overrides all previous commands.</p>
+<p>The walk uses a preview controller to guarantee stability. This uses
+a preview of time of 0.8s, so the walk will take this time to react
+to new commands. At maximum frequency this equates to about two steps.</p>
+<div class="section" id="parameters">
+<h4>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>x [-1.0 to 1.0]: specifies the length of a step along the x axis
+(forwards and backwards) as a fraction of maxStepX.</li>
+<li>y [-1.0 to 1.0]: specifies the length of a step along the y axis (lateral)
+as a fraction of maxStepY.</li>
+<li>theta [-1.0 to 1.0]: specifies the angle between the feet as a fraction of maxStepTheta.
+A positive value result in a left turn(anti-clockwise) and a negative value results in a right turn(clockwise).</li>
+<li>frequency [0.0 to 1.0]: specifies the step frequency as a fraction of
+linear interpolation between minimumStepFrequency and
+maximumStepFrequency. One cycle is considered to be a phase of
+double leg support followed by a phase of single leg support.</li>
+</ul>
+</div>
+<div class="section" id="example">
+<h4>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-guess"><div class="highlight"><pre><span class="c1"># Example showing the use of setWalkTargetVelocity</span>
+<span class="c1"># The parameters are fractions of the maximum Step parameters</span>
+<span class="c1"># Here we are asking for full speed forwards</span>
+<span class="c1"># with maximum step frequency</span>
+<span class="n">x</span>  <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">y</span>  <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">theta</span>  <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">frequency</span>  <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">proxy</span><span class="o">.</span><span class="n">setWalkTargetVelocity</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">frequency</span><span class="p">)</span>
+<span class="c1"># If we don&#39;t send another command, he will walk forever</span>
+<span class="c1"># Lets make him slow down (step length) and turn after 10 seconds</span>
+<span class="nb">time</span><span class="o">.</span><span class="nb">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="mf">0.6</span>
+<span class="n">proxy</span><span class="o">.</span><span class="n">setWalkTargetVelocity</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">frequency</span><span class="p">)</span>
+<span class="c1"># Lets make him slow down(frequency) after 5 seconds</span>
+<span class="nb">time</span><span class="o">.</span><span class="nb">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">frequency</span>  <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">proxy</span><span class="o">.</span><span class="n">setWalkTargetVelocity</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">frequency</span><span class="p">)</span>
+<span class="c1"># After another 10 seconds, we&#39;ll make him stop</span>
+<span class="nb">time</span><span class="o">.</span><span class="nb">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">proxy</span><span class="o">.</span><span class="n">setWalkTargetVelocity</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">frequency</span><span class="p">)</span>
+<span class="c1"># Note that at any time, you can use a walkTo command</span>
+<span class="c1"># to walk a precise distance. The last command received,</span>
+<span class="c1"># of velocity or position always wins</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="case-2-destination-control">
+<h3>Case 2: Destination Control<a class="headerlink" href="#case-2-destination-control" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference internal" href="control-walk-api.html#ALMotionProxy::walkTo__floatCR.floatCR.floatCR" title="ALMotionProxy::walkTo"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALMotionProxy::walkTo()</span></tt></a> method is a generalised implementation of walk patterns.
+An <a class="reference internal" href="control-cartesian.html#motion-se3-interpolation"><em>SE3 Interpolation</em></a> is used to compute the path.
+It is a blocking function until walk process is finished. If you pCalled this function,
+the last command received overrides all previous commands.</p>
+<div class="section" id="id1">
+<h4>Parameters<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>x: the distance in meters along the X axis (forwards and backwards).</li>
+<li>y: the distance in meters along the Y axis (lateral motion).</li>
+<li>theta: the final robot orientation in radians relative to the current orientation.</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h4>Example<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-guess"><div class="highlight"><pre><span class="c1"># Example showing the walkTo command.</span>
+<span class="c1"># As length of path is less than 0.4m</span>
+<span class="c1"># the path will use an SE3 interpolation</span>
+<span class="c1"># The units for this command are meters and radians</span>
+<span class="n">x</span>  <span class="o">=</span> <span class="mf">0.2</span>
+<span class="n">y</span>  <span class="o">=</span> <span class="mf">0.2</span>
+<span class="c1"># pi/2 anti-clockwise (90 degrees)</span>
+<span class="n">theta</span>  <span class="o">=</span> <span class="mf">1.5709</span>
+<span class="n">proxy</span><span class="o">.</span><span class="n">walkTo</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/motion_walktose3.png" src="../../_images/motion_walktose3.png" style="width: 400px; height: 299px;" />
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In previous releases, there used to be a
+<a class="reference external" href="http://planning.cs.uiuc.edu/node821.html">Dubins curve</a> interpolation when
+the distance to walk was greater than 0.4m. This has now been removed, but
+it can still be reconstituted manually(
+<a class="reference download internal" href="../../_downloads/motion_walkToDubinsCurve.py"><tt class="xref download docutils literal"><span class="pre">motion_walkToDubinsCurve.py</span></tt></a>)</p>
+</div>
+</div>
+</div>
+<div class="section" id="case-3-step-control">
+<h3>Case 3: Step Control<a class="headerlink" href="#case-3-step-control" title="Permalink to this headline">¶</a></h3>
+<p>It is possible to control NAO&#8217;s steps individually, through a footstep planner.
+This allows to implement for example dance like movements, where the footsteps
+need to be placed precisely:</p>
+<ul class="simple">
+<li>each leg can be controlled independently, giving the possibility of non symetric
+behaviour (for example, making the robot &#8220;limp&#8221;)</li>
+<li>each footstep has its own position (X, Y, Theta)</li>
+</ul>
+<p>The footsteps planner either associates footsteps with the time they occur
+in <a class="reference internal" href="control-walk-api.html#ALMotionProxy::setFootSteps__std::vector:ss:CR.AL::ALValueCR.std::vector:float:CR.bCR" title="ALMotionProxy::setFootSteps"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALMotionProxy::setFootSteps()</span></tt></a> (in that case, this is a non-blocking call) or
+with a normalized footstep speed in <a class="reference internal" href="control-walk-api.html#ALMotionProxy::setFootStepsWithSpeed__std::vector:ss:CR.AL::ALValueCR.std::vector:float:CR.bCR" title="ALMotionProxy::setFootStepsWithSpeed"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALMotionProxy::setFootStepsWithSpeed()</span></tt></a> (this
+is a blocking call).</p>
+<p>If you want to modify the footsteps planner, you may want to clear the footstep
+planner and add your new steps or to add the new footsteps at the end of the
+planner. To do so, you can use the <em>clearExistingFootsteps</em> parameter. If it
+is set to <strong>true</strong>, all footsteps that can be cleared are removed and the new
+footsteps are added, else the new footsteps are simply added at the end.</p>
+<p>At any moment, you can retrieve the planned footsteps
+using <a class="reference internal" href="control-walk-api.html#ALMotionProxy::getFootSteps" title="ALMotionProxy::getFootSteps"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALMotionProxy::getFootSteps()</span></tt></a>. This method gives:</p>
+<ul class="simple">
+<li>the footsteps that cannot be cleared (current steps and immediate followers), and</li>
+<li>the ones that can be safely removed (See <a class="reference internal" href="control-walk-tuto2.html#control-walk-tuto2"><em>robot position Tutorial</em></a>).</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <div class="footernav">
+    &laquo; <a href="control-joint-tuto.html" title="Joint control Tutorial: The Pose Init">Joint control Tutorial: The Pose Init</a>
+     |
+    <a href="index.html" title="NAOqi Motion" accesskey="U">NAOqi Motion</a>
+   |
+    <a href="control-walk-api.html" title="Walk control API">Walk control API</a> &raquo;</div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/naoqi/motion/control-walk.txt"
+             rel="nofollow">Show Source</a></li>
+    </ul>
+
+
+  <h3>Table Of Contents</h3>
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../contents.html">Site map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../news/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nao/index.html">NAO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../software/index.html">Software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/index.html">Programming Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../ref/index.html">References</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">NAOqi API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../core/index.html">NAOqi Core</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">NAOqi Motion</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="almotion-api.html">ALMotion API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="advanced.html">Motion - advanced</a></li>
+<li class="toctree-l4"><a class="reference internal" href="control-stiffness.html">Stiffness control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="control-joint.html">Joint control</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="">Walk control</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="control-walk-api.html">Walk control API</a></li>
+<li class="toctree-l5"><a class="reference internal" href="control-walk-tuto1.html">Walk control Tutorial: The Foot planner</a></li>
+<li class="toctree-l5"><a class="reference internal" href="control-walk-tuto2.html">Walk control Tutorial: The Robot Position</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="control-cartesian.html">Cartesian control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="control-wholebody.html">Whole Body control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reflexes-collision-avoidance.html">Self-collision avoidance</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reflexes-fall-manager.html">Fall manager</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reflexes-smart-stiffness.html">Smart Stiffness</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tools-general.html">General tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tools-motion-task.html">Motion task</a></li>
+<li class="toctree-l4"><a class="reference internal" href="almotionrecorder.html">ALMotionRecorder</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../audio/index.html">NAOqi Audio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../vision/index.html">NAOqi Vision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/index.html">NAOqi Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../trackers/index.html">NAOqi Trackers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/dcm.html">DCM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stdtypes.html">Standard types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cpp-classindex.html">&gt; All C++ Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cpp-funcindex.html">&gt; All C++ Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../naoqi-eventindex.html">&gt; All NAOqi Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../naoqi-memoryindex.html">&gt; All NAOqi Memory Keys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ref/cpp-api.html">C++ API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ref/python-api.html">Python API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../legal/notice.html">Legal notices</a></li>
+</ul>
+
+    <h3><a href="../../index.html">On this page</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Walk control</a><ul>
+<li><a class="reference internal" href="#what-it-does">What it does</a></li>
+<li><a class="reference internal" href="#how-it-works">How it works</a><ul>
+<li><a class="reference internal" href="#foot-step-planner">Foot Step planner</a></li>
+<li><a class="reference internal" href="#gait-parameters">Gait parameters</a></li>
+<li><a class="reference internal" href="#torso-height-trajectory">Torso height trajectory</a></li>
+<li><a class="reference internal" href="#arm-motions">Arm motions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#getting-started">Getting started</a><ul>
+<li><a class="reference internal" href="#walk-initialization">Walk Initialization</a></li>
+<li><a class="reference internal" href="#robot-position">Robot Position</a></li>
+<li><a class="reference internal" href="#synchronization">Synchronization</a><ul>
+<li><a class="reference internal" href="#waituntilwalkisfinished">waitUntilWalkIsFinished</a></li>
+<li><a class="reference internal" href="#walkisactive">walkIsActive</a></li>
+<li><a class="reference internal" href="#stopwalk">stopWalk</a></li>
+<li><a class="reference internal" href="#killwalk">killWalk</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#walk-protection">Walk protection</a><ul>
+<li><a class="reference internal" href="#kill-the-walk-task-when-lifted">Kill the walk task when lifted</a></li>
+<li><a class="reference internal" href="#kill-the-walk-task-when-the-stiffness-is-low-on-at-least-one-leg-joint">Kill the walk task when the stiffness is low on at least one leg joint</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#use-cases">Use Cases</a><ul>
+<li><a class="reference internal" href="#case-1-velocity-control">Case 1: Velocity Control</a><ul>
+<li><a class="reference internal" href="#parameters">Parameters</a></li>
+<li><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#case-2-destination-control">Case 2: Destination Control</a><ul>
+<li><a class="reference internal" href="#id1">Parameters</a></li>
+<li><a class="reference internal" href="#id2">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#case-3-step-control">Case 3: Step Control</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="control-joint-tuto.html" title="Joint control Tutorial: The Pose Init">previous</a>
+     |
+    <a href="index.html" title="NAOqi Motion" accesskey="U">up</a>
+   |
+    <a href="control-walk-api.html" title="Walk control API">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

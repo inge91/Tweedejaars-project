@@ -1,0 +1,94 @@
+DCM architecture
+================
+
+:ref:`Overview <dcm>` | :ref:`API <dcm-api>`  | :ref:`Tutorial <dcm-tuto>`
+
+DCM start sequence
+------------------
+
+Here is what the DCM does at startup:
+
+- reads the DCM.xml and Device.xml preference file
+
+- reads the subPrefs files (Device_Head and Chest)
+
+- Initializes the communication
+
+- Initializes the Devices:
+
+  - initializes chest board
+  - initializes all boards except motor board
+  - initializes all motor boards: sends a request to the motorboard to get their own parameters, fills a configuration structure with all data, sends the configuration structure for all boards.
+
+- Runs the DCM cycle
+
+  - Creates the main thread for the DCM cycle
+  - Creates the thread for the I2C Head
+  - Creates and sends all read requests
+  - Runs the DCM cycle at least 10 times
+
+Then the NAOqi thread returns out of the DCM and resets others modules.
+
+DCM.xml keys
+------------
+
+- DCM/CycleTime
+
+  This value is 0 in the file, and is set by the DCM in ALMemory every DCM cycle. It's the time in ms for the last cycle. It should be near TargetCycleTime... unless the system is heavily loaded.
+  This value is updated every DCM cycle.
+
+- DCM/Time
+
+  This value is the absolute DCM time. It's an 4 bytes integer (signed, but it's unsigned inside the DCM. Just cast). It's the system time converted in ms.
+  This value changes every DCM cycle.
+
+- DCM/TargetCycleTime
+
+  This value is the cycle time the DCM needs to reach for all of its cycle. Currently, it is 10ms.
+
+  .. warning::
+
+     Do not change this configuration value.
+
+  .. warning::
+
+     The value is minimised by 20ms for a V3.
+
+- DCM/CycleTimeWarning
+
+  This is the value in ms when the DCM prints an error if the cycle time is greater.
+
+  .. note::
+
+     This will be removed in some future version.
+
+- DCM/I2Cpath
+
+  This is the path to access the I2C bus in the head. Enable in new V3.
+
+  .. warning::
+
+     Do not change this configuration value.
+
+- DCM/Realtime
+
+  1 means that the real time version for the DCM thread is activated.
+
+  .. warning::
+
+     Do not change this configuration value.
+
+- DCM/RealtimePriority
+  Priority level of the DCM thread
+
+  .. warning::
+
+     Do not change this configuration value.
+
+- DCM/HeatLogPath
+  Path where the temperature values of all motors are saved every 10s.
+
+  .. warning::
+
+     Do not change this configuration value.
+

@@ -1,0 +1,160 @@
+.. _vision-system:
+.. _alvideodevice:
+
+ALVideoDevice
+===============
+
+.. toctree::
+   :hidden:
+   :maxdepth: 1
+
+   alvideodevice-api
+   alvideodevice-tuto
+   alvideodevice-indepth
+
+:ref:`naoqi-vision` || Overview | :ref:`API <alvideodevice-api>` |
+:ref:`Tutorials <alvideodevice-tuto>` | :ref:`API-advanced`
+
+-------------
+
+.. seealso::
+
+   - :ref:`Video camera Hardware<hardware-video>`
+
+
+
+What it does
+------------
+
+The **ALVideoDevice** module is in charge of providing images from the video source
+(e.g. NAO's cameras, Simulator, an ARV video file) to all modules processing them
+(e.g. ALFaceDetection, ALVisionRecognition) in an efficient way.
+
+In addition, **ALVideoDevice** module is in charge of recording **ARV** timestamped
+video files when requested by the user. You will find more details on **ARV**
+and on how to change the video source in :ref:`ALVideoDevice::recordAndReplayArvVideoFiles`.
+
+How it works
+------------
+
+As the **ALVideoDevice** module knows at every moment the list of modules needing
+images and their requirements, it is able to set the minimum configuration for
+the video device that will fulfil the needs of all the modules while saving
+processing resources.
+Details on the internal mechanism and on how to switch between video sources can be
+found in :ref:`ALVideoDevice::detailsOnALVideoDevice`.
+
+Performances and Limitations
+----------------------------
+
+**Performances**
+
+Best performance on NAO is achieved when processing directly the native colorspace
+provided by the camera: YUV422. For other colorspaces, a conversion is done by
+the **ALVideoDevice** module, so processing times are ranked as follow for the
+main colorspaces:
+
+YUV422 < Yuv < YUV < RGB/BGR < HSY (close to HSV/HSL colorspaces in term of functionality, but faster to process).
+
+YUV colorspace is convenient as it is more powerfull than RGB:
+
+- luminance is in the Y chanel so don't need to average the three RGB layers to get a grey level image,
+- chrominance is purely embedded in both U and V chanels, so it's easier to work
+  on colours compared to RGB for which luminance and chrominance are correlated.
+  
+  Providing uncorrelated luminance and chrominance channels, it brings almost the
+  same advantages than HSV/HSL without spending as much CPU time for processing it.
+
+**Limitations**
+
+Currently on ATOM CPU, requesting more than 5fps 1280x960 HD images remotely 
+(getImageRemote) is  bringing some frame drops. So we recommand not to go over 5fps
+HD images if you want to get them through the network. If all modules processing HD
+images are calling them localy (getImageLocal), there is no such limitation.
+
+Here are the observed framerates when requesting uncompressed YUV422 images on NAO v4 (*).
+
++-----------------+-------------+-------------+----------------+-------------+
+|                 |    local    | Gb Ethernet | 100Mb Ethernet |    Wifi g   |
++=================+=============+=============+================+=============+
+| 160x120 (QQVGA) |    30fps    |    30fps    |     30fps      |    30fps    |
++-----------------+-------------+-------------+----------------+-------------+
+| 320x240 (QVGA)  |    30fps    |    30fps    |     30fps      |    11fps    |
++-----------------+-------------+-------------+----------------+-------------+
+| 640x480 (VGA)   |    30fps    |    30fps    |     12fps      |    2.5fps   |
++-----------------+-------------+-------------+----------------+-------------+
+| 1280x960 (4VGA) |    29fps    |    10fps    |      3fps      |    0.5fps   |
++-----------------+-------------+-------------+----------------+-------------+
+
+(*) 
+    - Remote performance might vary with the client network configuration.
+    - On Windows, Monitor is usually appearing as blocked at 21fps. 
+      Other remote modules don't suffer such a limitation. 
+    - GB Ethernet performance with 1280x960 was observed on WinXP. 
+
+
+Getting started
+---------------
+
+1. Subscribe your vision module to the **ALVideoDevice** proxy, providing the different
+   parameters that will let it know what the module needs, 
+   
+2. In the main process loop, get an image calling :cpp:func:`ALVideoDeviceProxy::getImageLocal`
+   or :cpp:func:`ALVideoDeviceProxy::getImageRemote` (depending if your module is
+   either local or remote), 
+   
+3. Release the image calling :cpp:func:`ALVideoDeviceProxy::releaseImage`, 
+
+4. When you stop your module, call unsubscribe after exiting the main loop.
+
+
+Troubleshooting
+---------------
+
+On GEODE CPU, for some reason, processing images provided directly from the V4L2
+driver (data are in kernel space buffers) and storing results in userland takes
+longer than it should, even when doing just a memcpy. A workaround is used by first
+copying manually the images in a userland buffer in a most efficient way than the
+memcpy (yes, in this particular situation memcpy is totally unefficient) and after
+processing this userland buffer.
+
+
+Additional resources
+--------------------
+
+**OpenCV**
+
+If you want to develop your own vision module in C++, you might be interested
+in `OpenCV <http://opencv.willowgarage.com/wiki/>`_. It is a large and powerful 
+library dedicated to vision processing. 
+On NAO we are currently using OpenCV2.1 and plan to switch to 2.3 after extensive tests.
+
+
+**pYUV: a free player for YUV422 images and videos**
+
+NAO's camera provides natively YUV422 color images.
+These images are used to create arv video files or ari image files that, in addition,
+are timestamped. As this format is not common, it can't usually be opened by common viewers.
+This is where pYUV steps in.
+
+pYUV is a multiplatform (Windows, Mac and Linux) freeware and can be downloaded from
+its main page: `<http://dsplab.diei.unipg.it/pyuv_raw_video_sequence_player>`_ or other
+sites.
+
+This software can display several non common image and video formats. For arv and ari
+files, open pYUV, drop the file on, and set the different fields accordingly to what follows:
+
+Main settings
+
+- Size: Custom with 1280x960, 640x480, 320x240 or 160x120 depending on the resolution used for recording
+- Color space: YUV
+- Subsampling: 4:2:2
+- Ordering: YUY2
+- Interleaved: checked
+- Anamorphic: unchecked
+
+Extra settings
+
+- Bits per sample: 8
+- Header bytes: 32
+

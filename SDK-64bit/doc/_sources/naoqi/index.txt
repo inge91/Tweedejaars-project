@@ -1,0 +1,115 @@
+.. _naoqi-api:
+
+NAOqi modules APIs
+==================
+
+.. toctree::
+  :maxdepth: 1
+  :hidden:
+
+  core/index
+  motion/index
+  audio/index
+  vision/index
+  sensors/index
+  trackers/index
+  sensors/dcm
+  stdtypes
+
+
+See also the :ref:`NAOqi Framework Introduction <naoqi-framework-overview>` to have an overview of the NAOqi framework.
+
+Core
+-----
+
+Read also the :ref:`naoqi-core` introduction.
+
++---------------------------------------------------------------------+
+| - :ref:`ALBehaviorManager <albehaviormanager-api>`                  |
+| - :ref:`ALBonjour <albonjour-api>`                                  |
+| - :ref:`ALMemory <almemory-api>`                                    |
+| - :ref:`ALModule <almodule-api>`                                    |
+| - :ref:`ALPrerences <alpreferences-api>`                            |
+| - :ref:`ALResourceManager <alresourcemanager-api>`                  |
+| - :ref:`ALLogger <allogger-api>` - deprecated                       |
+| - :ref:`ALLauncher <allauncher-api>` - deprecated                   |
++---------------------------------------------------------------------+
+
+Motion
+------
+
+Read also the :ref:`naoqi-motion` introduction.
+
++---------------------------------------------------------------------+
+| - :ref:`ALMotion <almotion-api>`                                    |
+| - :ref:`ALMotionRecorder <almotionrecorder-api>`                    |
++---------------------------------------------------------------------+
+
+
+Audio
+-----
+
+Read also the :ref:`naoqi-audio` introduction.
+
++---------------------------------------------------------------------+
+| - :ref:`ALAudioDevice <alaudiodevice-api>`                          |
+| - :ref:`ALAudioPlayer <alaudioplayer-api>`                          |
+| - :ref:`ALAudioRecoder <alaudiorecorder-api>`                       |
+| - :ref:`ALAudioSourceLocalisation <alaudiosourcelocalization-api>`  |
+| - :ref:`ALSoundDetection <alsounddetection-api>`                    |
+| - :ref:`ALSpeechRecognition <alspeechrecognition-api>`              |
+| - :ref:`ALTextToSpeech <altexttospeech-api>`                        |
++---------------------------------------------------------------------+
+
+
+Vision
+------
+
+Read also the :ref:`naoqi-vision` introduction.
+
++---------------------------------------------------------------------+
+| - :ref:`ALFaceDetection <alfacedetection-api>`                      |
+| - :ref:`ALLandmarkDetection <allandmarkdetection-api>`              |
+| - :ref:`ALRedBallDetection <alredballdetection-api>`                |
+| - :ref:`ALVideoDevice <alvideodevice-api>`                          |
+| - :ref:`ALVisionRecognition <alvisionrecognition-api>`              |
+| - :ref:`ALVisionToolBox <alvisiontoolbox-api>`                      |
++---------------------------------------------------------------------+
+
+
+Sensors
+-------
+
+Read also the :ref:`naoqi-sensors` introduction.
+
++---------------------------------------------------------------------+
+| - :ref:`ALBattery <albattery-api>`                                  |
+| - :ref:`ALFsr <alfsr-api>`                                          |
+| - :ref:`ALInfrared <alinfrared-api>`                                |
+| - :ref:`ALLaser <allaser-api>`                                      |
+| - :ref:`ALRobotPose <alrobotpose-api>`                              |
+| - :ref:`ALSensors <alsensors-api>`                                  |
+| - :ref:`ALSonar <alsonar-api>`                                      |
+| - :ref:`ALLeds <alleds-api>`                                        |
++---------------------------------------------------------------------+
+
+
+Trackers
+--------
+
+Read also the :ref:`naoqi-trackers` introduction.
+
++---------------------------------------------------------------------+
+| - :ref:`ALFaceTracker <alfacetracker-api>`                          |
+| - :ref:`ALRedBallTracker <alredballtracker-api>`                    |
++---------------------------------------------------------------------+
+
+
+DCM
+-------
+
+Read also the :ref:`DCM <dcm>` introduction.
+
++---------------------------------------------------------------------+
+| - :ref:`DCM <dcm-api>`                                              |
++---------------------------------------------------------------------+

@@ -1,0 +1,883 @@
+.. |timeline-editor-button| image:: /medias/desktop/choregraphe/timeline_open_editor.png
+   :class: img-inline
+
+.. |timeline-play-button| image:: /medias/desktop/choregraphe/timeline_play.png
+   :class: img-inline
+
+.. |timeline-add-button| image:: /medias/desktop/choregraphe/timeline_add_layers.png
+   :class: img-inline
+
+.. |timeline-delete-button| image:: /medias/desktop/choregraphe/timeline_delete_layers.png
+   :class: img-inline
+
+.. |timeline-enabled-button| image:: /medias/desktop/choregraphe/behavior_layers_blue_round_full.png
+   :class: img-inline
+
+.. |timeline-disabled-button| image:: /medias/desktop/choregraphe/behavior_layers_blue_round_empty.png
+   :class: img-inline
+
+
+
+
+.. _choregraphe-reference-box-type-timeline:
+
+Timeline box
+=============
+
+What is a Timeline box
+-----------------------
+
+.. image:: /medias/desktop/choregraphe/chore_ref_timeline_box.png
+   :width: 600 px
+   :height: 450 px
+
+A **Timeline** box is a :ref:`choregraphe-reference-box` which includes
+a :ref:`Timeline <choregraphe-reference-box-timeline>` and a :ref:`Script <choregraphe-reference-box-script>`.
+
+
+.. _choregraphe-howto-create-timeline-box:
+
+How to create a Timeline box
+----------------------------
+
+To create a **Timeline** box, you can:
+
+* Drag and drop the **Templates** > **Animation** box from the default box library, or
+
+* Create it from scratch:
+
+=====  =============================================================================================
+Step       Action
+=====  =============================================================================================
+1.      Right-click on the **Flow diagram** wherever you want to create the box
+        and choose **Add a new Box**.
+
+        The **Create a new box** menu is displayed.
+
+        .. image:: /medias/desktop/choregraphe/chore_create_new_box.jpg
+            :width: 317 px
+            :height: 600 px
+
+2.      Add a **Name** and a **Tooltip** for your box.
+
+3.      **Optional**: set the picture to recognize it among other boxes in your diagram.
+
+4.      **Optional**: set parameters, inputs and outputs that can be manipulated by the box.
+
+        For further details about parameters, see :ref:`How to add/remove inputs, outputs,
+        parameters in a box <choregraphe-howto-add-remove-box-in-out-param>` section.
+
+5.      In the box type part, select **Timeline**.
+
+6.      Click the **Ok** button.
+
+        The created **Timeline** box is displayed on the Flow diagram.
+
+7.      Double click on your box, to get into and edit the inner **Timelime**.
+
+        .. image:: /medias/desktop/choregraphe/timeline_view.png
+           :width: 562 px
+           :height: 223 px
+=====  =============================================================================================
+
+
+.. _choregraphe-interface-timeline-panel:
+
+Timeline panel
+----------------
+
+| The **Timeline** panel is displayed when you double-click on a :ref:`choregraphe-reference-box-type-timeline`.
+| It enables you to **edit** the :ref:`Timeline <choregraphe-reference-box-timeline>` of the box.
+
+.. image:: /medias/desktop/choregraphe/chore_timeline_panel.png
+   :width: 549 px
+   :height: 250 px
+
+=====  ======================  ========================================================================================  ===========================================================
+Part    Name                    Description                                                                               For further details, see ...
+=====  ======================  ========================================================================================  ===========================================================
+**A**   **Motion**              Allows you to define **Motion Keyframes** to be executed following                       :ref:`choregraphe-detailed-interface-timeline-editor`
+                                the **Timeline**.
+
+                                |timeline-editor-button| **Edit** button displays the
+                                :ref:`choregraphe-detailed-interface-timeline-editor`.
+
+                                |timeline-play-button| **Play motion** button plays the
+                                :ref:`choregraphe-reference-box-motion-layer` of the **Timeline**.
+
+**B**   **Time ruler**          Represents the time elapsing when the box is started.                                    |
+                                                                                                                         |  :ref:`timeline-panel-motion-layer-area`
+                                :ref:`timeline-panel-motion-layer-area`: the upper white part of the                     |
+                                **Timeline** displays the Frame numbers.                                                 |
+                                It allows you to set the **Start** and **End** frames.                                   | :ref:`choregraphe-reference-box-motion-layer`
+                                                                                                                         |
+                                :ref:`choregraphe-reference-box-motion-layer`: the grey part of the **Timeline**
+                                displays the **Motion Keyframes**.
+                                It allows you to create and edit **Motion Keyframes**.
+
+**C**   **Behavior layers**     Allows you to define **Behavior layers** to be executed in parallel with                 :ref:`timeline-panel-behavior-layers-area`
+                                **Motion Keyframes**.
+
+
+                                |timeline-add-button| **Add** button allows you to add one or more
+                                **Behavior layers**.
+
+**D**   **Edit** button         Allows you to set the parameters of the **Timeline**.                                    :ref:`timeline-panel-details-area`
+
+**E**   **Frame** number        Displays the number of the selected Frame.
+=====  ======================  ========================================================================================  ===========================================================
+
+
+
+.. _choregraphe-reference-box-timeline:
+
+What is a Timeline
+-------------------
+
+A **Timeline** enables you to easily synchronize boxes with movements, movements with each other
+and/or :ref:`Boxes <choregraphe-reference-box>` with each other.
+
+A **Timeline** is constituted by:
+
+* a :ref:`choregraphe-reference-box-motion-layer` which contains movements.
+* Optionally one or several :ref:`Behavior layers <choregraphe-reference-box-behavior-layer>`
+  which contain **Flow diagrams** NAO will execute in addition to its movements.
+
+Timeline execution
++++++++++++++++++++
+
+The whole **Timeline** is based on a time ruler.
+The time is represented on the **Timeline** by numbered :ref:`Frames <choregraphe-reference-box-frame>`.
+Each **Frame** corresponds to a position of the robot and/or :ref:`Flow diagrams <choregraphe-reference-box-flow-diagram>` to execute.
+
+When a **Timeline** is started, the :ref:`choregraphe-reference-box-timeline-time-cursor`
+is placed on the :ref:`Start frame <choregraphe-reference-box-frame-start>`.
+Then it is regularly incremented to the next Frame, until it gets to the
+:ref:`End frame <choregraphe-reference-box-frame-end>`.
+
+The speed to move from a **Frame** to another is defined by the **Frame rate** of the Timeline.
+For further details, see :ref:`timeline-panel-details-area`.
+
+.. note::
+
+    The automatic process regularly moving the
+    :ref:`choregraphe-reference-box-timeline-time-cursor` to the next
+    Frame can be affected (stopped, restarted, moved to another Frame) by the
+    :ref:`sub-boxes <choregraphe-reference-box-child>` and the :ref:`script of
+    the box <choregraphe-reference-box-script>`.
+    For example, the **Goto And Stop** boxes move the cursor to a specific frame
+    and pause the cursor so that it will not move to the next frame.
+
+
+
+.. _timeline-panel-motion-layer-area:
+.. _choregraphe-interface-timeline-panel-motion-layer-area:
+
+Frame ruler
+-----------
+
+| The upper white part of the Time ruler displays the Frame numbers.
+| It allows you to set the **Start** and **End** frames.
+
+
+.. image:: /medias/desktop/choregraphe/motion_layer_timeline.png
+    :width: 371 px
+    :height: 189 px
+
+=====  =======================================================  ===================================================================
+Part    Name                                                      Represented by ...
+=====  =======================================================  ===================================================================
+**A**   :ref:`choregraphe-reference-box-frame`                    scale of numbers.
+
+**B**   :ref:`choregraphe-reference-box-frame-start`              a green flag.
+
+**C**   :ref:`choregraphe-reference-box-frame-end`                a red flag.
+
+**D**   :ref:`choregraphe-reference-box-timeline-time-cursor`     a red line, appearing only when the Timeline is executed.
+=====  =======================================================  ===================================================================
+
+.. _choregraphe-reference-box-frame:
+
+Frames
+++++++++
+
+| The **Frame** is the unit of a :ref:`Timeline <choregraphe-reference-box-timeline>`.
+| Each Frame has a **number of frame** which corresponds to its position in the Timeline.
+|
+
+When the :ref:`choregraphe-reference-box-timeline-time-cursor` gets to a Frame, simultaneously:
+
+* the joint values stored to this Frame are applied to the robot.
+* the :ref:`Flow diagram <choregraphe-reference-box-flow-diagram>` of each
+  :ref:`Behavior keyframe <choregraphe-reference-box-behavior-keyframe>` placed on
+  this Frame are :ref:`loaded <choregraphe-reference-loading-unloading>` (if they have not been loaded yet).
+
+
+.. _choregraphe-reference-box-frame-start:
+
+Start frame
+^^^^^^^^^^^^^
+
+The **Start frame** is a specific :ref:`choregraphe-reference-box-frame`.
+
+When the Timeline is started, the :ref:`choregraphe-reference-box-timeline-time-cursor`
+is directly placed at this Frame.
+
+Any Frame which is before the **Start frame** will not be reached.
+
+If you force the :ref:`choregraphe-reference-box-timeline-time-cursor` to move
+on one of those Frames (with a **Goto And Play** box for example),
+this will have the same result as going to the :ref:`choregraphe-reference-box-frame-end`.
+
+
+.. _choregraphe-reference-box-frame-end:
+
+End frame
+^^^^^^^^^^
+
+The **End frame** is a specific :ref:`choregraphe-reference-box-frame`.
+
+As soon as the :ref:`choregraphe-reference-box-timeline-time-cursor` gets to this Frame:
+
+#. The :ref:`choregraphe-reference-box-timeline-time-cursor` is paused.
+   So it stops being incremented.
+#. If there is any **onStopped** :ref:`output <choregraphe-reference-box-output>`:
+
+   * The Timeline is :ref:`unloaded <choregraphe-reference-loading-unloading>`.
+   * The first **onStopped** :ref:`output <choregraphe-reference-box-output>` of the box is stimulated.
+
+.. warning:
+
+   If there is no **onStopped** output, the Timeline will not be
+   :ref:`unloaded <choregraphe-reference-loading-unloading>`, so the
+   :ref:`Behavior layers <choregraphe-reference-box-behavior-layer>`
+   present at this Frame can still be running.
+
+Any Frame which is after the **End frame** will not be reached.
+
+If you force the :ref:`choregraphe-reference-box-timeline-time-cursor`
+to move on one of those Frames (with a **Goto And Play** box for example),
+this will have the same result as going to the **End frame**.
+
+
+How to set Start and End frames
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+By default, **Start frame** is set to the Frame **0** and **End frame** is set just
+before the last **Motion frame** defined.
+
+To move **Start frame** or **End frame**:
+
+* Drag them on the ruler or
+* Right-click on a Frame number and choose **Set start frame here** or **Set end frame here**.
+
+To reset them to the default value:
+
+* Right-click on a Frame number and choose **Reset start here** or **Reset end here**.
+
+
+.. _choregraphe-reference-box-timeline-time-cursor:
+
+Time cursor
++++++++++++
+
+The **Time cursor** represents the currently executed Frame in the Timeline.
+
+Value of the Time cursor
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+For a :ref:`choregraphe-reference-box-type-timeline`, the value of the **Time cursor**:
+
+* is the number of the executed Frame, or
+* is equal to -1 when its :ref:`Timeline <choregraphe-reference-box-timeline>` has not been started or has been stopped.
+
+For a :ref:`choregraphe-reference-box-type-flow-diagram`, its value is systematically equal to -1.
+
+A :ref:`choregraphe-reference-box-type-script` has no **Time cursor**.
+
+.. _choregraphe-howto-value-time-cursor:
+
+How to get the value of the Time cursor
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+You can access to the value of the :ref:`choregraphe-reference-box-timeline-time-cursor`
+of a Timeline box from its :ref:`Script <choregraphe-reference-box-script>` with the following command:
+
+.. code-block:: python
+
+   timeCursor = ALMemory.getData( self.id )
+
+You can also access to it from the script of a :ref:`child box <choregraphe-reference-box-child>` with the following command:
+
+.. code-block:: python
+
+   timeCursor = ALMemory.getData( self.parentId )
+
+.. warning::
+   A :ref:`choregraphe-reference-box-type-script` has no **Time cursor**.
+   So if you try to call the first command above in a script box, it will return an error.
+
+
+
+.. _choregraphe-reference-box-motion-layer:
+
+Motion layer
+-------------
+
+The **Motion layer** is where NAO's movements are stored in the :ref:`Timeline <choregraphe-reference-box-timeline>`.
+
+Each :ref:`choregraphe-reference-box-motion-keyframe` on the **Motion layer**
+corresponds to a position of the robot or a part of its body.
+
+.. image:: /medias/desktop/choregraphe/chore_ref_motion_layer.png
+   :width: 493 px
+   :height: 213 px
+
+.. note::
+
+   As there are several joints stored in this **Motion layer**, we can say it is
+   made with several sub-motion layers, each of them corresponding to a joint.
+   They are the sub-layers you can see when opening the :ref:`choregraphe-detailed-interface-timeline-editor`.
+
+.. _choregraphe-reference-box-motion-keyframe:
+
+Motion keyframe
+++++++++++++++++
+
+A **Motion keyframe** represents a position of the robot or a part of its body.
+
+It contains the angle values of the stored joints.
+
+When the :ref:`choregraphe-reference-box-timeline-time-cursor` gets to a **Motion keyframe**,
+the joint values stored to this frame are applied to the robot.
+
+
+Interpolation
+++++++++++++++
+
+The **Motion layer** contains :ref:`choregraphe-reference-box-motion-keyframe`
+representing specific positions set by the person who made the movement.
+
+Then an interpolation of joint values is automatically made in order to obtain
+intermediate positions between two :ref:`Motion keyframes <choregraphe-reference-box-motion-keyframe>`.
+
+.. note::
+
+   You can choose the type of interpolation between the :ref:`choregraphe-reference-box-motion-keyframe`
+   in the :ref:`choregraphe-detailed-interface-timeline-editor`.
+
+
+
+Editing Motion keyframes
+--------------------------
+
+**Motion keyframes** can be created and modified directly on the :ref:`motion-ruler` or
+using the :ref:`choregraphe-detailed-interface-timeline-editor`.
+
+
+.. _motion-ruler:
+
+Motion ruler
++++++++++++++
+
+| The Motion ruler gives a summarized view of the **Motion** layer, allowing you to create and edit animations.
+| Use also the :ref:`choregraphe-detailed-interface-timeline-editor` to see a detailed view of the **Motion** layer.
+|
+
+.. image:: /medias/desktop/choregraphe/motion_layer_timeline_bottom.png
+    :width: 484 px
+    :height: 187 px
+
+
+=====  =====================================  ===============================================================================
+Part    Name                                   Description
+=====  =====================================  ===============================================================================
+**A**   **Motion keyframe**                    Each :ref:`choregraphe-reference-box-motion-keyframe`
+                                               is represented by a **dark grey rectangle**.
+
+**B**   **Actuator values**                    If you keep the mouse on a **Motion keyframe**,
+                                               a tooltip appears with the values of stored joints.
+
+**C**   Selected **Motion keyframe**           A **Motion keyframe** gets orange when it is selected.
+
+                                               Drag a selection rectangle to select several **Motion keyframes**, or
+                                               Ctrl-Click them.
+
+**D**   Selected **range of frames**           The **range of frames** is an alternative mode of selecting
+                                               **Motion keyframes**.
+
+                                               Drag the Frame numbers to create it.
+
+**E**   Insertion point                        Represented by a blue line, the insertion point allows to create or to paste
+                                               **Motion keyframes**.
+=====  =====================================  ===============================================================================
+
+
+
+Creating
+++++++++++
+
+To insert a new **Motion keyframe** with the robot's current position:
+
+1. Right-click a frame in the grey Timeline and choose **Store joints in keyframe**.
+2. Choose the joints you want to store the value of (**Whole body**, **Head**, **Arms** or **Legs**).
+
+   A dark grey rectangle appears.
+
+Selecting
+++++++++++
+
+To select:
+
+* a **Motion keyframe**, simply click on it.
+
+  The robot will automatically take the **position** corresponding to this **Motion keyframe**.
+
+* several **Motion keyframes**, drag and drop in the grey Timeline.
+
+* all **Motion keyframes**, right-click the grey Timeline and choose **Selection** > **Select all**.
+
+.. note::
+   The option **Select from layer** is only useful in the :ref:`choregraphe-detailed-interface-timeline-editor`.
+
+Removing
++++++++++
+
+To remove the values of some joints from any **Motion keyframe**:
+
+1. Select one or several **Motion keyframe**.
+
+2. Right-click it and choose **Remove joints from keyframe**.
+
+3. Choose the joints you want to remove (**Whole body**, **Head**, **Arms** or **Legs**).
+
+Moving
+++++++++
+
+To move **Motion keyframes** within the Timeline:
+
+1. Select one or several **Motion keyframe**.
+
+2. Drag them.
+
+or
+
+1. Select one or several **Motion keyframe**.
+
+2. Right-click it and choose **Copy** or **Cut**.
+
+3. Click on the Timeline in order to place the **insertion point** (see :ref:`motion-ruler`).
+
+4. Right-click it and choose **Paste**.
+
+.. note::
+
+   If the **Keyframe** you have pasted is **empty**, this could mean that there
+   is a conflict with contradictory values for the same joint at this frame.
+
+Mirroring
+++++++++++
+
+The values of left and right joints can be **swapped** using the **Mirror** option in the contextual menu.
+Then you can select where to apply the swap (**Whole timeline**, **Selected frames**, **Selected keys**).
+
+For example if the robot moves his right arm during the whole Timeline and you mirror it,
+then it will move his left arm from now on instead.
+
+Spreading / tightening
++++++++++++++++++++++++
+
+to change the gap between **Motion keyframes**:
+
+1. Select a **range of frames** by dragging the **Frame numbers**.
+
+   The selected **range of frames** is represented by a blue square surrounded by purple triangles.
+
+2. Drag the right purple triangle to resize the selected chunk of motion layer.
+
+   Note that the left purple triangle allows you to move the selected chunk of motion layer.
+
+
+.. note::
+   Since a chunk of motion layer may contain **Motion keyframes**, they are moved as the selection is moved.
+   They also adapt themselves to the new size of the selection.
+   As the size of the selection grows, the duration between **Motion keyframes** grows too.
+
+Exporting C++ / Python
++++++++++++++++++++++++
+
+To export an animation to C++ or Python code:
+
+1. Select one or several **Motion keyframes**.
+2. Right-click them and select **Export motion to clipboard**.
+3. Select a language (**C++** or **Python**) and a mode (**bezier** or **simplified**).
+4. Paste it in your code.
+
+   The robot will make the same movements when this code is executed.
+
+
+.. _timeline-panel-behavior-layers-area:
+.. _choregraphe-interface-timeline-panel-behavior-layers-area:
+
+Behavior layers
+----------------
+
+**Behavior layers** area allows you to add
+:ref:`Behavior layer(s) <choregraphe-reference-box-behavior-layer>` to the Timeline,
+which basically represent what NAO is going to do in addition to his movements.
+
+
+.. image:: /medias/desktop/choregraphe/behavior_layers.png
+    :width: 518 px
+    :height: 207 px
+
+=====  ===================================================  ===========================================================================================================
+Part    Name                                                 Description
+=====  ===================================================  ===========================================================================================================
+**A**   |timeline-add-button| **Add** button                 Allows you to add one or more
+                                                             :ref:`Behavior layers <choregraphe-reference-box-behavior-layer>`
+
+**B**   :ref:`choregraphe-reference-box-behavior-layer`      Click the **Activation** button to enable or disable a **Behavior layer**:
+
+                                                             * |timeline-enabled-button| means the **Behavior layer** is enabled.
+
+                                                             * |timeline-disabled-button| means the **Behavior layer** is disabled,
+                                                               it is hidden and will not be loaded nor executed.
+
+                                                             Click the name of a **Behavior layer**, to edit it.
+
+                                                             Click the |timeline-delete-button| **Delete** button to delete the **Behavior layer**.
+
+
+**C**   :ref:`choregraphe-reference-box-behavior-keyframe`   Each **Behavior layer** can run one or several
+                                                             :ref:`Behavior keyframes <choregraphe-reference-box-behavior-keyframe>` sequentially.
+=====  ===================================================  ===========================================================================================================
+
+
+.. _choregraphe-reference-box-behavior-layer:
+
+Behavior layer
+++++++++++++++
+
+A **Behavior layer** is constituted by
+:ref:`Behavior keyframes <choregraphe-reference-box-behavior-keyframe>`, sequentially organized.
+
+Creating more than one **Behavior layer** allows to get two **Behavior keyframes**
+active at the same time i.e. synchronize two **Flow diagrams**.
+
+
+
+.. _choregraphe-reference-box-behavior-keyframe:
+
+Behavior keyframe
++++++++++++++++++++
+
+A **Behavior keyframe** is a :ref:`Flow diagram <choregraphe-reference-box-flow-diagram>`
+which is applied on a range of :ref:`Frames <choregraphe-reference-box-frame>` of the **Timeline**.
+
+.. image:: /medias/desktop/choregraphe/chore_ref_behavior_keyframe.png
+    :width: 600 px
+    :height: 274 px
+
+Behavior keyframe execution
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+As soon as the :ref:`choregraphe-reference-box-timeline-time-cursor` gets within this range of Frames,
+the **Flow diagram** of the **Behavior keyframe** is :ref:`loaded <choregraphe-reference-loading-unloading>`.
+
+As soon as the :ref:`choregraphe-reference-box-timeline-time-cursor` gets out of the range of Frames of the **Behavior keyframe**,
+its **Flow diagram** is :ref:`unloaded <choregraphe-reference-loading-unloading>`.
+
+Adding
+^^^^^^^^^^^^
+
+To insert a new **Behavior keyframe** in a **Behavior layer**:
+
+1. Right-click the Frame you want to insert the **Behavior keyframe** to and choose **Insert KeyFrame**.
+
+2. Double-click on the **Behavior keyframe**.
+
+3. Set its **name**, its start frame in the **index** field, and its **image**.
+
+Selecting
+^^^^^^^^^^
+
+To select:
+
+* a **Behavior keyframe**, simply click it.
+
+* several **Behavior keyframes**, Drag a selection rectangle around them.
+
+* all **Behavior keyframes** from a **Behavior layer**,
+  right-click the concerned **Behavior layer** area and choose **Selection** > **Select from layer**.
+
+* all **Behavior keyframes**, right-click the **Behavior layers** area and choose **Selection** > **Select all**.
+
+
+Editing
+^^^^^^^^
+
+To move **Behavior keyframes** within the **Behavior layer**, simply drag them.
+
+They can also be **cut**, **copied**, **pasted** and **deleted** through the contextual menu.
+
+
+.. _timeline-panel-details-area:
+
+Timeline options
+----------------
+
+The **Edit** button of a **Timeline** allows you to set the following **Timeline** parameters:
+
+==========================   ==============================================================================
+ Name                         Description
+==========================   ==============================================================================
+**FPS**                       | Stand for **Frame Per Second**.
+                              | Sets the execution speed of the **Timeline**.
+
+**Size**                      Size of the **Timeline** in number of frames.
+
+**Resources Acquisition**     Allows you to manage conflicts between commands sent to the same joint.
+
+                              You can choose several modes:
+
+                              * **Passive**: The motion will be done if it can be done. If it cannot,
+                                then it will not.
+                              * **Waiting**: The motion will be done as soon as the joints will be
+                                available i.e. not being doing another motion.
+                              * **Aggressive Mode (unsafe)**: The motion will be done anyway, even if
+                                another command has been asked on the same joint.
+
+                              .. warning::
+                                  The **Resources Acquisition** setting should **not be used anymore**
+                                  as an improved solution has been provided which enables you to set
+                                  the :ref:`resources <choregraphe-reference-box-resource>` used by
+                                  each box and some more settings.
+
+                                  We recommend you to update your older behaviors and set the
+                                  :ref:`resources <choregraphe-reference-box-resource>` of the boxes
+                                  of your behaviors. To do so, see the section
+                                  :ref:`choregraphe-howto-set-resources-for-box`.
+==========================   ==============================================================================
+
+
+
+.. _choregraphe-detailed-interface-timeline-editor:
+
+Timeline Editor
+---------------
+
+The Timeline Editor has two **edition modes**:
+
+* :ref:`Worksheet <choregraphe-detailed-interface-timeline-editor-worksheet>`.
+* :ref:`Curves <choregraphe-detailed-interface-timeline-editor-curves>`.
+
+In both modes, there are **toolbars** available on the top of the window.
+
+The first toolbar is displayed as follows:
+
+.. image:: /medias/desktop/choregraphe/timeline_editor_toolbar1.png
+
+Here are the actions you can make with this toolbar:
+
+.. list-table::
+   :widths: 10 100
+   :header-rows: 1
+
+   * - Button(s)
+     - Function
+   * - .. image:: /medias/desktop/choregraphe/undo_redo_buttons.png
+     - The classical **undo** and **redo** buttons.
+
+       .. warning::
+          These buttons **does not affect only the timeline**.
+          They affect most of the actions you made in the behavior, even those which were out of the Timeline Editor.
+   * - .. image:: /medias/desktop/choregraphe/timeline_editor_mode.png
+     - These buttons enables you to select the **edition mode**:
+
+       * Left button to select **Curves**.
+       * Right button to select **Worksheet**.
+
+       The second mode is selected by default.
+   * - .. image:: /medias/desktop/choregraphe/chore_rec_switch.png
+     - Activates or deactivate the **recording mode**.
+   * - .. image:: /medias/desktop/choregraphe/chore_rec_start.png
+
+       .. image:: /medias/desktop/choregraphe/chore_rec_stop.png
+     - **Starts** or **stops** the motion recording.
+       Automatically activates the **animation mode**.
+       This button is only enabled when the **recording mode** is activated.
+       A recording can also stop by itself when it reaches the last frame.
+       The recording will be done in the current range selection, or, if there is no such selection, between the :ref:`start <choregraphe-reference-box-frame-start>` and the :ref:`end frame <choregraphe-reference-box-frame-end>` of current timeline.
+   * - .. image:: /medias/desktop/choregraphe/chore_rec_settings.png
+     - Edit the **recording settings**.
+
+The **recording settings** are presented as below:
+
+.. image:: /medias/desktop/choregraphe/chore_recording_mode_settings.png
+
+The available settings are:
+
+* **Mode**: The way you record joint positions.
+  You can choose between:
+
+  * **Periodic**: positions of the recorded joints are **regularly stored**.
+  * **Interactive with bumpers**: positions of the recorded joints are stored each time you **press the left foot bumper**.
+    Pressing on the **right foot bumper** sets the stiffness of the recorded joints.
+  * **Interactive with chest button**: positions of the recorded joints are stored each time you **press the torso button** or you say **"store position"**.
+    NAO's **ear LEDs flash** when he understands "store position".
+* **Time step**: time elapsing between two stored keyframes.
+  Indeed whatever the way you record joint positions, the keyframes created at each storage will be the same time step apart.
+* **Allow timeline extension**:
+
+  If this option is unchecked, the recording will **automatically stop** when the :ref:`end frame <choregraphe-reference-box-frame-end>` is encountered.
+
+  If it is checked, the recording will **continue** as long as the user did not press the **Stop** button.
+
+  In that case, the timeline contents after what was supposed to be the last frame will be "pushed" at the end of the recording.
+
+To know how to use the **recording settings** refer to the tutorial: :ref:`choregraphe-tuto-recording-mode`.
+
+Whenever the **recording mode** is active, two additional columns appear in the table of the joints:
+
+.. list-table::
+   :widths: 10 100
+   :header-rows: 1
+
+   * - Column
+     - Description
+   * - .. image:: /medias/desktop/choregraphe/chore_record.png
+     - If this option is activated, all the children joints of this joint will be **recorded**.
+   * - .. image:: /medias/desktop/choregraphe/chore_replay.png
+     - If this option is activated, all the children joints of this joint will be **played during the recording**.
+
+In both mode, you can see the **list of joints and groups of joints**.
+For example the group **Legs** contains the group **Left leg** which contains the group **Left ankle** which contains the joints **LAnklePitch** and **LAnkleRoll**.
+
+To **expand** a group of joints, click on the **+** button next to its name.
+To **unexpand** it, click on the **-** button next to its name.
+
+You can **select** a joint or a group of joints by simply clicking on it.
+
+You can **enable or disable** a joint or a group of joints by clicking on the **blue round** on the right of its name:
+
+.. list-table::
+   :widths: 5 100
+   :header-rows: 1
+
+   * - .. image:: /medias/desktop/choregraphe/behavior_layers_blue_round_empty.png
+     - The joint or the group of joints is **disabled**.
+       It will not be loaded nor executed.
+   * - .. image:: /medias/desktop/choregraphe/behavior_layers_blue_round_full.png
+     - The joint or the group of joints is **enabled**.
+
+
+.. _choregraphe-detailed-interface-timeline-editor-worksheet:
+
+Timeline Editor: Worksheet
+++++++++++++++++++++++++++
+
+The default **motion recording mode** is the Worksheet mode.
+
+.. image:: /medias/desktop/choregraphe/chore_curve_editor_worksheet.png
+
+In this mode you see the **motion keyframes** of each joint and each group of joints.
+
+Each joint and group of joints and its corresponding motion keyframes are on the same line.
+
+Each **motion keyframe** that belong to a group of joints is represented by a grey rectangle when the group is not expanded and by a grey oval when it is expanded.
+
+Motion keyframe that belong to a joint is represented by a grey rectangle.
+
+All the keyframes are placed along an horizontal axis that indicates the frame number as in the :ref:`choregraphe-interface-timeline-panel`.
+
+You have the same options on motion keyframes as in the :ref:`choregraphe-interface-timeline-panel`.
+And the rectangles representing motion keyframes get the same way **orange** when they are selected.
+A rectangle or an oval representing motion keyframes for a group of joints can have an intermediate greyish orange color, when only a part of their child keyframes is selected.
+
+Moreover, you can use the option **Selection** > **Select from layer** of the right-click menu to select **all motion keyframes for a joint or a group of joint**.
+
+
+.. _choregraphe-detailed-interface-timeline-editor-curves:
+
+Timeline Editor: Curves
++++++++++++++++++++++++
+
+The second **motion recording mode** is the Curves mode.
+In this mode you see only the **motion keyframes** corresponding to the **selected joints**.
+
+.. image:: /medias/desktop/choregraphe/chore_curve_editor_curves.png
+
+Each **joint** is represented by a **curve** in a different **colour**.
+You can choose the colour of each joint in the column with the following **paintbrush** button:
+
+.. image:: /medias/desktop/choregraphe/paintbrush.png
+
+Each **keyframe** is placed along the horizontal axis as in the Worksheet mode.
+But it is also placed along the vertical axis which represents the angle value of the joint.
+
+In the Curves mode, you can **move**, **cut**, **copy** and **paste** motion keyframes.
+
+When this mode is activated, several buttons are added in the toolbar:
+
+The first six buttons are used to set interpolation modes for each keyframe.
+
+Each keyframe are linked with the previous and the next keyframe with interpolated curves.
+
+The interpolation modes of the left and right curves of a keyframe can be adjusted.
+
+Changing the interpolation modes will not affect the position of the key so the value and the frame will remain unchanged.
+
+It will affect the shape of the curves depending on which interpolation mode is chosen.
+
+Clicking on one of these buttons will set the interpolation mode for both right and left curves of the key.
+
+Here is all the interpolation modes:
+
+.. list-table::
+   :widths: 10 100
+
+   * - .. image:: /medias/desktop/choregraphe/chore_tangent_constant.png
+     - **Constant:** the value of the key is applied to the actuator up to the next keyframe.
+       This won't give smooth movements on the robot, but it can be used to implement "robotic movement" effects.
+   * - .. image:: /medias/desktop/choregraphe/chore_tangent_linear.png
+     - **Linear:** the value is interpolated linearly toward the next key.
+   * - .. image:: /medias/desktop/choregraphe/chore_tangent_auto.png
+     - **Automatic bezier:** a Bezier curve interpolation is used, but the curve parameters are computed automatically by Choregraphe to give smooth and good looking movements.
+       This is the default mode for new keyframes.
+       In that mode, contrary to all other Bezier mode, the tangents of the curve at the key are not displayed by default.
+       They can be shown by checking the "Show tangents" button (described below). Automatic tangents, when visible, are not editable,
+       and are displayed in blue rather than black to distinguish them easily.
+   * - .. image:: /medias/desktop/choregraphe/chore_tangent_bezier.png
+     - **Bezier:** this mode (and the following two) also implements a bezier interpolation, but here the curve parameters are now adjustable by the user.
+       Two tangent handles will appear next to the key to control the curve slope.
+   * - .. image:: /medias/desktop/choregraphe/chore_tangent_smooth.png
+     - **Smooth:** this is a Bezier mode too, but with an additional constraint, the two tangents of the key (on the left and on the right) must be aligned.
+       Note however that if a key is only smooth on one of its side, the constraint won't be enforced.
+   * - .. image:: /medias/desktop/choregraphe/chore_tangent_symmetrical.png
+     - **Symmetrical:** this is similar to the Smooth mode, with another constraint: the length of the two key tangents have relative sizes,
+       so moving one not only keep the other aligned but also moves it horizontally to have an even smoother movement.
+       Like the Smooth mode, the symmetry constraint will only be applied if both tangents are flagged symmetrical.
+
+The functions of the next buttons are gathered in the following table:
+
+.. list-table::
+   :widths: 5 100
+
+   * - .. image:: /medias/desktop/choregraphe/timeline_editor.png
+     - Displays the **Curve key edit** that is used to set key value and left and right interpolation modes.
+   * - .. image:: /medias/desktop/choregraphe/chore_simplify.png
+     - Reduce the number of keyframes in the curves and still keep a similar motion.
+   * - .. image:: /medias/desktop/choregraphe/chore_show_tangents.png
+     - When this button is checked, the automatic tangents of the curve that are not editable are displayed in the curve view.
+       It is useful to mix automatic keyframes with manually adjusted ones.
+   * - .. image:: /medias/desktop/choregraphe/chore_key_selection.png
+     - When this button is checked, you are in the selection mode. Drawing a rectangle with a left mouse click will select a group of keys.
+   * - .. image:: /medias/desktop/choregraphe/chore_zoom_area_selection.png
+     - When this button is checked, you are in the zoom area selection mode. Drawing a rectangle with a left mouse click will zoom the view so that it fits that rectangle.
+   * - .. image:: /medias/desktop/choregraphe/chore_viewport_scroll.png
+     - When this button is checked, you are in the viewport drag mode. In that mode, the mouse cursor becomes a hand.
+       Dragging the cursor while pressing the left mouse button will scroll the view.
+
+
+

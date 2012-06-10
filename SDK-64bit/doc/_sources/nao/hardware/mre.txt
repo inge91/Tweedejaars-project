@@ -1,0 +1,23 @@
+
+.. _hardware-mre:
+
+MRE (Magnetic Rotary Encoders)
+-------------------------------
+
+:ref:`nao-hardware` | :ref:`hardware-product-range` | :ref:`hardware-kinematics`
+| Components & Sensors | :ref:`hardware-optional-device`
+
+:ref:`hardware-sensors` | :ref:`hardware-contact-sensors` | :ref:`FSRs <hardware-fsr>` |
+:ref:`hardware-inertial` | *MRE* | :ref:`hardware-sonar`
+
+--------------------
+
+   
+32 x MRE (Magnetic Rotary Encoders) using Hall-effect sensor technology.
+
+12 bit precision, i.e. 4096 values per turn corresponding to about 0.1° precision
+
+
+.. seealso::
+
+   - :ref:`alrobotpose`

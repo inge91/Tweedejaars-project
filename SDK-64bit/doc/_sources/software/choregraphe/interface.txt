@@ -1,0 +1,182 @@
+.. _choregraphe-interface:
+
+Menus, Panels and Toolbar in a glance
+======================================
+
+Main window
+-------------
+
+At startup, the following interface is displayed.
+
+.. image:: /medias/desktop/choregraphe/chore_main.png
+   :height: 384 px
+   :width: 600 px
+
+This interface contains a :ref:`menu bar <choregraphe-overview-menubar>`,
+a :ref:`toolbar <choregraphe-overview-toolbar>` and several :ref:`panels <choregraphe-panels>`.
+
+
+.. _choregraphe-panels:
+
+Panels
+-------
+
+By default, 3 panels are displayed:
+
+#. The :ref:`choregraphe-overview-box-libary-panel`
+
+#. The :ref:`choregraphe-overview-flow-diagram-panel`
+
+#. The :ref:`3d-nao-panel`
+
+.. image:: /medias/desktop/choregraphe/chore_interface.png
+   :height: 427 px
+   :width: 600 px
+
+
+You can move any panel by clicking on the title of the panel and drag and drop it onto the desired location.
+
+You can find more advanced panels in the **View** menu:
+
+4. The :ref:`choregraphe-overview-pose-library-panel`
+
+#. The :ref:`video-monitor-panel`
+
+#. The :ref:`choregraphe-overview-project-content`
+
+#. The :ref:`choregraphe-overview-script-editor-panel`
+
+#. The :ref:`choregraphe-overview-behavior-manager-panel`
+
+#. The :ref:`choregraphe-overview-debug-panel`
+
+#. The :ref:`choregraphe-overview-undo-stack-panel`
+
+.. image:: /medias/desktop/choregraphe/chore_interface_advanced.png
+   :height: 451 px
+   :width: 600 px
+
+
+
+.. _choregraphe-overview-menubar:
+
+Menu Bar
+--------
+
+**File** menu
+   This menu enables you to **create**, **open**, **save** and **import** a :ref:`choregraphe-reference-project`.
+   You can also **exit the application** through this menu.
+
+**Box library** menu
+   This menu enables you to **create**, **open**, **close** and **save** box libraries.
+
+**Edit** menu
+   This menu enables you to **undo** and **redo** last actions made in the diagram.
+   You can also access to the **preferences** of the application through this menu.
+   For further details, see the :ref:`choregraphe-detailed-interface-preferences` section.
+
+**Connection** menu
+   This menu enables you to **connect** to and **disconnect** from a robot.
+   For further details, see the :ref:`connection-widget` section.
+
+   Once you are connected to a robot, you can also:
+
+   * **play** and **stop** the opened behavior.
+   * **display or hide** the :ref:`choregraphe-overview-debug-panel` when an error occurs in the behavior.
+   * **transfer files** between your computer and your robot. For further details, see the :ref:`choregraphe-howto-file-transfer` section.
+   * **update NAO's system** (in Connection > Advanced) with a new version of its software.
+     For further details, see the :ref:`choregraphe-howto-update-nao-system` section.
+
+**View** menu
+   This menu enables you to **manage the displayed panels**. Indeed in this menu
+   you can select the ones you want to hide or display, and even reset your workspace
+   layout to default (i.e. only displaying :ref:`the Box Library panel <choregraphe-overview-box-libary-panel>`,
+   :ref:`the Flow Diagram panel <choregraphe-overview-flow-diagram-panel>` and :ref:`the Robot 3D view <3d-nao-panel>`).
+
+**Help** menu
+   This menu enables you to see the **statistics** of the current behavior
+   (number of boxes, number of lines, etc) and to access to the **general documentation**,
+   the **documentation about Choregraphe** and the **API reference**.
+   You can also get some information about the **version of Choregraphe** you are
+   currently using through this menu.
+
+
+.. _choregraphe-overview-toolbar:
+
+Toolbar
+--------
+
+.. image:: /medias/desktop/choregraphe/chore_full_toolbar.png
+
+The buttons of the toolbar below the menu bar are shortcuts to actions that you will often need while creating behaviors in Choregraphe.
+
+.. list-table::
+   :widths: 5 100
+   :header-rows: 1
+
+   * - Button(s)
+     - Function
+   * - .. image:: /medias/desktop/choregraphe/chore_bluebuttons.png
+     - **Create**, **open** and **save** a :ref:`project <choregraphe-reference-project>`.
+   * - .. image:: /medias/desktop/choregraphe/undo_redo_buttons.png
+     - **Undo** and **redo** last actions made in the diagram.
+   * - .. image:: /medias/desktop/choregraphe/chore_greenbuttons.png
+     - **Connect** to a robot, **play** and **stop** the opened behavior.
+
+       For more information about the connection, see the section about the :ref:`connection-widget`.
+   * - .. image:: /medias/desktop/choregraphe/chore_yellowbutton.png
+     - **See the warnings and the errors** that can occurs during the execution of your behavior.
+   * - .. image:: /medias/desktop/choregraphe/chore_blue_indicator.png
+
+       .. image:: /medias/desktop/choregraphe/loading_indicator_grey.png
+
+       .. image:: /medias/desktop/choregraphe/loading_indicator_blue.png
+     - Progress bar that indicates the **behavior loading** when you click on Play.
+
+       This indicator can be:
+
+       * Mainly grey: the behavior is not loaded.
+       * Moving up and down: the behavior is loading.
+       * Blue: the behavior is loaded.
+   * - .. image:: /medias/desktop/choregraphe/animation_mode_button_green.png
+
+       .. image:: /medias/desktop/choregraphe/animation_mode_button_orange.png
+
+       .. image:: /medias/desktop/choregraphe/animation_mode_button_red.png
+     - Activate / deactivate the **animation mode** which enables you to easily manipulate the robot and store its position
+       (For more information, see :ref:`choregraphe-howto-use-animation-mode`).
+
+       This button can be:
+
+       * Green: the animation mode is deactivated.
+       * Orange: intermediate state where the animation mode is either loading or unloading.
+       * Red: the animation mode is activated.
+   * - .. image:: /medias/desktop/choregraphe/chore_asserv_button.png
+
+       .. image:: /medias/desktop/choregraphe/stiffness_button_orange.png
+
+       .. image:: /medias/desktop/choregraphe/stiffness_button_red.png
+     - **Set on/off the stiffness** of all the joints of the robot.
+
+       This button can be:
+
+       * Green: no joint is stiffened, the robot cannot move by himself,
+         but you can move its limbs manually.
+       * Orange: intermediate state depending on the stiffness value.
+       * Red: all the joints are stiffened, the robot is able to move by himself,
+         do not try to move its limbs manually.
+   * - .. image:: /medias/desktop/choregraphe/volume_button.png
+     - Enables you to set the **volume** of NAO's speakers.
+   * - .. image:: /medias/desktop/choregraphe/battery_level_green.png
+
+       .. image:: /medias/desktop/choregraphe/battery_level_orange.png
+
+       .. image:: /medias/desktop/choregraphe/battery_level_red.png
+     - Indicate the level of NAO's **battery**.
+
+       This indicator can be:
+
+       * Green: the level of the battery is almost at its maximum.
+       * Orange: the level of the battery is medium.
+       * Red: the level of the battery is very low and your robot is going to shutdown in few minutes if you do not plug it in.
+

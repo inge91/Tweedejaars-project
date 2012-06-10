@@ -1,0 +1,109 @@
+Software
+========
+
+.. toctree::
+  :hidden:
+
+  requirements
+  installing
+  choregraphe/choregraphe_overview
+  monitor/index
+  naosim/index
+  naoflasher/index
+  choregraphe/index
+
+Overview
+---------  
+
+**NAO** comes with:
+
+* :ref:`embedded-software`, running on the motherboard located in the head of NAO, allowing
+  autonomous behaviors.
+* :ref:`desktop-software`, running on your computer, allowing creation of new behaviors,
+  remote control and simulations.
+
+.. image:: /medias/sofware-overview-bis.png
+   :width: 545 px
+   :height: 310 px
+
+There are also :ref:`programmer-tools`, allowing remote control of the robot and
+the expansion of its capabilities.
+
+------
+
+.. _embedded-software:
+
+Embedded Software
++++++++++++++++++++
+
+.. image:: /medias/sofware-embedded-overview-bis.png
+   :width: 208 px
+   :height: 180 px
+
+
+| **OpenNAO** is an embedded GNU/Linux distribution based on Gentoo, specifically developed to fit the **NAO** robot needs.
+| For the basics see :ref:`upgrading-opennao`, to learn more see :ref:`opennao-advanced`.
+|
+                                                                           
+| **NAOqi** is the main software that runs on the robot and controls it.
+| For further information, see :ref:`naoqi-def`.
+|
+
+------
+
+
+
+.. _desktop-software:
+
+Desktop software
++++++++++++++++++++
+
+**Choregraphe** is a visual programming language. It allows you to create animations
+and behaviors for your NAO, test them on a simulated robot before trying them with
+your real NAO, and also monitor and control NAO.
+For a quick description, see :ref:`choregraphe-overview`, to learn and use it, see :ref:`choregraphe`.
+
+.. image:: /medias/sofware-desktop-overview-bis.png
+   :width: 242 px
+   :height: 199 px
+
+**Monitor** is dedicated to give you an elementary feedback from your robot and
+a simple access to its camera settings.
+For further information, see :ref:`monitor`.
+
+**NAOsim** is a simulator where you can test NAO  behaviors and your
+algorithms in a virtual world. You can modify the environment by inserting and
+modifying objects of various shapes.
+For further information, see :ref:`NAOsim`.
+
+| Copies of **NAOqi** can also run on your computer in order to let you test your behaviors on virtual robots.
+| For further information, see :ref:`choregraphe-reference-simulated-robot`.
+| 
+
+**Getting started**
+
+To install desktop software, see :ref:`desktop-index` and :ref:`desktop-installation`.
+
+
+------
+
+.. _programmer-tools:
+
+Tools for programmers
++++++++++++++++++++++++
+
+Create your own code, using:
+
+* **Choregraphe** as a visual programming language and/or,
+* one of the available **SDKs**.
+
+.. image:: /medias/sofware-programming-overview-bis.png
+   :width: 549 px
+   :height: 299 px
+
+Depending on the chosen language, SDKs allows you to:
+
+* create code to enrich **Choregraphe box library** (Python),
+* create a code remotely controlling the robot (all SDKs),
+* create new **NAOqi modules** and upload them on the robot (C++, Python).
+

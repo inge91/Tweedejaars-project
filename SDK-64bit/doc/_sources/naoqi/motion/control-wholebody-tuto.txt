@@ -1,0 +1,220 @@
+.. _control-wholebody-tuto:
+
+Whole Body control Tutorial: A dance
+====================================
+
+:ref:`naoqi-motion` || :ref:`Overview<control-wholebody>` | :ref:`API <control-wholebody-api>` | Tutorial
+
+------------
+
+Introduction
+------------
+
+This tutorial explains how to use whole body cartesian control API in order to make NAO
+dance with foot constraints, torso and arms cartesian commands.
+
+
+.. note::
+
+   The tutorial is written in Python.
+
+Download
+--------
+
+You can download the whole Body multiple effectors control example here:
+:download:`motion_wbMultipleEffectors.py </examples/python/motion/motion_wbMultipleEffectors.py>`
+
+| To be executed, this tutorial requires a config file: :download:`config.py </examples/python/motion/config.py>`.
+| Modify the config file to enter your robot IP, and place it in the same folder as the example.
+
+For any troubleshooting linked to python, see :ref:`python-install-guide` section.
+
+
+Code review
+-----------
+
+In this section we describe each important piece of code of the example.
+
+NAOqi tools
++++++++++++++
+
+First, we import some external library:
+
+- config: the config file (see above Download section)
+- motion: some useful defintion such as SPACE.
+- almath: an optimized mathematic toolbox for robotics.
+  For further details, see: `libalmath API reference <../../ref/libalmath/index.html>`_.
+- time: mainly for the function *sleep*
+
+Then, the proxy to **ALMotion** module is created. This proxy is useful to called **ALMotion** API.
+
+.. code-block:: python
+
+  import config
+  import motion
+  import almath
+  import time
+
+  def main():
+      '''
+      Example of a whole body multiple effectors control "LArm", "RArm" and "Torso"
+          Warning: Needs a PoseInit before executing
+                   Whole body balancer must be inactivated at the end of the script
+      '''
+
+      proxy = config.loadProxy("ALMotion")
+
+
+NAO initialization
+++++++++++++++++++
+
+| When doing cartesian control, it's important to be sure that NAO is in a good configuration. To
+  have the maximum range of control, the maximum stability and far away of :term:`singularity`.
+| A :ref:`PoseInit <control-joint-tuto>` is a good posture before a cartesian control
+  of the NAO Torso.
+
+
+.. code-block:: python
+
+    # Set NAO in Stiffness On
+    config.StiffnessOn(motionProxy)
+
+    # Send NAO to Pose Init
+    config.PoseInit(motionProxy)
+
+Whole body initialization
++++++++++++++++++++++++++
+
+Here, we specify the whole body constraints:
+
+- enable whole body
+- both legs are fixed
+- balance on double support
+
+.. code-block:: python
+
+    # Enable Whole Body Balancer
+    isEnabled  = True
+    proxy.wbEnable(isEnabled)
+
+    # Legs are constrained fixed
+    stateName  = "Fixed"
+    supportLeg = "Legs"
+    proxy.wbFootState(stateName, supportLeg)
+
+    # Constraint Balance Motion
+    isEnable   = True
+    supportLeg = "Legs"
+    proxy.wbEnableBalanceConstraint(isEnable, supportLeg)
+
+
+Arms motion
++++++++++++
+
+| This code is dedicated to create motion with left and right arms in parallel.
+| By exectuing only this code, you will see all the robot move, but only the arms effectors
+  are controlled.
+
+.. code-block:: python
+
+    # Arms motion
+    effectorList = ["LArm", "RArm"]
+    space        = motion.SPACE_NAO
+
+    pathList     = [
+                    [
+                     [0.0,   0.08,  0.14, 0.0, 0.0, 0.0], # target 1 for "LArm"
+                     [0.0,  -0.05, -0.07, 0.0, 0.0, 0.0], # target 2 for "LArm"
+                     [0.0,   0.08,  0.14, 0.0, 0.0, 0.0], # target 3 for "LArm"
+                     [0.0,  -0.05, -0.07, 0.0, 0.0, 0.0], # target 4 for "LArm"
+                     [0.0,   0.08,  0.14, 0.0, 0.0, 0.0], # target 5 for "LArm"
+                     ],
+                    [
+                     [0.0,   0.05, -0.07, 0.0, 0.0, 0.0], # target 1 for "RArm"
+                     [0.0,  -0.08,  0.14, 0.0, 0.0, 0.0], # target 2 for "RArm"
+                     [0.0,   0.05, -0.07, 0.0, 0.0, 0.0], # target 3 for "RArm"
+                     [0.0,  -0.08,  0.14, 0.0, 0.0, 0.0], # target 4 for "RArm"
+                     [0.0,   0.05, -0.07, 0.0, 0.0, 0.0], # target 5 for "RArm"
+                     [0.0,  -0.08,  0.14, 0.0, 0.0, 0.0], # target 6 for "RArm"
+                     ]
+                    ]
+
+    axisMaskList = [almath.AXIS_MASK_VEL, # for "LArm"
+                    almath.AXIS_MASK_VEL] # for "RArm"
+
+    coef       = 1.5
+    timesList  = [ [coef*(i+1) for i in range(5)],  # for "LArm" in seconds
+                   [coef*(i+1) for i in range(6)] ] # for "RArm" in seconds
+
+    isAbsolute   = False
+
+    # called cartesian interpolation
+    proxy.positionInterpolations(effectorList, space, pathList,
+                                 axisMaskList, timesList, isAbsolute)
+
+Torso motion
+++++++++++++
+
+| This code is dedicated to create cartesian motion of NAO's torso.
+| During execution the arms will be fixed in :term:`SPACE_NAO`.
+| This is due to the fact that a previous called (positionInterpolation) on Arms effector has
+  automatically set effector optimization to *True* ( wbEnableEffectorOptimization(Arms, True) ).
+
+.. code-block:: python
+
+    # Torso Motion
+    effectorList = ["Torso"]
+
+    dy = 0.05
+    dz = 0.05
+    pathList     = [
+                    [
+                     [0.0, +dy, -dz, 0.0, 0.0, 0.0], # target  1 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target  2 for "Torso"
+                     [0.0, -dy, -dz, 0.0, 0.0, 0.0], # target  3 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target  4 for "Torso"
+                     [0.0, +dy, -dz, 0.0, 0.0, 0.0], # target  5 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target  6 for "Torso"
+                     [0.0, -dy, -dz, 0.0, 0.0, 0.0], # target  7 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target  8 for "Torso"
+                     [0.0, +dy, -dz, 0.0, 0.0, 0.0], # target  9 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target 10 for "Torso"
+                     [0.0, -dy, -dz, 0.0, 0.0, 0.0], # target 11 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target 12 for "Torso"
+                     ],
+                    ]
+
+    axisMaskList = [almath.AXIS_MASK_ALL] # for "Torso"
+
+    coef       = 0.5
+    timesList  = [[coef*(i+1) for i in range(12)]] # for "Torso" in seconds
+
+    isAbsolute   = False
+
+    proxy.positionInterpolations(effectorList, space, pathList,
+                                 axisMaskList, timesList, isAbsolute)
+
+
+Release constraint and disable whole body
++++++++++++++++++++++++++++++++++++++++++
+
+This first part of code is quite optionnal. It just releases the optimization on "LArm" and "RArm"
+and let time to the arms to come back to initial position.
+
+.. code-block:: python
+
+    # Remove optimization of "LArm" and "RArm".
+    isActive     = False
+    proxy.wbEnableEffectorOptimization("LArm", isActive)
+    proxy.wbEnableEffectorOptimization("RArm", isActive)
+
+    # Let Arms time to return to Pose Init
+    time.sleep(3.0)
+
+This second part is **essential** and stops the whole body balancer.
+
+.. code-block:: python
+
+    # Deactivate Head tracking
+    isEnabled    = False
+    proxy.wbEnable(isEnabled)

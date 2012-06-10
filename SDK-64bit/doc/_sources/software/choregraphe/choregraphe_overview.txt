@@ -1,0 +1,61 @@
+
+.. _choregraphe-overview:
+
+Choregraphe overview
+====================
+
+.. image:: /medias/desktop/choregraphe_ico.png
+    :width: 128 px
+    :height: 128 px
+
+
+What is it
+----------
+**Choregraphe** is a multi-platform desktop application. 
+
+It allows you to:
+
+* Create animations and behaviors,
+* Test them on a simulated robot, or directly on a real one,
+* Monitor and control NAO.
+
+**Choregraphe** allows you to create very complex behaviors (*e.g.* interaction with
+people, dance, send e-mails, etc...), without writing a single line of code. 
+In addition, it allows you to add your own Python code to a Choregraphe behavior.
+
+Choregraphe and NAOqi
+----------------------
+
+What is its link to NAOqi
+++++++++++++++++++++++++++
+The behaviors created with **Choregraphe** are written in its specific graphical language.
+ NAOqi (see :ref:`naoqi-overview`) NAO interprets them through and execute them.
+
+Choregraphe also interacts with NAOqi to provide useful tools such as the
+:ref:`video-monitor-panel`, the :ref:`choregraphe-overview-behavior-manager-panel`,
+the :ref:`choregraphe-overview-toolbar`, the :ref:`3D-nao-panel` or the
+:ref:`choregraphe-detailed-interface-timeline-editor`.
+
+What can I do in Choregraphe that I cannot in NAOqi
+++++++++++++++++++++++++++++++++++++++++++++++++++++
+Choregraphe eases the interaction with NAOqi. With it you can quickly create
+animations and programs for your NAO that would be way longer to do with NAOqi alone.
+
+What can I do in NAOqi that I cannot in Choregraphe
+++++++++++++++++++++++++++++++++++++++++++++++++++++
+You can access all the API of NAOqi via Choregraphe, therefore everything that
+is possible in NAOqi is possible with Choregraphe.
+
+On the other hand, behaviors programmed with the Choregraphe language are slower
+at execution time than they would be if written in C++ (see :ref:`cpp-introduction`)
+or Python (see :ref:`python-introduction`).
+
+
+
+Next
+----
+Now that you know what Choregraphe is, maybe you want to know more on its :ref:`choregraphe-interface`, or you may directly want to know :ref:`choregraphe-howto-make-nao-do-something`!
+
+
+You can also see a list of tutorials in the :ref:`choregraphe-tutorials` section.
+

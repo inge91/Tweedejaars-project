@@ -1,0 +1,19 @@
+Motion
+======
+
+This section contains a series of Motion examples written in Python.
+
+To be executed, they require a config file, available :download:`here </examples/python/motion/config.py>`.
+Modify the config file to enter your robot IP, and place it in the same folder
+as the example you want to execute.
+
+.. toctree::
+   :maxdepth: 2
+
+   poses
+   stiffness
+   walk
+   footsteps
+   cartesian
+   whole_body
+   collision_detection

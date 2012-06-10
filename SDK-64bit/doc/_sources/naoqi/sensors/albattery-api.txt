@@ -1,0 +1,73 @@
+.. _albattery-api:
+
+ALBattery API
+=============
+
+:ref:`naoqi-sensors` || :ref:`Overview <albattery>` | API
+
+------------
+
+.. seealso::
+
+   - :ref:`Battery Hardware <hardware-battery>`
+   - :ref:`charging-battery`
+   - :ref:`replacing-battery`
+
+.. _albattery-event-list:
+
+Event list
+----------
+
+* :naoqi:event:`BatteryPowerPluggedChanged`
+* :naoqi:event:`BatteryChargeCellVoltageMinChanged`
+* :naoqi:event:`BatteryChargingFlagChanged`
+* :naoqi:event:`BatteryFullChargedFlagChanged`
+* :naoqi:event:`BatteryDisChargingFlagChanged`
+* :naoqi:event:`BatteryLevelChanged`
+
+.. _albattery-events:
+
+Events
+------
+
+.. naoqi:event:: BatteryPowerPluggedChanged(bool plugged)
+
+  Raised when the charger is plugged and unplugged.
+
+  :param plugged: True if plugged-in, false otherwise.
+
+.. naoqi:event:: BatteryChargeCellVoltageMinChanged(int voltage)
+
+  Raised when the Minimum cell voltage of the battery changes.
+
+  :param voltage: The minimum cell voltage.
+
+.. naoqi:event:: BatteryChargingFlagChanged(bool charging)
+
+  Raised when the flag "battery is charging" changes.
+
+  :param charging: True when the battery is charging, false otherwise.
+
+.. naoqi:event:: BatteryFullChargedFlagChanged(bool fullyCharged)
+
+  Raised when the flag "battery is fully charged" changes.
+
+  :param fullyCharged: True when the battery is fully charged, false otherwise.
+
+.. naoqi:event:: BatteryDisChargingFlagChanged(bool isDischarging)
+
+  Raised when the flag "battery is discharging" changes.
+
+  :param isDischarging: True when the battery is discharging, false otherwise.
+
+.. naoqi:event:: BatteryLevelChanged(int percentage)
+
+  Raised when the battery level percentage changes.
+
+  :param percentage: The percent of the battery that remains.
+
+Methods
+-------
+
+As any module, this module inherits methods from :ref:`almodule-api`.
+It has no other specific methods.

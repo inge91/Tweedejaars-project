@@ -1,0 +1,45 @@
+.. _hardware-battery:
+
+Battery
+=======
+
+:ref:`nao-hardware` | :ref:`hardware-product-range` | :ref:`hardware-kinematics`
+| Components & Sensors | :ref:`hardware-optional-device`
+
+:ref:`hardware-sensors` | *Battery* | :ref:`hardware-infrared` | :ref:`hardware-led`
+| :ref:`hardware-audio-out` | :ref:`hardware-audio-in` | :ref:`hardware-video`
+
+--------------------
+
+.. seealso::
+
+   - :ref:`albattery`
+   - :ref:`replacing-battery`
+   - :ref:`charging-battery`
+
+
+Specifications
+----------------
+The following table describes the battery specifications.
+
++--------------------------------+---------------------------+
+| Battery type                   | Lithium ion               |
++================================+===========================+
+| Nominal voltage/capacity       | 21.6 V / 2.15 Ah          |
++--------------------------------+---------------------------+
+| Max charge voltage             | 24.9 V                    |
++--------------------------------+---------------------------+
+| Recommended charge current     | 2 A                       |
++--------------------------------+---------------------------+
+| Max charge / discharge current | 3.0 A / 2.0 A             |
++--------------------------------+---------------------------+
+| Energy                         | 27.6 Wh                   |
++--------------------------------+---------------------------+
+| Charging duration              | ~ 5h00                    |
++--------------------------------+---------------------------+
+| Autonomy                       | ~ 60 min (active use)     |
+|                                | ~ 90 min (Normal use)     |
++--------------------------------+---------------------------+
+
+NAO can be used while it is plugged in with the adapter.
+But the battery will charge only if NAO is powered off and plugged to its adapter.

@@ -1,0 +1,168 @@
+.. |green-arrow| image:: /medias/desktop/choregraphe/chore_3d_motion_arrow_green.png
+   :class: img-inline
+
+.. |blue-arrow| image:: /medias/desktop/choregraphe/chore_3d_motion_arrow_blue.png
+   :class: img-inline
+
+
+.. _3d-nao-panel:
+
+Robot view
+=============
+
+What is the Robot view
+-----------------------
+
+| The **Robot view** displays, in a 3D representation, the current position of the joints of the robot you are connected to.
+| It also allows you to modify the joint values of each limb using the :ref:`Motion widget <choregraphe-detailed-interface-motion-widget>`.
+|
+
+.. image:: /medias/desktop/choregraphe/chore_3d_view.png
+    :width: 369 px
+    :height: 348 px
+
+
+It is updated as soon as you move a joint:
+
+* playing a behavior, 
+* moving a joint manually (on a real robot) or
+* moving a joint through the :ref:`Motion widget <choregraphe-detailed-interface-motion-widget>`.
+
+**Limitations**: The torso of the robot is static. It is the reference of this 3D view.
+The limbs and the head of the robot moves around the torso which does not move.
+So even if your real robot falls over, you will not see it lied down in the 3D view.
+You will only see the relative position of its joints.
+
+
+Navigating the 3D world
+-------------------------
+
+You can **navigate** the 3D world:
+
+* **move up, down, right and left** by pressing and dragging the mouse with the left-click.
+* **zoom** in and out the view with the scroll wheel of your mouse.
+* **turn** around a point by pressing on the point and dragging the mouse with the right-click,
+  or change the point of view by right-clicking on the 3D view and selecting the point of view you wish.
+
+  By default, the point of view is on the **front** of the robot.
+
+Selecting a different simulated robot
+---------------------------------------
+   
+If you are connected to a :ref:`Simulated robot <choregraphe-reference-simulated-robot>`,
+you can change the model and the hardware version of the robot:
+
+1. Choose **Edit** > **Preferences** then **NAOqi's settings** tab.
+
+2. The **Version** list allows you to select a 
+   :ref:`Body type <hardware-product-range::nao-body-type>` and a 
+   :ref:`Version <hardware-product-range::nao-version>`.
+
+
+Moving joints using the Motion widget
+--------------------------------------
+
+To move joints using the :ref:`Motion widget <choregraphe-detailed-interface-motion-widget>`:
+
+=====  ======================================================================================
+Step       Action                                              
+=====  ======================================================================================
+1.      In the :ref:`3d-nao-panel`, click any moving part of the robot (head or limbs).
+        
+        The :ref:`Motion widget <choregraphe-detailed-interface-motion-widget>` appears.
+        
+2.      If Choregraphe is connected to a real robot, then make sure the joint is stiffened.
+
+        If not, click the **Enslave chain on/of** button.
+
+3.      Use one of the **Sliders** to adjust the joint value.
+=====  ======================================================================================
+
+See also the examples of use of the **Motion widget**:
+
+* :ref:`Create a movement from scratch <choregraphe-tuto-movement-from-scratch>`,
+* :ref:`Create a movement on a real NAO <choregraphe-tuto-movement-real-nao>`.
+
+
+.. _choregraphe-detailed-interface-motion-widget:
+
+Motion widget
+---------------
+
+The **Motion widget** enables you to modify the joint values of each limb.
+
+.. image:: /medias/desktop/choregraphe/chore_tuto_motion.png
+    :width: 441 px
+    :height: 456 px
+
+The table below describes in details the control buttons and indicators of
+the :ref:`Motion widget <choregraphe-detailed-interface-motion-widget>`:
+
+.. list-table::
+   :widths: 20 100
+   :header-rows: 1
+
+   * - Item
+     - Description
+   * - **(1)** **Slider** 
+     - Adjust the **joint value**.
+
+       You can move it, as well as enter a value in the associated text box.
+       It sends a command to change the value of the joint.
+       The robot will then try to reach the command value with its joint as soon as possible.
+
+       .. note::
+          On a real robot, this slider has no effect as long as the concerned joint is not stiffened.
+          You must first set the stiffness on using the **Enslave chain on/off** button to be able to change the joint value.
+   * - **(2)**
+
+       |green-arrow| or |blue-arrow|
+     - Shows the **Current joint value**.
+
+       * If **green**, the current joint value = the last command value you sent. 
+       * If **blue**, it means that the joint does **not reach** the command value you sent.
+       
+         Could be because the command execution is still ongoing or because the joint cannot reach the command value.
+         It is the case when there is an obstacle as an other body part or a wall for instance.
+   * - **(3)** **Record** button
+
+       .. image:: /medias/desktop/choregraphe/chore_3d_motion_record_enable.png
+
+       .. image:: /medias/desktop/choregraphe/chore_3d_motion_record_enable_red.png
+
+       .. image:: /medias/desktop/choregraphe/chore_3d_motion_record_disable.png
+     - Saves the defined value.
+
+       This button can be:
+
+       * Black: the current joint value is not stored at the current selected frame.
+       * Black and red: the current joint value is being stored at the current selected frame.
+       * Grey: you cannot store joint values because you are not currently editing a Timeline.
+
+       For an example of use of this button, see the :ref:`Create a movement on a real NAO <choregraphe-tuto-movement-real-nao>`.
+   * - **(4)** **Mirroring** option
+     - Execute the same actions (send a command value, register a joint value, etc)
+       on the **symmetric limb** as a mirror.
+
+       For example left and right arms will move the same way.
+   * - **(5)**
+
+       **Enslave chain on/off** button
+
+       .. image:: /medias/desktop/choregraphe/chore_asserv_button.png
+
+       .. image:: /medias/desktop/choregraphe/stiffness_button_orange.png
+
+       .. image:: /medias/desktop/choregraphe/stiffness_button_red.png
+     - Sets on/off the stiffness of the whole selected chain of joints.
+
+       For example if you select the right arm and click on this button, all the
+       joints of the right arm will be stiffened on or off.
+
+       This button can be:
+
+       * Green: the joints of the concerned joint chain are not stiffened, the robot cannot move this chain of joints.
+       * Orange: intermediate state depending on the stiffness value.
+       * Red: the joints of the concerned joint chain are stiffened, the robot is able to move this chain of joints.
+
+

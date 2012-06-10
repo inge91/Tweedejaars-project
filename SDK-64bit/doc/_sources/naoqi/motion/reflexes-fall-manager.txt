@@ -1,0 +1,119 @@
+.. _reflexes-fall-manager:
+
+Fall manager
+============
+
+.. toctree::
+   :hidden:
+   :maxdepth: 1
+
+   reflexes-fall-manager-api
+
+
+:ref:`naoqi-motion` || Overview | :ref:`API <reflexes-fall-manager-api>`
+
+------------
+
+
+What it does
+------------
+
+Because NAO may fall, we taught him to stand up. But we went even further by establishing a system
+to detect falls: it protects with her ​​arms before touching the ground. NAO can
+therefore fall, he will not hurt.
+
+By default, the fall manager is active on NAO.
+
+How it works
+------------
+
+The basic idea is to look at both the support polygon and the Center Of Mass (COM) of NAO. If the
+COM is detected out of the support polygon, the fall manager process is activated.
+
+This process has priority over all other :ref:`motion tasks <tools-motion-task>`. The choosen
+strategy is composed by an arms and pelvis joint configuration to protect the robot follow by
+a **stiffness off** command to cushion the fall. The joint configuration depends on the fall angle
+(back, front, right or left).
+
+A memory event called :naoqi:event:`robotHasFallen` is raised when the fall management process is
+completed.
+
+Getting started
+---------------
+
+When the reflexe is active
+++++++++++++++++++++++++++
+
+The fall manager reflexe is only activated when at least one foot touch the ground (based on
+:ref:`alfsr`).
+
+If the robot is lift, sit or other posture than stand, the fall manager is not activated.
+
+
+How to disable this reflexe
++++++++++++++++++++++++++++
+
+As this reflexe increase a lot the life time before failure of NAO, we recommand to not disable
+this reflex.
+
+But as we know that in some situation, this reflex will disturbe your work, please follow these
+two steps to disable it.
+
+1. **Allow deactivation**
+
+   The first step is to allow deactivation of this reflex.
+
+   a. *With the web page*
+
+      You can do it throw the NAO web page settings (:ref:`opennao-web-page`).
+
+      .. image:: /medias/dev/modules/motion/motion_fallManagerCheckBox.png
+            :width: 448 px
+            :height: 83 px
+
+      if you check the box, a popUp asks for your confirmation.
+
+      .. image:: /medias/dev/modules/motion/motion_fallManagerPopUp.png
+            :width: 505 px
+            :height: 226 px
+
+      By clicking on the button: "I understand the risks", you allow the deactivation of the
+      Fall manager.
+
+   b. *Programmatically*
+
+      The right of deactivation of the fall manager is managed by the ALMotion preference into the
+      robot. (/home/nao/.config/naoqi/ALMotion.xml).
+
+      So, you can edit by hand this file or use the :ref:`alpreferences` API.
+
+      The name of the preferences in ALMotion.xml is: "ENABLE_DISACTIVATION_OF_FALL_MANAGER".
+
+      And the preference file should have this form:
+
+      .. code-block:: guess
+
+         <Preference name="ENABLE_DISACTIVATION_OF_FALL_MANAGER" description="If true the
+         disactivation of Fall Manager is allowed" value="true" type="bool" />
+
+2. **Disable the reflexe**
+
+   Once, the deactivation of the fall manager is allowed, it's possible to use the
+   :cpp:func:`ALMotionProxy::setFallManagerEnabled` method to disable the fall manager for the
+   current naoqi launch.
+
+   Before this, you should have prepared your own defensive methods to protect from falls.
+
+   .. code-block:: python
+
+      motionProxy.setFallManagerEnabled(False)
+
+   You can also use the ALMotion preference key "ENABLE_FALL_MANAGER_PROTECTION" with a
+   value="false" for disable at every naoqi launch the fall manager reflex.
+
+   And the preference file should have this form:
+
+   .. code-block:: guess
+
+      <Preference name="ENABLE_FALL_MANAGER_PROTECTION" description="If false the Fall Manager
+      reflex is disable on this robot." value="false" type="bool" />

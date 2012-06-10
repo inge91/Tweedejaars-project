@@ -1,0 +1,16 @@
+.. _choregraphe-tutorials:
+
+Choregraphe Tutorials
+=====================
+
+.. toctree::
+   :maxdepth: 2
+
+   basic
+   movements
+   boxes
+   attached_files
+   resource_manager
+   behavior_manager
+   trackers
+   recognize_objects

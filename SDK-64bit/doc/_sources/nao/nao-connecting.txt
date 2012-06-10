@@ -1,0 +1,68 @@
+.. |connect-A| image:: /medias/nao/schemarouter.png
+   :class: img-inline
+   :width: 253 px
+   :height: 238 px
+
+
+.. |connect-B| image:: /medias/nao/schemarouter_ll.png
+   :class: img-inline
+   :width: 253 px
+   :height: 238 px
+
+.. _nao-connecting:
+
+Setting NAO's WiFi connection
+==============================
+
+Why setting a WiFi connection
+-------------------------------
+
+You can connect **NAO** to your computer using a wired or WiFi connection:
+
+* **Wired** connection is mandatory for the initial settings.
+* **WiFi** connection is highly recommended as soon as **NAO** starts moving.
+
+.. warning::
+
+   Make sure **NAO** is not connected with an Ethernet cable while executing movements which could pull the wire and damage the port.
+
+
+How to set NAO's WiFi connection
+----------------------------------
+
+=====  ==============================================================================================================
+Step    Action
+=====  ==============================================================================================================
+1.      Turn on your **NAO**.
+
+2.      Remove the hatch behind his head to access to the Ethernet socket and plug the Ethernet cable.
+
+        .. image:: /medias/nao/gs_ethernet_plug.png
+            :width: 250 px
+            :height: 171 px
+
+3.      If you have a router with a spare Ethernet port:
+
+        * Connect the Ethernet cable to it, it will act as a **DHCP** server and give **NAO** it's IP address.
+
+        If not:
+
+        * Connect the Ethernet cable to your computer.
+
+          **Linux only**: see :ref:`opennao-local-link` in order to check if your network
+          manager is set for using link-local.
+
+        |connect-A| or |connect-B|
+
+4.      Access the **NAO Web page** and log-in.
+
+        For further details, see: :ref:`opennao-access-web-page`.
+
+5.      In the **Network** page, choose and configure a WiFi network.
+
+        For further details, see: :ref:`opennao-wireless`.
+
+6.      You can now disconnect the Ethernet cable and close the hatch behind **NAO**'s head.
+=====  ==============================================================================================================
+
+

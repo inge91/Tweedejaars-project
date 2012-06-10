@@ -1,0 +1,2063 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ALVideoDevice API &mdash; NAO Software 1.12.3 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.12.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="NAO Software 1.12.3 documentation" href="../../index.html" />
+    <link rel="up" title="ALVideoDevice" href="alvideodevice.html" />
+    <link rel="next" title="ALVideoDevice Tutorial" href="alvideodevice-tuto.html" />
+    <link rel="prev" title="ALVideoDevice" href="alvideodevice.html" />
+
+ 
+
+<script  type="text/javascript">
+   var _gaq = _gaq || [];
+   _gaq.push(['_setAccount', 'UA-19487749-1']);
+   _gaq.push(['_trackPageview']);
+   (function() {
+     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+   })();
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t3">
+    <div id="hd">
+      <h1><a href="../../index.html">NAO Software 1.12.3 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../index.html">Home</a>
+        
+         |
+        <a title="Site map" href="../../contents.html">Site map</a>
+        
+         |
+        <a title="Search" href="../../search.html">Search</a>
+         |
+        <a title="Index" href="../../genindex.html">Index</a>
+        
+        
+      </div>
+      <div class="nav">
+    &laquo; <a href="alvideodevice.html" title="ALVideoDevice">previous</a>
+     |
+    <a href="alvideodevice.html" title="ALVideoDevice" accesskey="U">up</a>
+   |
+    <a href="alvideodevice-tuto.html" title="ALVideoDevice Tutorial">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="naoqi-vision-alvideodevice-api">
+            
+  <div class="section" id="alvideodevice-api">
+<span id="id1"></span><h1>ALVideoDevice API<a class="headerlink" href="#alvideodevice-api" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference internal" href="index.html#naoqi-vision"><em>NAOqi Vision</em></a> || <a class="reference internal" href="alvideodevice.html#alvideodevice"><em>Overview</em></a> | API |
+<a class="reference internal" href="alvideodevice-tuto.html#alvideodevice-tuto"><em>Tutorial</em></a> | <a class="reference internal" href="alvideodevice-indepth.html#api-advanced"><em>ALVideoDevice - Advanced</em></a></p>
+<hr class="docutils" />
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a class="reference internal" href="../../nao/hardware/video.html#hardware-video"><em>Video camera Hardware</em></a></li>
+</ul>
+</div>
+<p>Namespace : <strong>AL</strong></p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;alproxies/alvideodeviceproxy.h&gt;</span>
+</pre></div>
+</div>
+<div class="section" id="method-list">
+<h2>Method list<a class="headerlink" href="#method-list" title="Permalink to this headline">¶</a></h2>
+<p>As any module, this module inherits methods from <a class="reference internal" href="../core/almodule-api.html#almodule-api"><em>ALModule API</em></a>.
+It also has the following specific methods:</p>
+<dl class="class">
+<dt id="ALVideoDeviceProxy">
+<em class="property">class </em><tt class="descname">ALVideoDeviceProxy</tt><a class="headerlink" href="#ALVideoDeviceProxy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<ul class="simple">
+<li><a class="reference internal" href="#ALVideoDeviceProxy::getActiveCamera" title="ALVideoDeviceProxy::getActiveCamera"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::getActiveCamera()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::getAngPosFromImgPos__std::vector:float:CR" title="ALVideoDeviceProxy::getAngPosFromImgPos"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::getAngPosFromImgPos()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::getAngSizeFromImgSize__std::vector:float:CR" title="ALVideoDeviceProxy::getAngSizeFromImgSize"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::getAngSizeFromImgSize()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::getCurrentImageNumber" title="ALVideoDeviceProxy::getCurrentImageNumber"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::getCurrentImageNumber()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::getDirectRawImageLocal__ssCR" title="ALVideoDeviceProxy::getDirectRawImageLocal"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::getDirectRawImageLocal()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::getDirectRawImageRemote__ssCR" title="ALVideoDeviceProxy::getDirectRawImageRemote"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::getDirectRawImageRemote()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::getExpectedImageParameters" title="ALVideoDeviceProxy::getExpectedImageParameters"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::getExpectedImageParameters()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::getGVMColorSpace__ssCR" title="ALVideoDeviceProxy::getGVMColorSpace"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::getGVMColorSpace()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::getGVMFrameRate__ssCR" title="ALVideoDeviceProxy::getGVMFrameRate"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::getGVMFrameRate()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::getGVMResolution__ssCR" title="ALVideoDeviceProxy::getGVMResolution"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::getGVMResolution()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::getImageLocal__ssCR" title="ALVideoDeviceProxy::getImageLocal"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::getImageLocal()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::getImageRemote__ssCR" title="ALVideoDeviceProxy::getImageRemote"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::getImageRemote()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::getImgInfoFromAngInfo__std::vector:float:CR" title="ALVideoDeviceProxy::getImgInfoFromAngInfo"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::getImgInfoFromAngInfo()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::getImgInfoFromAngInfoWithRes__std::vector:float:CR.iCR" title="ALVideoDeviceProxy::getImgInfoFromAngInfoWithRes"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::getImgInfoFromAngInfoWithRes()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::getImgPosFromAngPos__std::vector:float:CR" title="ALVideoDeviceProxy::getImgPosFromAngPos"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::getImgPosFromAngPos()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::getImgSizeFromAngSize__std::vector:float:CR" title="ALVideoDeviceProxy::getImgSizeFromAngSize"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::getImgSizeFromAngSize()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::getParam__iCR" title="ALVideoDeviceProxy::getParam"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::getParam()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::getVIMColorSpace" title="ALVideoDeviceProxy::getVIMColorSpace"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::getVIMColorSpace()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::getVIMFrameRate" title="ALVideoDeviceProxy::getVIMFrameRate"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::getVIMFrameRate()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::getVIMResolution" title="ALVideoDeviceProxy::getVIMResolution"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::getVIMResolution()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::isFrameGrabberOff" title="ALVideoDeviceProxy::isFrameGrabberOff"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::isFrameGrabberOff()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::nextImage" title="ALVideoDeviceProxy::nextImage"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::nextImage()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::onClientDisconnected__ssCR.AL::ALValueCR.ssCR" title="ALVideoDeviceProxy::onClientDisconnected"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::onClientDisconnected()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::previousImage" title="ALVideoDeviceProxy::previousImage"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::previousImage()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::putImage__AL::ALValueCR" title="ALVideoDeviceProxy::putImage"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::putImage()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::recordVideo__ssCR.ssCR.iCR.iCR" title="ALVideoDeviceProxy::recordVideo"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::recordVideo()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::releaseDirectRawImage__ssCR" title="ALVideoDeviceProxy::releaseDirectRawImage"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::releaseDirectRawImage()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::releaseImage__ssCR" title="ALVideoDeviceProxy::releaseImage"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::releaseImage()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::replaySpeed__std::vector:float:CR" title="ALVideoDeviceProxy::replaySpeed"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::replaySpeed()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::resolutionToSizes__iCR" title="ALVideoDeviceProxy::resolutionToSizes"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::resolutionToSizes()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::setColorSpace__ssCR.iCR" title="ALVideoDeviceProxy::setColorSpace"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::setColorSpace()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::setFrameRate__ssCR.iCR" title="ALVideoDeviceProxy::setFrameRate"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::setFrameRate()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::setParam__iCR.iCR" title="ALVideoDeviceProxy::setParam"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::setParam()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::setParamDefault__iCR" title="ALVideoDeviceProxy::setParamDefault"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::setParamDefault()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::setResolution__ssCR.iCR" title="ALVideoDeviceProxy::setResolution"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::setResolution()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::setSimCamInputSize__iCR.iCR" title="ALVideoDeviceProxy::setSimCamInputSize"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::setSimCamInputSize()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::setVideo__ssCR.AL::ALValueCR.bCR.iCR.iCR" title="ALVideoDeviceProxy::setVideo"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::setVideo()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::sizesToResolution__iCR.iCR" title="ALVideoDeviceProxy::sizesToResolution"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::sizesToResolution()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::startFrameGrabber" title="ALVideoDeviceProxy::startFrameGrabber"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::startFrameGrabber()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::stopFrameGrabber" title="ALVideoDeviceProxy::stopFrameGrabber"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::stopFrameGrabber()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::stopVideo__ssCR" title="ALVideoDeviceProxy::stopVideo"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::stopVideo()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::subscribe__ssCR.iCR.iCR.iCR" title="ALVideoDeviceProxy::subscribe"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::subscribe()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::unsubscribe__ssCR" title="ALVideoDeviceProxy::unsubscribe"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::unsubscribe()</span></tt></a></li>
+<li><a class="reference internal" href="#ALVideoDeviceProxy::unsubscribeAllInstances__ssCR" title="ALVideoDeviceProxy::unsubscribeAllInstances"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::unsubscribeAllInstances()</span></tt></a></li>
+</ul>
+<p><strong>Groups</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="#alvideodevice-mainmethods"><em>Main Methods</em></a></li>
+<li><a class="reference internal" href="#alvideodevice-videorecordingandreplayingmethods"><em>Video recording and replaying methods</em></a></li>
+<li><a class="reference internal" href="#alvideodevice-videosourceparameters"><em>Video source parameters</em></a></li>
+<li><a class="reference internal" href="#alvideodevice-anglesmanagementmethods"><em>Angles management</em></a></li>
+<li><a class="reference internal" href="#alvideodevice-advancedmethods"><em>Advanced methods</em></a></li>
+<li><a class="reference internal" href="#alvideodevice-simulatormethods"><em>Simulator methods</em></a></li>
+</ul>
+</div>
+<div class="section" id="main-methods">
+<span id="alvideodevice-mainmethods"></span><h2>Main Methods<a class="headerlink" href="#main-methods" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ALVideoDeviceProxy::subscribe__ssCR.iCR.iCR.iCR">
+<a class="reference internal" href="../stdtypes.html#ss" title="std::string">std::string</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">subscribe</tt><big>(</big><a class="reference internal" href="../stdtypes.html#ss" title="std::string">const std::string&amp;</a> <em>vmName</em>, <a class="reference internal" href="../stdtypes.html#i" title="int">const int&amp;</a> <em>resolution</em>, <a class="reference internal" href="../stdtypes.html#i" title="int">const int&amp;</a> <em>colorSpace</em>, <a class="reference internal" href="../stdtypes.html#i" title="int">const int&amp;</a> <em>fps</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::subscribe__ssCR.iCR.iCR.iCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subscribe to ALVideoDevice. When a Video Module registers to ALVideoDevice, a buffer of the requested image format is added to the buffers list.
+Returns the name under which the V.M. will be known from ALVideoDevice (useful when several V.M. try to subscribe using the same name, the 3rd one getting _3 added to its name for instance).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>vmName</strong> &#8211; Name of the subscribing V.M.</li>
+<li><strong>resolution</strong> &#8211; Resolution requested. { 0 = kQQVGA, 1 = kQVGA, 2 = kVGA, 3 = k4VGA }</li>
+<li><strong>colorSpace</strong> &#8211; Colorspace requested. { 0 = kYuv, 9 = kYUV422, 10 = kYUV, 11 = kRGB, 12 = kHSY, 13 = kBGR }</li>
+<li><strong>fps</strong> &#8211; Fps (frames per second) requested to the video source. The OV7670 VGA camera can only run at 30fps, the MT9M114 HD camera will be able to run faster with some special modes in a near future.
+Compared to a local module, the obtained framerate for a remote module will depend on the network available bandwith (e.g. we can reach raw <tt class="docutils literal"><span class="pre">1280x960&#64;10fps</span></tt> using a Gigabit Ethernet connection with the HD camera).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Name under which the V.M. is known from ALVideoDevice, NULL if failed.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p><a class="reference download internal" href="../../_downloads/alvideodevice_subscribe.cpp"><tt class="xref download docutils literal"><span class="pre">alvideodevice_subscribe.cpp</span></tt></a></p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;alproxies/alvideodeviceproxy.h&gt;</span>
+<span class="cp">#include &lt;alvision/alvisiondefinitions.h&gt;</span>
+
+<span class="cp">#include &lt;iostream&gt;</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Usage: videodevice_subscribe pIp&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">pIp</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+  <span class="c1">// Proxy to ALVideoDevice.</span>
+  <span class="n">AL</span><span class="o">::</span><span class="n">ALVideoDeviceProxy</span> <span class="n">cameraProxy</span><span class="p">(</span><span class="n">pIp</span><span class="p">);</span>
+
+  <span class="c1">// Subscribe a Vision Module to ALVideoDevice, starting the</span>
+  <span class="c1">// frame grabber if it was not started before.</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">subscriberID</span> <span class="o">=</span> <span class="s">&quot;subscriberID&quot;</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">fps</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+  <span class="c1">// The subscriberID can be altered if other instances are already running</span>
+  <span class="n">subscriberID</span> <span class="o">=</span> <span class="n">cameraProxy</span><span class="p">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">subscriberID</span><span class="p">,</span> <span class="n">AL</span><span class="o">::</span><span class="n">kVGA</span><span class="p">,</span> <span class="n">AL</span><span class="o">::</span><span class="n">kRGBColorSpace</span><span class="p">,</span> <span class="n">fps</span><span class="p">);</span>
+
+  <span class="c1">// Do something...</span>
+
+  <span class="c1">// Unsubscribe the V.M.</span>
+  <span class="n">cameraProxy</span><span class="p">.</span><span class="n">unsubscribe</span><span class="p">(</span><span class="n">subscriberID</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::unsubscribe__ssCR">
+<a class="reference internal" href="../stdtypes.html#void" title="void">void</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">unsubscribe</tt><big>(</big><a class="reference internal" href="../stdtypes.html#ss" title="std::string">const std::string&amp;</a> <em>pName</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::unsubscribe__ssCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to unsubscribe a V.M. from ALVideoDevice.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pName</strong> &#8211; Name under which the V.M. is known from ALVideoDevice.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><a class="reference download internal" href="../../_downloads/alvideodevice_subscribe.cpp"><tt class="xref download docutils literal"><span class="pre">alvideodevice_subscribe.cpp</span></tt></a></p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;alproxies/alvideodeviceproxy.h&gt;</span>
+<span class="cp">#include &lt;alvision/alvisiondefinitions.h&gt;</span>
+
+<span class="cp">#include &lt;iostream&gt;</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Usage: videodevice_subscribe pIp&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">pIp</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+  <span class="c1">// Proxy to ALVideoDevice.</span>
+  <span class="n">AL</span><span class="o">::</span><span class="n">ALVideoDeviceProxy</span> <span class="n">cameraProxy</span><span class="p">(</span><span class="n">pIp</span><span class="p">);</span>
+
+  <span class="c1">// Subscribe a Vision Module to ALVideoDevice, starting the</span>
+  <span class="c1">// frame grabber if it was not started before.</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">subscriberID</span> <span class="o">=</span> <span class="s">&quot;subscriberID&quot;</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">fps</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+  <span class="c1">// The subscriberID can be altered if other instances are already running</span>
+  <span class="n">subscriberID</span> <span class="o">=</span> <span class="n">cameraProxy</span><span class="p">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">subscriberID</span><span class="p">,</span> <span class="n">AL</span><span class="o">::</span><span class="n">kVGA</span><span class="p">,</span> <span class="n">AL</span><span class="o">::</span><span class="n">kRGBColorSpace</span><span class="p">,</span> <span class="n">fps</span><span class="p">);</span>
+
+  <span class="c1">// Do something...</span>
+
+  <span class="c1">// Unsubscribe the V.M.</span>
+  <span class="n">cameraProxy</span><span class="p">.</span><span class="n">unsubscribe</span><span class="p">(</span><span class="n">subscriberID</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::unsubscribeAllInstances__ssCR">
+<a class="reference internal" href="../stdtypes.html#void" title="void">void</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">unsubscribeAllInstances</tt><big>(</big><a class="reference internal" href="../stdtypes.html#ss" title="std::string">const std::string&amp;</a> <em>pName</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::unsubscribeAllInstances__ssCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to unsubscribe all instances for a given V.M. (e.g. VisionModule and VisionModule_5) from ALVideoDevice.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pName</strong> &#8211; Root name of the V.M. (e.g. with the example above this will be VisionModule).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::getImageLocal__ssCR">
+<a class="reference internal" href="../stdtypes.html#void" title="void">void*</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">getImageLocal</tt><big>(</big><a class="reference internal" href="../stdtypes.html#ss" title="std::string">const std::string&amp;</a> <em>id</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::getImageLocal__ssCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the latest image from the video source, applies eventual transformations
+to the image to provide the format requested by the vision module and returns
+a pointer to a locked ALImage.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">When the image is not necessary anymore, a call to releaseImage() is requested.
+If the V.M. didn&#8217;t release the previous image, returns NULL.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>id</strong> &#8211; Name under which the V.M. is known from ALVideoDevice</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Pointer to the locked image buffer, NULL if error (e.g. if the previous image was not released).</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Image pointer is valid only if your module is running locally, not for remote modules.</p>
+</div>
+<p><a class="reference download internal" href="../../_downloads/alvideodevice_imagelocal.cpp"><tt class="xref download docutils literal"><span class="pre">alvideodevice_subscribe.cpp</span></tt></a></p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;alproxies/alvideodeviceproxy.h&gt;</span>
+<span class="cp">#include &lt;alvision/alvisiondefinitions.h&gt;</span>
+
+<span class="cp">#include &lt;iostream&gt;</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Usage: videodevice_imageremote pIp&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">pIp</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+  <span class="c1">// Proxy to ALVideoDevice.</span>
+  <span class="n">AL</span><span class="o">::</span><span class="n">ALVideoDeviceProxy</span> <span class="n">cameraProxy</span><span class="p">(</span><span class="n">pIp</span><span class="p">);</span>
+
+  <span class="c1">// Subscribe a Vision Module to ALVideoDevice, starting the</span>
+  <span class="c1">// frame grabber if it was not started before.</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">subscriberID</span> <span class="o">=</span> <span class="s">&quot;subscriberID&quot;</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">fps</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+  <span class="c1">// The subscriberID can be altered if other instances are already running</span>
+  <span class="n">subscriberID</span> <span class="o">=</span> <span class="n">cameraProxy</span><span class="p">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">subscriberID</span><span class="p">,</span> <span class="n">AL</span><span class="o">::</span><span class="n">kVGA</span><span class="p">,</span> <span class="n">AL</span><span class="o">::</span><span class="n">kRGBColorSpace</span><span class="p">,</span> <span class="n">fps</span><span class="p">);</span>
+
+  <span class="c1">// Retrieve the current image.</span>
+  <span class="k">const</span> <span class="n">ALImage</span><span class="o">*</span> <span class="n">image</span> <span class="o">=</span> <span class="n">cameraProxy</span><span class="p">.</span><span class="n">getImageLocal</span><span class="p">(</span><span class="n">subscriberID</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">image</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Could not retrieve current image.&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Image retrieved.&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">cameraProxy</span><span class="p">.</span><span class="n">releaseImage</span><span class="p">(</span><span class="n">subscriberID</span><span class="p">);</span>
+
+  <span class="c1">// Unsubscribe the V.M.</span>
+  <span class="n">cameraProxy</span><span class="p">.</span><span class="n">unsubscribe</span><span class="p">(</span><span class="n">subscriberID</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::getImageRemote__ssCR">
+<a class="reference internal" href="../stdtypes.html#AL::ALValue" title="AL::ALValue">AL::ALValue</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">getImageRemote</tt><big>(</big><a class="reference internal" href="../stdtypes.html#ss" title="std::string">const std::string&amp;</a> <em>id</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::getImageRemote__ssCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the latest image from the video source, applies eventual transformations to the image to provide the format requested by the vision module and send it as an ALValue through the network.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>id</strong> &#8211; Name under which the V.M. is known from ALVideoDevice.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>Array containing image informations:</p>
+<ul class="simple">
+<li>[0] : width;</li>
+<li>[1] : height;</li>
+<li>[2] : number of layers;</li>
+<li>[3] : ColorSpace;</li>
+<li>[4] : timestamp (seconds);</li>
+<li>[5] : timestamp (micro-seconds);</li>
+<li>[6] : array of size height * width * nblayers containing image data;</li>
+<li>[7] : camera ID (kTop=0, kBottom=1);</li>
+<li>[8] : left angle  (radian);</li>
+<li>[9] : topAngle    (radian);</li>
+<li>[10]: rightAngle  (radian);</li>
+<li>[11]: bottomAngle (radian);</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p><a class="reference download internal" href="../../_downloads/alvideodevice_imageremote.cpp"><tt class="xref download docutils literal"><span class="pre">alvideodevice_subscribe.cpp</span></tt></a></p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;alproxies/alvideodeviceproxy.h&gt;</span>
+<span class="cp">#include &lt;alvision/alvisiondefinitions.h&gt;</span>
+
+<span class="cp">#include &lt;iostream&gt;</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Usage: videodevice_imageremote pIp&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">pIp</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+  <span class="c1">// Proxy to ALVideoDevice.</span>
+  <span class="n">AL</span><span class="o">::</span><span class="n">ALVideoDeviceProxy</span> <span class="n">cameraProxy</span><span class="p">(</span><span class="n">pIp</span><span class="p">);</span>
+
+  <span class="c1">// Subscribe a Vision Module to ALVideoDevice, starting the</span>
+  <span class="c1">// frame grabber if it was not started before.</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">subscriberID</span> <span class="o">=</span> <span class="s">&quot;subscriberID&quot;</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">fps</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+  <span class="c1">// The subscriberID can be altered if other instances are already running</span>
+  <span class="n">subscriberID</span> <span class="o">=</span> <span class="n">cameraProxy</span><span class="p">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">subscriberID</span><span class="p">,</span> <span class="n">AL</span><span class="o">::</span><span class="n">kVGA</span><span class="p">,</span> <span class="n">AL</span><span class="o">::</span><span class="n">kRGBColorSpace</span><span class="p">,</span> <span class="n">fps</span><span class="p">);</span>
+
+  <span class="c1">// Retrieve the current image.</span>
+  <span class="n">AL</span><span class="o">::</span><span class="n">ALValue</span> <span class="n">results</span><span class="p">;</span>
+  <span class="n">results</span> <span class="o">=</span> <span class="n">cameraProxy</span><span class="p">.</span><span class="n">getImageRemote</span><span class="p">(</span><span class="n">subscriberID</span><span class="p">);</span>
+  <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span> <span class="n">imageData</span> <span class="o">=</span>  <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="mi">6</span><span class="p">].</span><span class="n">GetBinary</span><span class="p">());</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">imageData</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Could not retrieve current image.&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Image retrieved.&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">cameraProxy</span><span class="p">.</span><span class="n">releaseImage</span><span class="p">(</span><span class="n">subscriberID</span><span class="p">);</span>
+
+  <span class="c1">// Unsubscribe the V.M.</span>
+  <span class="n">cameraProxy</span><span class="p">.</span><span class="n">unsubscribe</span><span class="p">(</span><span class="n">subscriberID</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::releaseImage__ssCR">
+<a class="reference internal" href="../stdtypes.html#i" title="int">int</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">releaseImage</tt><big>(</big><a class="reference internal" href="../stdtypes.html#ss" title="std::string">const std::string&amp;</a> <em>id</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::releaseImage__ssCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Release image buffer locked by getImageLocal(). If V.M. had no locked image buffer, does nothing.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>id</strong> &#8211; Name under which the V.M. is known from ALVideoDevice.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">true if success</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">It is not mandatory to use releaseImage to release an image obtained by
+getImageRemote. However, it&#8217;s a good habit to place it in order to ease the switch
+from a remote behavior to a local one and this will not use CPU (this method
+returns directly when it follows a getImageRemote).</p>
+</div>
+<p><a class="reference download internal" href="../../_downloads/alvideodevice_imagelocal.cpp"><tt class="xref download docutils literal"><span class="pre">alvideodevice_subscribe.cpp</span></tt></a></p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;alproxies/alvideodeviceproxy.h&gt;</span>
+<span class="cp">#include &lt;alvision/alvisiondefinitions.h&gt;</span>
+
+<span class="cp">#include &lt;iostream&gt;</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Usage: videodevice_imageremote pIp&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">pIp</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+  <span class="c1">// Proxy to ALVideoDevice.</span>
+  <span class="n">AL</span><span class="o">::</span><span class="n">ALVideoDeviceProxy</span> <span class="n">cameraProxy</span><span class="p">(</span><span class="n">pIp</span><span class="p">);</span>
+
+  <span class="c1">// Subscribe a Vision Module to ALVideoDevice, starting the</span>
+  <span class="c1">// frame grabber if it was not started before.</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">subscriberID</span> <span class="o">=</span> <span class="s">&quot;subscriberID&quot;</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">fps</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+  <span class="c1">// The subscriberID can be altered if other instances are already running</span>
+  <span class="n">subscriberID</span> <span class="o">=</span> <span class="n">cameraProxy</span><span class="p">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">subscriberID</span><span class="p">,</span> <span class="n">AL</span><span class="o">::</span><span class="n">kVGA</span><span class="p">,</span> <span class="n">AL</span><span class="o">::</span><span class="n">kRGBColorSpace</span><span class="p">,</span> <span class="n">fps</span><span class="p">);</span>
+
+  <span class="c1">// Retrieve the current image.</span>
+  <span class="k">const</span> <span class="n">ALImage</span><span class="o">*</span> <span class="n">image</span> <span class="o">=</span> <span class="n">cameraProxy</span><span class="p">.</span><span class="n">getImageLocal</span><span class="p">(</span><span class="n">subscriberID</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">image</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Could not retrieve current image.&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Image retrieved.&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">cameraProxy</span><span class="p">.</span><span class="n">releaseImage</span><span class="p">(</span><span class="n">subscriberID</span><span class="p">);</span>
+
+  <span class="c1">// Unsubscribe the V.M.</span>
+  <span class="n">cameraProxy</span><span class="p">.</span><span class="n">unsubscribe</span><span class="p">(</span><span class="n">subscriberID</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="ALVideoDeviceProxy::getParam__iCR">
+<a class="reference internal" href="../stdtypes.html#i" title="int">int</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">getParam</tt><big>(</big><a class="reference internal" href="../stdtypes.html#i" title="int">const int&amp;</a> <em>pParam</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::getParam__iCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the value of a video source specific parameter.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Depending on the type of the video source, available parameters may change.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pParam</strong> &#8211; Parameter&#8217;s reference. See below the parameters list according to the type of video source.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>Parameter&#8217;s value. See below the parameters list according to the type of video source (values are available in <a class="reference internal" href="alvideodevice-tuto.html#alvideodevice-cameraparameters"><em>Modifying camera parameters</em></a> ).</p>
+<p><strong>video source: OV7670 VGA camera</strong></p>
+<ul class="simple">
+<li>kCameraSetDefaultParamsID,</li>
+<li>kCameraSelectID,</li>
+<li>kCameraFastSwitchID (advanced function that needs both camera to run same format. Parameter value has no signification),</li>
+<li>kCameraResolutionID (possible resolutions for the video source, not as requested by a Vision Module; e.g. QQVGA isn&#8217;t provided directly by the camera),</li>
+<li>kCameraHFlipID,</li>
+<li>kCameraVFlipID,</li>
+<li>kCameraBrightnessID,</li>
+<li>kCameraContrastID,</li>
+<li>kCameraSaturationID,</li>
+<li>kCameraHueID,</li>
+<li>kCameraSharpnessID (0-1: no sharpness - 2: medium sharpness - 3-5: high sharpness - higher: cartoon effect),</li>
+<li>kCameraAutoWhiteBalanceID,</li>
+<li>kCameraRedChromaID,</li>
+<li>kCameraBlueChromaID,</li>
+<li>kCameraAutoExpositionID,</li>
+<li>kCameraExposureID,</li>
+<li>kCameraAutoGainID,</li>
+<li>kCameraGainID,</li>
+<li>kCameraExposureCorrectionID (correction by n/3 IL, switch automatically in average-based AEC algorithm if n!=0 and back to histogram-based for n=0),</li>
+<li>kCameraAecAlgorithmID,</li>
+<li>kCameraAwbGreenGainID,</li>
+<li>kCameraAblcID,</li>
+<li>kCameraAblcTargetID,</li>
+<li>kCameraAblcStableRangeID,</li>
+<li>kCameraBlcBlueID,</li>
+<li>kCameraBlcRedID,</li>
+<li>kCameraBlcGbID,</li>
+<li>kCameraBlcGrID,</li>
+</ul>
+<p><strong>video source: MT9M114 HD camera</strong></p>
+<ul class="simple">
+<li>kCameraSetDefaultParamsID,</li>
+<li>kCameraSelectID,</li>
+<li>kCameraResolutionID (possible resolutions for the video source, not as requested by a Vision Module; e.g. QQVGA isn&#8217;t provided directly by the camera),</li>
+<li>kCameraHFlipID,</li>
+<li>kCameraVFlipID,</li>
+<li>kCameraBrightnessID,</li>
+<li>kCameraContrastID,</li>
+<li>kCameraSaturationID,</li>
+<li>kCameraHueID,</li>
+<li>kCameraSharpnessID</li>
+<li>kCameraAutoWhiteBalanceID,</li>
+<li>kCameraWhiteBalanceID,</li>
+<li>kCameraAutoExpositionID,</li>
+<li>kCameraExposureID,</li>
+<li>kCameraGainID,</li>
+<li>kCameraBacklightCompensationID</li>
+</ul>
+<p><strong>video source: simulatorcam</strong></p>
+<ul class="simple">
+<li>kCameraResolutionID,</li>
+<li>kCameraSelectID</li>
+</ul>
+<p><strong>video source: filecam</strong></p>
+<ul class="simple">
+<li>kCameraResolutionID,</li>
+<li>kCameraSelectID</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p><a class="reference download internal" href="../../_downloads/alvideodevice_getparam.cpp"><tt class="xref download docutils literal"><span class="pre">alvideodevice_subscribe.cpp</span></tt></a></p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;alproxies/alvideodeviceproxy.h&gt;</span>
+<span class="cp">#include &lt;alvision/alvisiondefinitions.h&gt;</span>
+
+<span class="cp">#include &lt;iostream&gt;</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Usage: videodevice_getparam pIp&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">pIp</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+  <span class="c1">// Proxy to ALVideoDevice.</span>
+  <span class="n">AL</span><span class="o">::</span><span class="n">ALVideoDeviceProxy</span> <span class="n">cameraProxy</span><span class="p">(</span><span class="n">pIp</span><span class="p">);</span>
+
+  <span class="c1">// Example: retrieve the ID of the selected camera.</span>
+  <span class="kt">int</span> <span class="n">pVal</span> <span class="o">=</span> <span class="n">cameraProxy</span><span class="p">.</span><span class="n">getParam</span><span class="p">(</span><span class="n">AL</span><span class="o">::</span><span class="n">kCameraSelectID</span><span class="p">);</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;AL::kCameraSelectID is &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">pVal</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="ALVideoDeviceProxy::setParam__iCR.iCR">
+<a class="reference internal" href="../stdtypes.html#void" title="void">void</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">setParam</tt><big>(</big><a class="reference internal" href="../stdtypes.html#i" title="int">const int&amp;</a> <em>param</em>, <a class="reference internal" href="../stdtypes.html#i" title="int">const int&amp;</a> <em>newValue</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::setParam__iCR.iCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the value of a specific parameter for the video source.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>param</strong> &#8211; <p>Parameter&#8217;s reference. See below the parameters list according to the type of video source (values are available in <a class="reference internal" href="alvideodevice-tuto.html#alvideodevice-cameraparameters"><em>Modifying camera parameters</em></a> ).</p>
+<p><strong>video source: OV7670 VGA camera</strong></p>
+<ul>
+<li>kCameraSetDefaultParamsID,</li>
+<li>kCameraSelectID,</li>
+<li>kCameraFastSwitchID (advanced function that needs both camera to run same format. Parameter value has no signification),</li>
+<li>kCameraResolutionID (possible resolutions for the video source, not as requested by a Vision Module; e.g. QQVGA isn&#8217;t provided directly by the camera),</li>
+<li>kCameraHFlipID,</li>
+<li>kCameraVFlipID,</li>
+<li>kCameraBrightnessID,</li>
+<li>kCameraContrastID,</li>
+<li>kCameraSaturationID,</li>
+<li>kCameraHueID,</li>
+<li>kCameraSharpnessID (0-1: no sharpness - 2: medium sharpness - 3-5: high sharpness - higher: cartoon effect)</li>
+<li>kCameraAutoWhiteBalanceID,</li>
+<li>kCameraRedChromaID,</li>
+<li>kCameraBlueChromaID,</li>
+<li>kCameraAutoExpositionID,</li>
+<li>kCameraExposureID,</li>
+<li>kCameraAutoGainID,</li>
+<li>kCameraGainID,</li>
+<li>kCameraExposureCorrectionID (correction by n/3 IL, switch automatically in average-based AEC algorithm if n!=0 and back to histogram-based for n=0),</li>
+<li>kCameraAecAlgorithmID,</li>
+<li>kCameraAwbGreenGainID,</li>
+<li>kCameraAblcID,</li>
+<li>kCameraAblcTargetID,</li>
+<li>kCameraAblcStableRangeID,</li>
+<li>kCameraBlcBlueID,</li>
+<li>kCameraBlcRedID,</li>
+<li>kCameraBlcGbID,</li>
+<li>kCameraBlcGrID,</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The disabled camera will get back to auto gain/exposure/white balance settings after a while. This is a camera issue when it is freezed.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Fast switch usually switchs between cameras in 66ms (33ms for waked up sensor exposure + 33ms for data transfer) after previous image completion. However, sometimes we can observe a clipped image from the former camera after 66ms. This is an electronical issue and so we suggest to considere only images after 100ms</p>
+</div>
+<p><strong>video source: MT9M114 HD camera</strong></p>
+<ul>
+<li>kCameraSetDefaultParamsID,</li>
+<li>kCameraSelectID,</li>
+<li>kCameraResolutionID (possible resolutions for the video source, not as requested by a Vision Module; e.g. QQVGA isn&#8217;t provided directly by the camera),</li>
+<li>kCameraHFlipID,</li>
+<li>kCameraVFlipID,</li>
+<li>kCameraBrightnessID,</li>
+<li>kCameraContrastID,</li>
+<li>kCameraSaturationID,</li>
+<li>kCameraHueID,</li>
+<li>kCameraSharpnessID,</li>
+<li>kCameraAutoWhiteBalanceID,</li>
+<li>kCameraWhiteBalanceID,</li>
+<li>kCameraAutoExpositionID,</li>
+<li>kCameraExposureID,</li>
+<li>kCameraGainID,</li>
+<li>kCameraBacklightCompensationID</li>
+</ul>
+<p><strong>video source: simulatorcam</strong></p>
+<ul>
+<li>kCameraResolutionID,</li>
+<li>kCameraSelectID</li>
+</ul>
+<p><strong>video source: filecam</strong></p>
+<ul>
+<li>kCameraResolutionID,</li>
+<li>kCameraSelectID</li>
+</ul>
+</li>
+<li><strong>newValue</strong> &#8211; Parameter&#8217;s new value.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p><a class="reference download internal" href="../../_downloads/alvideodevice_setparam.cpp"><tt class="xref download docutils literal"><span class="pre">alvideodevice_subscribe.cpp</span></tt></a></p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;alproxies/alvideodeviceproxy.h&gt;</span>
+<span class="cp">#include &lt;alvision/alvisiondefinitions.h&gt;</span>
+
+<span class="cp">#include &lt;iostream&gt;</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Usage: videodevice_setparam pIp&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">pIp</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+  <span class="c1">// Proxy to ALVideoDevice.</span>
+  <span class="n">AL</span><span class="o">::</span><span class="n">ALVideoDeviceProxy</span> <span class="n">cameraProxy</span><span class="p">(</span><span class="n">pIp</span><span class="p">);</span>
+
+  <span class="c1">// For example, set the current selected camera to top camera.</span>
+  <span class="n">cameraProxy</span><span class="p">.</span><span class="n">setParam</span><span class="p">(</span><span class="n">AL</span><span class="o">::</span><span class="n">kCameraSelectID</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;AL::kCameraSelectID has been set to &quot;</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="ALVideoDeviceProxy::setParamDefault__iCR">
+<a class="reference internal" href="../stdtypes.html#void" title="void">void</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">setParamDefault</tt><big>(</big><a class="reference internal" href="../stdtypes.html#i" title="int">const int&amp;</a> <em>param</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::setParamDefault__iCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a specific parameter for the video source at its default value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>param</strong> &#8211; <p>Parameter&#8217;s reference. See below the parameters list according to the type of video source (values are available in <a class="reference internal" href="alvideodevice-tuto.html#alvideodevice-cameraparameters"><em>Modifying camera parameters</em></a> ).</p>
+<p><strong>video source: OV7670 VGA camera</strong></p>
+<ul>
+<li>kCameraSetDefaultParamsID,</li>
+<li>kCameraSelectID,</li>
+<li>kCameraFastSwitchID (advanced function that needs both camera to run same format. Parameter value has no signification),</li>
+<li>kCameraResolutionID (possible resolutions for the video source, not as requested by a Vision Module; e.g. QQVGA isn&#8217;t provided directly by the camera),</li>
+<li>kCameraHFlipID,</li>
+<li>kCameraVFlipID,</li>
+<li>kCameraBrightnessID,</li>
+<li>kCameraContrastID,</li>
+<li>kCameraSaturationID,</li>
+<li>kCameraHueID,</li>
+<li>kCameraSharpnessID (0-1: no sharpness - 2: medium sharpness - 3-5: high sharpness - higher: cartoon effect)</li>
+<li>kCameraAutoWhiteBalanceID,</li>
+<li>kCameraRedChromaID,</li>
+<li>kCameraBlueChromaID,</li>
+<li>kCameraAutoExpositionID,</li>
+<li>kCameraExposureID,</li>
+<li>kCameraAutoGainID,</li>
+<li>kCameraGainID,</li>
+<li>kCameraExposureCorrectionID (correction by n/3 IL, switch automatically in average-based AEC algorithm if n!=0 and back to histogram-based for n=0),</li>
+<li>kCameraAecAlgorithmID,</li>
+<li>kCameraAwbGreenGainID,</li>
+<li>kCameraAblcID,</li>
+<li>kCameraAblcTargetID,</li>
+<li>kCameraAblcStableRangeID,</li>
+<li>kCameraBlcBlueID,</li>
+<li>kCameraBlcRedID,</li>
+<li>kCameraBlcGbID,</li>
+<li>kCameraBlcGrID,</li>
+</ul>
+<p><strong>video source: MT9M114 HD camera</strong></p>
+<ul>
+<li>kCameraSetDefaultParamsID,</li>
+<li>kCameraSelectID,</li>
+<li>kCameraResolutionID (possible resolutions for the video source, not as requested by a Vision Module; e.g. QQVGA isn&#8217;t provided directly by the camera),</li>
+<li>kCameraHFlipID,</li>
+<li>kCameraVFlipID,</li>
+<li>kCameraBrightnessID,</li>
+<li>kCameraContrastID,</li>
+<li>kCameraSaturationID,</li>
+<li>kCameraHueID,s</li>
+<li>kCameraSharpnessID,</li>
+<li>kCameraAutoWhiteBalanceID,</li>
+<li>kCameraWhiteBalanceID,</li>
+<li>kCameraAutoExpositionID,</li>
+<li>kCameraExposureID,</li>
+<li>kCameraGainID,</li>
+<li>kCameraBacklightCompensationID</li>
+</ul>
+<p><strong>video source: simulatorcam</strong></p>
+<ul>
+<li>kCameraResolutionID,</li>
+<li>kCameraSelectID</li>
+</ul>
+<p><strong>video source: filecam</strong></p>
+<ul>
+<li>kCameraResolutionID,</li>
+<li>kCameraSelectID</li>
+</ul>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p><a class="reference download internal" href="../../_downloads/alvideodevice_setparamdefault.cpp"><tt class="xref download docutils literal"><span class="pre">alvideodevice_subscribe.cpp</span></tt></a></p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;alproxies/alvideodeviceproxy.h&gt;</span>
+<span class="cp">#include &lt;alvision/alvisiondefinitions.h&gt;</span>
+
+<span class="cp">#include &lt;iostream&gt;</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Usage: videodevice_setparamdefault pIp&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">pIp</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+  <span class="c1">// Proxy to ALVideoDevice.</span>
+  <span class="n">AL</span><span class="o">::</span><span class="n">ALVideoDeviceProxy</span> <span class="n">cameraProxy</span><span class="p">(</span><span class="n">pIp</span><span class="p">);</span>
+
+  <span class="c1">// For example, set the current selected camera to default.</span>
+  <span class="n">cameraProxy</span><span class="p">.</span><span class="n">setParamDefault</span><span class="p">(</span><span class="n">AL</span><span class="o">::</span><span class="n">kCameraSelectID</span><span class="p">);</span>
+
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;AL::kCameraSelectID has been set to default value &quot;</span>
+            <span class="o">&lt;&lt;</span> <span class="n">cameraProxy</span><span class="p">.</span><span class="n">getParam</span><span class="p">(</span><span class="n">AL</span><span class="o">::</span><span class="n">kCameraSelectID</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="ALVideoDeviceProxy::setResolution__ssCR.iCR">
+<a class="reference internal" href="../stdtypes.html#b" title="bool">bool</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">setResolution</tt><big>(</big><a class="reference internal" href="../stdtypes.html#ss" title="std::string">const std::string&amp;</a> <em>id</em>, <a class="reference internal" href="../stdtypes.html#i" title="int">const int&amp;</a> <em>size</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::setResolution__ssCR.iCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the resolution requested by a Vision Module</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>id</strong> &#8211; Name under which the V.M. is known from ALVideoDevice.</li>
+<li><strong>size</strong> &#8211; <ul>
+<li>video source OV7670 VGA camera: { 0 = kQQVGA, 1 = kQVGA, 2 = kVGA }</li>
+<li>video source MT9M114 HD camera: { 0 = kQQVGA, 1 = kQVGA, 2 = kVGA, 3 = k4VGA (1280x960) }</li>
+<li>video source simulatorcam: { 0 = kQQVGA, 1 = kQVGA, 2 = kVGA }</li>
+<li>video source filecam: any resolution smaller or equal to the one of the images in the file (accessible with getVIMResolution).</li>
+</ul>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">true if success</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::setColorSpace__ssCR.iCR">
+<a class="reference internal" href="../stdtypes.html#b" title="bool">bool</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">setColorSpace</tt><big>(</big><a class="reference internal" href="../stdtypes.html#ss" title="std::string">const std::string&amp;</a> <em>id</em>, <a class="reference internal" href="../stdtypes.html#i" title="int">const int&amp;</a> <em>colorSpace</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::setColorSpace__ssCR.iCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the colorspace requested by a Vision Module.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>id</strong> &#8211; Name under which the V.M. is known from ALVideoDevice.</li>
+<li><strong>colorSpace</strong> &#8211; <p>Parameter&#8217;s reference among</p>
+<ul>
+<li>kYuvColorSpace = 0;</li>
+<li>kyUvColorSpace = 1;</li>
+<li>kyuVColorSpace = 2;</li>
+<li>kRgbColorSpace = 3;</li>
+<li>krGbColorSpace = 4;</li>
+<li>krgBColorSpace = 5;</li>
+<li>kHsyColorSpace = 6;</li>
+<li>khSyColorSpace = 7;</li>
+<li>khsYColorSpace = 8;</li>
+<li>kYUV422ColorSpace = 9;</li>
+<li>kYUVColorSpace = 10;</li>
+<li>kRGBColorSpace = 11;</li>
+<li>kHSYColorSpace = 12;</li>
+<li>kBGRColorSpace = 13;     // for using with opencv</li>
+<li>kYYCbCrColorSpace = 14;  // for tiff implementation</li>
+<li>kH2RGBColorSpace = 15;   // H from &#8220;HSY to RGB&#8221; in fake colors</li>
+<li>kHSMixedColorSpace = 16; // HS and (H +S)/2</li>
+</ul>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">true if success</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::setFrameRate__ssCR.iCR">
+<a class="reference internal" href="../stdtypes.html#b" title="bool">bool</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">setFrameRate</tt><big>(</big><a class="reference internal" href="../stdtypes.html#ss" title="std::string">const std::string&amp;</a> <em>id</em>, <a class="reference internal" href="../stdtypes.html#i" title="int">const int&amp;</a> <em>frameRate</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::setFrameRate__ssCR.iCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the framerate requested to the video source by the Vision Module.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>id</strong> &#8211; Name under which the V.M. is known from ALVideoDevice.</li>
+<li><strong>frameRate</strong> &#8211; images per seconds. The OV7670 VGA camera can only run at 30fps,
+the MT9M114 HD camera will be able to run faster with some special modes in a near future.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">true if success</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The requested framerate will be achieved locally. Remotely, the achieved framerate will depend on the network available bandwith (e.g. we can reach raw <tt class="docutils literal"><span class="pre">1280x960&#64;10fps</span></tt> using a Gigabit Ethernet connection with the HD camera).</p>
+</div>
+<dl class="function">
+<dt id="ALVideoDeviceProxy::getGVMResolution__ssCR">
+<a class="reference internal" href="../stdtypes.html#i" title="int">int</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">getGVMResolution</tt><big>(</big><a class="reference internal" href="../stdtypes.html#ss" title="std::string">const std::string&amp;</a> <em>id</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::getGVMResolution__ssCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the resolution of a particular Vision Module</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>id</strong> &#8211; Name under which the V.M. is known from ALVideoDevice.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">{ 0 = kQQVGA, 1 = kQVGA, 2 = kVGA, 3 = k4VGA }  -1: can&#8217;t access video source</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::getGVMColorSpace__ssCR">
+<a class="reference internal" href="../stdtypes.html#i" title="int">int</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">getGVMColorSpace</tt><big>(</big><a class="reference internal" href="../stdtypes.html#ss" title="std::string">const std::string&amp;</a> <em>id</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::getGVMColorSpace__ssCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the color space of a particular Vision Module.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>id</strong> &#8211; Name under which the V.M. is known from ALVideoDevice.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>-1: can&#8217;t access video source</p>
+<ul class="simple">
+<li>kYuvColorSpace = 0;</li>
+<li>kyUvColorSpace = 1;</li>
+<li>kyuVColorSpace = 2;</li>
+<li>kRgbColorSpace = 3;</li>
+<li>krGbColorSpace = 4;</li>
+<li>krgBColorSpace = 5;</li>
+<li>kHsyColorSpace = 6;</li>
+<li>khSyColorSpace = 7;</li>
+<li>khsYColorSpace = 8;</li>
+<li>kYUV422ColorSpace = 9;</li>
+<li>kYUVColorSpace = 10;</li>
+<li>kRGBColorSpace = 11;</li>
+<li>kHSYColorSpace = 12;</li>
+<li>kBGRColorSpace = 13;     // for using with opencv</li>
+<li>kYYCbCrColorSpace = 14;  // for tiff implementation</li>
+<li>kH2RGBColorSpace = 15;   // H from &#8220;HSY to RGB&#8221; in fake colors</li>
+<li>kHSMixedColorSpace = 16; // HS and (H +S)/2</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::getGVMFrameRate__ssCR">
+<a class="reference internal" href="../stdtypes.html#i" title="int">int</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">getGVMFrameRate</tt><big>(</big><a class="reference internal" href="../stdtypes.html#ss" title="std::string">const std::string&amp;</a> <em>id</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::getGVMFrameRate__ssCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the frame rate that a particular Vision Module has requested to the camera.
+This doesn&#8217;t mean the video source is able to run at this frame rate
+(see <a class="reference internal" href="#ALVideoDeviceProxy::getVIMFrameRate" title="ALVideoDeviceProxy::getVIMFrameRate"><tt class="xref cpp cpp-func docutils literal"><span class="pre">ALVideoDeviceProxy::getVIMFrameRate()</span></tt></a> to know the video source framerate).
+This doesn&#8217;t either mean that a remote module will obtain images at this framerate due to network bandwith limitations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>id</strong> &#8211; Name under which the V.M. is known from ALVideoDevice.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The Vision Module framerate, or -1 if we can&#8217;t access video source</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::sizesToResolution__iCR.iCR">
+<a class="reference internal" href="../stdtypes.html#i" title="int">int</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">sizesToResolution</tt><big>(</big><a class="reference internal" href="../stdtypes.html#i" title="int">const int&amp;</a> <em>width</em>, <a class="reference internal" href="../stdtypes.html#i" title="int">const int&amp;</a> <em>height</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::sizesToResolution__iCR.iCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the resolution from sizes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>width</strong> &#8211; width of the image</li>
+<li><strong>height</strong> &#8211; height of the image</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">{ 0 = kQQVGA, 1 = kQVGA, 2 = kVGA, 3 = k4VGA }  or -1 if the inputs are invalid</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p><a class="reference download internal" href="../../_downloads/alvideodevice_sizestoresolution.cpp"><tt class="xref download docutils literal"><span class="pre">alvideodevice_subscribe.cpp</span></tt></a></p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;iostream&gt;</span>
+
+<span class="cp">#include &lt;alproxies/alvideodeviceproxy.h&gt;</span>
+<span class="cp">#include &lt;alvision/alvisiondefinitions.h&gt;</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Usage: videodevice_sizestoresolution pIp&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">pIp</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+  <span class="c1">// Proxy to ALVideoDevice.</span>
+  <span class="n">AL</span><span class="o">::</span><span class="n">ALVideoDeviceProxy</span> <span class="n">cameraProxy</span><span class="p">(</span><span class="n">pIp</span><span class="p">);</span>
+
+  <span class="c1">// Get resolution of the currently selected camera.</span>
+  <span class="kt">int</span> <span class="n">resolution</span> <span class="o">=</span> <span class="n">cameraProxy</span><span class="p">.</span><span class="n">sizesToResolution</span><span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">);</span>
+
+  <span class="k">switch</span><span class="p">(</span><span class="n">resolution</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Current resolution is QQVGA&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">break</span><span class="p">;</span>
+
+  <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Current resolution is QVGA&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">break</span><span class="p">;</span>
+
+  <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Current resolution is VGA&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">break</span><span class="p">;</span>
+
+  <span class="k">default</span><span class="o">:</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Unknown resolution&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">break</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="ALVideoDeviceProxy::resolutionToSizes__iCR">
+<a class="reference internal" href="../stdtypes.html#AL::ALValue" title="AL::ALValue">AL::ALValue</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">resolutionToSizes</tt><big>(</big><a class="reference internal" href="../stdtypes.html#i" title="int">const int&amp;</a> <em>resolution</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::resolutionToSizes__iCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the width and the height of a resolution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>resolution</strong> &#8211; { 0 = kQQVGA, 1 = kQVGA, 2 = kVGA }</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">array of sizes: (return [-1;-1] if the format is invalid) [0] : width; [1] : height;</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p><a class="reference download internal" href="../../_downloads/alvideodevice_resolutiontosizes.cpp"><tt class="xref download docutils literal"><span class="pre">alvideodevice_subscribe.cpp</span></tt></a></p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;iostream&gt;</span>
+
+<span class="cp">#include &lt;alproxies/alvideodeviceproxy.h&gt;</span>
+<span class="cp">#include &lt;alvision/alvisiondefinitions.h&gt;</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Usage videodevice_resolutiontosizes pIp&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">pIp</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+  <span class="c1">// Proxy to ALVideoDevice.</span>
+  <span class="n">AL</span><span class="o">::</span><span class="n">ALVideoDeviceProxy</span> <span class="n">cameraProxy</span><span class="p">(</span><span class="n">pIp</span><span class="p">);</span>
+
+  <span class="c1">// Retrieve current image size.</span>
+  <span class="n">AL</span><span class="o">::</span><span class="n">ALValue</span> <span class="n">size</span> <span class="o">=</span> <span class="n">cameraProxy</span><span class="p">.</span><span class="n">resolutionToSizes</span><span class="p">(</span><span class="n">AL</span><span class="o">::</span><span class="n">kVGA</span><span class="p">);</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Image width is &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; and image height is &quot;</span>
+            <span class="o">&lt;&lt;</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="video-recording-and-replaying-methods">
+<span id="alvideodevice-videorecordingandreplayingmethods"></span><h2>Video recording and replaying methods<a class="headerlink" href="#video-recording-and-replaying-methods" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ALVideoDeviceProxy::recordVideo__ssCR.ssCR.iCR.iCR">
+<a class="reference internal" href="../stdtypes.html#b" title="bool">bool</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">recordVideo</tt><big>(</big><a class="reference internal" href="../stdtypes.html#ss" title="std::string">const std::string&amp;</a> <em>id</em>, <a class="reference internal" href="../stdtypes.html#ss" title="std::string">const std::string&amp;</a> <em>path</em>, <a class="reference internal" href="../stdtypes.html#i" title="int">const int&amp;</a> <em>totalNumber</em>, <a class="reference internal" href="../stdtypes.html#i" title="int">const int&amp;</a> <em>period</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::recordVideo__ssCR.ssCR.iCR.iCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>BETA - background record of an .arv raw format video from the images processed by a Vision Module</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>id</strong> &#8211; Name under which the V.M. is known from ALVideoDevice</li>
+<li><strong>path</strong> &#8211; Name with the absolute path (pathToMyFile/filename.arv) of the <tt class="docutils literal"><span class="pre">arv</span></tt> video file to record</li>
+<li><strong>totalNumber</strong> &#8211; number of images to be recorded. 0xFFFFFFFF for &#8220;unlimited&#8221;</li>
+<li><strong>period</strong> &#8211; one image recorded every pPeriod images</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">true if success</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p><a class="reference download internal" href="../../_downloads/getImageLocal_and_recordArv1.py"><tt class="xref download docutils literal"><span class="pre">alvideodevice_subscribe.cpp</span></tt></a></p>
+<div class="highlight-py"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">time</span>
+<span class="c">#import Image</span>
+
+<span class="kn">from</span> <span class="nn">naoqi</span> <span class="kn">import</span> <span class="n">ALProxy</span>
+<span class="kn">import</span> <span class="nn">vision_definitions</span>
+
+
+<span class="c"># Put here IP and Port of a broker containg basicMotionDetector</span>
+<span class="n">IP</span> <span class="o">=</span> <span class="s">&quot;127.0.0.1&quot;</span>  <span class="c"># Put here the IP address of your robot</span>
+<span class="n">PORT</span><span class="o">=</span><span class="mi">9559</span>
+
+<span class="c">#________________________________</span>
+<span class="c"># Get Proxy on ALVideoDevice</span>
+<span class="c">#________________________________</span>
+
+<span class="k">try</span><span class="p">:</span>
+  <span class="n">camProxy</span> <span class="o">=</span> <span class="n">ALProxy</span><span class="p">(</span><span class="s">&quot;ALVideoDevice&quot;</span><span class="p">,</span><span class="n">IP</span><span class="p">,</span><span class="n">PORT</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span><span class="n">e</span><span class="p">:</span>
+  <span class="k">print</span> <span class="s">&quot;Error when creating vision proxy:&quot;</span>
+  <span class="k">print</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+  <span class="nb">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c">#________________________________</span>
+<span class="c"># Vision module creation</span>
+<span class="c">#________________________________</span>
+
+<span class="n">resolution</span> <span class="o">=</span> <span class="n">vision_definitions</span><span class="o">.</span><span class="n">kQVGA</span>
+<span class="n">colorSpace</span> <span class="o">=</span> <span class="n">vision_definitions</span><span class="o">.</span><span class="n">kYUV422ColorSpace</span>
+<span class="n">fps</span> <span class="o">=</span> <span class="mi">30</span>
+
+<span class="n">nameId</span> <span class="o">=</span> <span class="s">&quot;pythonVM&quot;</span>
+<span class="n">nameId</span> <span class="o">=</span> <span class="n">camProxy</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">nameId</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">colorSpace</span><span class="p">,</span> <span class="n">fps</span><span class="p">)</span>
+
+<span class="c">#________________________________</span>
+<span class="c"># Ask to grab a maximum of 3500</span>
+<span class="c"># images obtained by the vision module</span>
+<span class="c">#________________________________</span>
+
+<span class="k">print</span>  <span class="s">&quot;set recording file&quot;</span>
+<span class="n">camProxy</span><span class="o">.</span><span class="n">recordVideo</span><span class="p">(</span><span class="n">nameId</span><span class="p">,</span> <span class="s">&quot;/home/nao/myVideo&quot;</span><span class="p">,</span> <span class="mi">3500</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="k">print</span>  <span class="s">&quot;launch recording&quot;</span>
+
+<span class="c">#________________________________</span>
+<span class="c"># The vision module requests 300 images</span>
+<span class="c">#________________________________</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">300</span><span class="p">):</span>
+  <span class="n">image</span> <span class="o">=</span> <span class="n">camProxy</span><span class="o">.</span><span class="n">getImageLocal</span><span class="p">(</span><span class="n">nameId</span><span class="p">)</span>
+  <span class="n">camProxy</span><span class="o">.</span><span class="n">releaseImage</span><span class="p">(</span><span class="n">nameId</span><span class="p">)</span>
+  <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.030</span><span class="p">)</span>
+
+<span class="c">#________________________________</span>
+<span class="c"># Stop manually the recording</span>
+<span class="c"># after 300 images</span>
+<span class="c">#________________________________</span>
+
+<span class="k">print</span> <span class="s">&quot;finishing&quot;</span>
+<span class="n">camProxy</span><span class="o">.</span><span class="n">stopVideo</span><span class="p">(</span><span class="n">nameId</span><span class="p">)</span>
+<span class="n">camProxy</span><span class="o">.</span><span class="n">unsubscribeAllInstances</span><span class="p">(</span><span class="n">nameId</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="s">&#39;end of script&#39;</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="ALVideoDeviceProxy::stopVideo__ssCR">
+<a class="reference internal" href="../stdtypes.html#b" title="bool">bool</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">stopVideo</tt><big>(</big><a class="reference internal" href="../stdtypes.html#ss" title="std::string">const std::string&amp;</a> <em>id</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::stopVideo__ssCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>BETA - stop writing the video sequence</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>id</strong> &#8211; Name under which the V.M. is known from ALVideoDevice.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">true if success</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::setVideo__ssCR.AL::ALValueCR.bCR.iCR.iCR">
+<a class="reference internal" href="../stdtypes.html#void" title="void">void*</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">setVideo</tt><big>(</big><a class="reference internal" href="../stdtypes.html#ss" title="std::string">const std::string&amp;</a> <em>filePath</em>, <a class="reference internal" href="../stdtypes.html#AL::ALValue" title="AL::ALValue">const AL::ALValue&amp;</a> <em>range</em>, <a class="reference internal" href="../stdtypes.html#b" title="bool">const bool&amp;</a> <em>loop</em>, <a class="reference internal" href="../stdtypes.html#i" title="int">const int&amp;</a> <em>replayMode</em>, <a class="reference internal" href="../stdtypes.html#i" title="int">const int&amp;</a> <em>streamNumber</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::setVideo__ssCR.AL::ALValueCR.bCR.iCR.iCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>BETA - Set the parameters to play a video.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filePath</strong> &#8211; Name with the absolute path of the <tt class="docutils literal"><span class="pre">arv</span></tt> video file to replay</li>
+<li><strong>range</strong> &#8211; If set to <tt class="docutils literal"><span class="pre">NULL</span></tt> the complete file will be replayed. If an array is provided (e.g. [3, 142]), only frames in that range will be replayed.</li>
+<li><strong>loop</strong> &#8211; Loop if set to <tt class="docutils literal"><span class="pre">true</span></tt>.</li>
+<li><strong>replayMode</strong> &#8211; <p>Controls the replay mode :</p>
+<ul>
+<li>0 replay frame per frame (using nextImage/previousImage) if replaySpeed is set to 0, or at a frame rate defined by the user.</li>
+<li>1 replay tries to comply with original image acquisition timestamp intervals (vision modules will lose frames if their process is too. long).</li>
+</ul>
+</li>
+<li><strong>streamNumber</strong> &#8211; for multi stream videos, select which stream to play. Default should be 0.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return :</th><td class="field-body"><p class="first last">true if success</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p><a class="reference download internal" href="../../_downloads/replayArvVideo.py"><tt class="xref download docutils literal"><span class="pre">alvideodevice_subscribe.cpp</span></tt></a></p>
+<div class="highlight-py"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">naoqi</span> <span class="kn">import</span> <span class="n">ALProxy</span>
+
+
+<span class="n">IP</span> <span class="o">=</span> <span class="s">&quot;127.0.0.1&quot;</span>  <span class="c"># Put here the IP address of your NAOqi</span>
+<span class="n">PORT</span> <span class="o">=</span> <span class="mi">9559</span>
+
+<span class="c">#________________________________</span>
+<span class="c"># Get Proxy on ALVideoDevice</span>
+<span class="c">#________________________________</span>
+
+<span class="k">try</span><span class="p">:</span>
+  <span class="n">camProxy</span> <span class="o">=</span> <span class="n">ALProxy</span><span class="p">(</span><span class="s">&quot;ALVideoDevice&quot;</span><span class="p">,</span> <span class="n">IP</span><span class="p">,</span> <span class="n">PORT</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span><span class="n">e</span><span class="p">:</span>
+  <span class="k">print</span> <span class="s">&quot;Error when creating vision proxy:&quot;</span>
+  <span class="k">print</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+  <span class="nb">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">pRange</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">10000</span><span class="p">]</span>
+<span class="n">pLoop</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">pReplayMode</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">pStreamNumber</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="k">try</span><span class="p">:</span>
+  <span class="n">camProxy</span><span class="o">.</span><span class="n">setVideo</span><span class="p">(</span><span class="s">&quot;/home/nao/myVideo.arv&quot;</span><span class="p">,</span> <span class="n">pRange</span><span class="p">,</span> <span class="n">pLoop</span><span class="p">,</span> <span class="n">pReplayMode</span><span class="p">,</span> <span class="n">pStreamNumber</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span><span class="n">e</span><span class="p">:</span>
+  <span class="k">print</span> <span class="s">&quot;setVideo Failed&quot;</span>
+
+<span class="k">print</span> <span class="s">&#39;end of script&#39;</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="ALVideoDeviceProxy::replaySpeed__std::vector:float:CR">
+<a class="reference internal" href="../stdtypes.html#void" title="void">void*</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">replaySpeed</tt><big>(</big><a class="reference internal" href="../stdtypes.html#std::vector:float:" title="std::vector&lt;float&gt;">const std::vector&lt;float&gt;&amp;</a> <em>imagesPerSecond</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::replaySpeed__std::vector:float:CR" title="Permalink to this definition">¶</a></dt>
+<dd><p>BETA - When replaying in mode 0, set the speed for replaying the video sequence.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>imagesPerSecond</strong> &#8211; Set the desired images per second. O will act like if the video source was always sending the same image.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::previousImage">
+<a class="reference internal" href="../stdtypes.html#void" title="void">void*</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">previousImage</tt><big>(</big><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::previousImage" title="Permalink to this definition">¶</a></dt>
+<dd><p>BETA - When replaying in mode 0, ask for the previous image.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::nextImage">
+<a class="reference internal" href="../stdtypes.html#void" title="void">void*</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">nextImage</tt><big>(</big><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::nextImage" title="Permalink to this definition">¶</a></dt>
+<dd><p>BETA - When replaying in mode 0, ask for the next image.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::getCurrentImageNumber">
+<a class="reference internal" href="../stdtypes.html#i" title="int">int</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">getCurrentImageNumber</tt><big>(</big><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::getCurrentImageNumber" title="Permalink to this definition">¶</a></dt>
+<dd><p>BETA - Ask for the position of the current image in the sequence.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Returns the index of the current image.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="video-source-parameters">
+<span id="alvideodevice-videosourceparameters"></span><h2>Video source parameters<a class="headerlink" href="#video-source-parameters" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ALVideoDeviceProxy::getActiveCamera">
+<a class="reference internal" href="../stdtypes.html#i" title="int">int</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">getActiveCamera</tt><big>(</big><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::getActiveCamera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the active camera ID</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li>0: top camera</li>
+<li>1: bottom camera</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p><a class="reference download internal" href="../../_downloads/alvideodevice_getactivecamera.cpp"><tt class="xref download docutils literal"><span class="pre">alvideodevice_subscribe.cpp</span></tt></a></p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;alproxies/alvideodeviceproxy.h&gt;</span>
+
+<span class="cp">#include &lt;iostream&gt;</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Usage: videodevice_getactivecamera pIp&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">pIp</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+  <span class="c1">// Proxy to ALVideoDevice.</span>
+  <span class="n">AL</span><span class="o">::</span><span class="n">ALVideoDeviceProxy</span> <span class="n">cameraProxy</span><span class="p">(</span><span class="n">pIp</span><span class="p">);</span>
+
+  <span class="kt">int</span> <span class="n">activeCam</span> <span class="o">=</span> <span class="n">cameraProxy</span><span class="p">.</span><span class="n">getActiveCamera</span><span class="p">();</span>
+
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Active camera is &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">activeCam</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="ALVideoDeviceProxy::getVIMColorSpace">
+<a class="reference internal" href="../stdtypes.html#i" title="int">int</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">getVIMColorSpace</tt><big>(</big><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::getVIMColorSpace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the color space of the video source before enventual conversion.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">{ 0 = kYuv, 9 = kYUV422, 10 = kYUV, 11 = kRGB, 12 = kHSY, 13 = kBGR }  -1 can&#8217;t access video source</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::getVIMFrameRate">
+<a class="reference internal" href="../stdtypes.html#i" title="int">int</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">getVIMFrameRate</tt><big>(</big><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::getVIMFrameRate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the internal frame rate of the video source.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">video source framerate. -1: can&#8217;t access video source</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::getVIMResolution">
+<a class="reference internal" href="../stdtypes.html#i" title="int">int</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">getVIMResolution</tt><big>(</big><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::getVIMResolution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the resolution of the video source before eventual conversion.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">{ 0 = kQQVGA, 1 = kQVGA, 2 = kVGA, 3 = k4VGA }  -1: can&#8217;t access video source</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="angles-management">
+<span id="alvideodevice-anglesmanagementmethods"></span><h2>Angles management<a class="headerlink" href="#angles-management" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ALVideoDeviceProxy::getAngPosFromImgPos__std::vector:float:CR">
+<a class="reference internal" href="../stdtypes.html#std::vector:float:" title="std::vector&lt;float&gt;">std::vector&lt;float&gt;</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">getAngPosFromImgPos</tt><big>(</big><a class="reference internal" href="../stdtypes.html#std::vector:float:" title="std::vector&lt;float&gt;">const std::vector&lt;float&gt;&amp;</a> <em>imgPos</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::getAngPosFromImgPos__std::vector:float:CR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns position as angles relative to camera axis given a normalized position in the image.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>imgPos</strong> &#8211; normalized position in the image [0.0 - 1.0]</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">corresponding angles values in radians.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p><a class="reference download internal" href="../../_downloads/alvideodevice_imagetoangle.cpp"><tt class="xref download docutils literal"><span class="pre">alvideodevice_subscribe.cpp</span></tt></a></p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;iostream&gt;</span>
+<span class="cp">#include &lt;vector&gt;</span>
+
+<span class="cp">#include &lt;alproxies/alvideodeviceproxy.h&gt;</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Usage: videodevice_imagetoangle pIp&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">pIp</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+  <span class="c1">// Proxy to ALVideoDevice.</span>
+  <span class="n">AL</span><span class="o">::</span><span class="n">ALVideoDeviceProxy</span> <span class="n">cameraProxy</span><span class="p">(</span><span class="n">pIp</span><span class="p">);</span>
+
+  <span class="c1">// Example of a normalized position in the image.</span>
+  <span class="kt">float</span> <span class="n">x</span> <span class="o">=</span> <span class="mf">0.2f</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mf">0.7f</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">posUV</span><span class="p">;</span>
+  <span class="n">posUV</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+  <span class="n">posUV</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">y</span><span class="p">);</span>
+
+  <span class="c1">// Retrieve the corresponding angles.</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">camAngles</span> <span class="o">=</span> <span class="n">cameraProxy</span><span class="p">.</span><span class="n">getAngPosFromImgPos</span><span class="p">(</span><span class="n">posUV</span><span class="p">);</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Position &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">posUV</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; corresponds to angles &quot;</span>
+            <span class="o">&lt;&lt;</span> <span class="n">camAngles</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+  <span class="c1">// Example of a normalized object size.</span>
+  <span class="kt">float</span> <span class="n">sizeX</span> <span class="o">=</span> <span class="mf">0.1f</span><span class="p">,</span> <span class="n">sizeY</span> <span class="o">=</span> <span class="mf">0.3f</span><span class="p">;</span>
+  <span class="n">posUV</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+  <span class="n">posUV</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">sizeX</span><span class="p">);</span>
+  <span class="n">posUV</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">sizeY</span><span class="p">);</span>
+
+  <span class="c1">// Retrieve corresponding angle size.</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">angSize</span> <span class="o">=</span> <span class="n">cameraProxy</span><span class="p">.</span><span class="n">getAngSizeFromImgSize</span><span class="p">(</span><span class="n">posUV</span><span class="p">);</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Object size &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">posUV</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;corresponds to angle size &quot;</span>
+            <span class="o">&lt;&lt;</span> <span class="n">angSize</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="ALVideoDeviceProxy::getAngSizeFromImgSize__std::vector:float:CR">
+<a class="reference internal" href="../stdtypes.html#std::vector:float:" title="std::vector&lt;float&gt;">std::vector&lt;float&gt;</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">getAngSizeFromImgSize</tt><big>(</big><a class="reference internal" href="../stdtypes.html#std::vector:float:" title="std::vector&lt;float&gt;">const std::vector&lt;float&gt;&amp;</a> <em>imgSize</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::getAngSizeFromImgSize__std::vector:float:CR" title="Permalink to this definition">¶</a></dt>
+<dd><p>From a normalized size in the image, returns size expressed as angles in radian relative to camera axis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>imgSize</strong> &#8211; normalized position in the image [0.0 - 1.0]</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">corresponding angles values in radians.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p><a class="reference download internal" href="../../_downloads/alvideodevice_imagetoangle.cpp"><tt class="xref download docutils literal"><span class="pre">alvideodevice_subscribe.cpp</span></tt></a></p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;iostream&gt;</span>
+<span class="cp">#include &lt;vector&gt;</span>
+
+<span class="cp">#include &lt;alproxies/alvideodeviceproxy.h&gt;</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Usage: videodevice_imagetoangle pIp&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">pIp</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+  <span class="c1">// Proxy to ALVideoDevice.</span>
+  <span class="n">AL</span><span class="o">::</span><span class="n">ALVideoDeviceProxy</span> <span class="n">cameraProxy</span><span class="p">(</span><span class="n">pIp</span><span class="p">);</span>
+
+  <span class="c1">// Example of a normalized position in the image.</span>
+  <span class="kt">float</span> <span class="n">x</span> <span class="o">=</span> <span class="mf">0.2f</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mf">0.7f</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">posUV</span><span class="p">;</span>
+  <span class="n">posUV</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+  <span class="n">posUV</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">y</span><span class="p">);</span>
+
+  <span class="c1">// Retrieve the corresponding angles.</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">camAngles</span> <span class="o">=</span> <span class="n">cameraProxy</span><span class="p">.</span><span class="n">getAngPosFromImgPos</span><span class="p">(</span><span class="n">posUV</span><span class="p">);</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Position &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">posUV</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; corresponds to angles &quot;</span>
+            <span class="o">&lt;&lt;</span> <span class="n">camAngles</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+  <span class="c1">// Example of a normalized object size.</span>
+  <span class="kt">float</span> <span class="n">sizeX</span> <span class="o">=</span> <span class="mf">0.1f</span><span class="p">,</span> <span class="n">sizeY</span> <span class="o">=</span> <span class="mf">0.3f</span><span class="p">;</span>
+  <span class="n">posUV</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+  <span class="n">posUV</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">sizeX</span><span class="p">);</span>
+  <span class="n">posUV</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">sizeY</span><span class="p">);</span>
+
+  <span class="c1">// Retrieve corresponding angle size.</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">angSize</span> <span class="o">=</span> <span class="n">cameraProxy</span><span class="p">.</span><span class="n">getAngSizeFromImgSize</span><span class="p">(</span><span class="n">posUV</span><span class="p">);</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Object size &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">posUV</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;corresponds to angle size &quot;</span>
+            <span class="o">&lt;&lt;</span> <span class="n">angSize</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="ALVideoDeviceProxy::getImgInfoFromAngInfo__std::vector:float:CR">
+<a class="reference internal" href="../stdtypes.html#std::vector:float:" title="std::vector&lt;float&gt;">std::vector&lt;float&gt;</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">getImgInfoFromAngInfo</tt><big>(</big><a class="reference internal" href="../stdtypes.html#std::vector:float:" title="std::vector&lt;float&gt;">const std::vector&lt;float&gt;&amp;</a> <em>angles</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::getImgInfoFromAngInfo__std::vector:float:CR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns [X, Y, width, height] normalized info in the image from these info expressed as angles in radians (as returned by vision extractors).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>angles</strong> &#8211; camera angle values in radians.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">corresponding normalized position and size info: [X, Y, width, height].</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::getImgInfoFromAngInfoWithRes__std::vector:float:CR.iCR">
+<a class="reference internal" href="../stdtypes.html#std::vector:float:" title="std::vector&lt;float&gt;">std::vector&lt;float&gt;</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">getImgInfoFromAngInfoWithRes</tt><big>(</big><a class="reference internal" href="../stdtypes.html#std::vector:float:" title="std::vector&lt;float&gt;">const std::vector&lt;float&gt;&amp;</a> <em>angInfo</em>, <a class="reference internal" href="../stdtypes.html#i" title="int">const int&amp;</a> <em>resIndex</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::getImgInfoFromAngInfoWithRes__std::vector:float:CR.iCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns [X, Y, width, height] info as pixels in the image from these info expressed as angles in radians (as returned by vision extractors).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>angInfo</strong> &#8211; camera angle values in radians.</li>
+<li><strong>resIndex</strong> &#8211; image resolution</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">corresponding pixels position and size info: [X, Y, width, height].</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::getImgPosFromAngPos__std::vector:float:CR">
+<a class="reference internal" href="../stdtypes.html#std::vector:float:" title="std::vector&lt;float&gt;">std::vector&lt;float&gt;</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">getImgPosFromAngPos</tt><big>(</big><a class="reference internal" href="../stdtypes.html#std::vector:float:" title="std::vector&lt;float&gt;">const std::vector&lt;float&gt;&amp;</a> <em>angPos</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::getImgPosFromAngPos__std::vector:float:CR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a normalized position in the image from a position expressed with camera angles in radians.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>angPos</strong> &#8211; camera angle values in radians.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">corresponding normalized position in the image [0.0 - 1.0]</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p><a class="reference download internal" href="../../_downloads/alvideodevice_angletoimage.cpp"><tt class="xref download docutils literal"><span class="pre">alvideodevice_subscribe.cpp</span></tt></a></p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;iostream&gt;</span>
+<span class="cp">#include &lt;vector&gt;</span>
+
+<span class="cp">#include &lt;alproxies/alvideodeviceproxy.h&gt;</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Usage videodevice_angletoimage pIp&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">pIp</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+  <span class="c1">// Proxy to ALVideoDevice.</span>
+  <span class="n">AL</span><span class="o">::</span><span class="n">ALVideoDeviceProxy</span> <span class="n">cameraProxy</span><span class="p">(</span><span class="n">pIp</span><span class="p">);</span>
+
+  <span class="c1">// Example camera angles.</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">camAngles</span><span class="p">;</span>
+  <span class="n">camAngles</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="mf">0.1f</span><span class="p">);</span>
+  <span class="n">camAngles</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="mf">0.1f</span><span class="p">);</span>
+
+  <span class="c1">// Retrieve image position in pixels.</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">imgPos</span> <span class="o">=</span> <span class="n">cameraProxy</span><span class="p">.</span><span class="n">getImgPosFromAngPos</span><span class="p">(</span><span class="n">camAngles</span><span class="p">);</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Camera angles &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">camAngles</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; correspond to &quot;</span>
+            <span class="o">&lt;&lt;</span> <span class="n">imgPos</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; in pixels&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+  <span class="n">camAngles</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+  <span class="c1">// Example camera angle size.</span>
+  <span class="n">camAngles</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="mf">0.1f</span><span class="p">);</span>
+  <span class="n">camAngles</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="mf">0.3f</span><span class="p">);</span>
+  <span class="c1">// Retrieve object size in pixels.</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">imSize</span> <span class="o">=</span> <span class="n">cameraProxy</span><span class="p">.</span><span class="n">getImgSizeFromAngSize</span><span class="p">(</span><span class="n">camAngles</span><span class="p">);</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Angle size &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">imSize</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; corresponds to &quot;</span>
+            <span class="o">&lt;&lt;</span> <span class="n">imSize</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; size in pixels&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="ALVideoDeviceProxy::getImgSizeFromAngSize__std::vector:float:CR">
+<a class="reference internal" href="../stdtypes.html#std::vector:float:" title="std::vector&lt;float&gt;">std::vector&lt;float&gt;</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">getImgSizeFromAngSize</tt><big>(</big><a class="reference internal" href="../stdtypes.html#std::vector:float:" title="std::vector&lt;float&gt;">const std::vector&lt;float&gt;&amp;</a> <em>angSize</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::getImgSizeFromAngSize__std::vector:float:CR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a normalized size from a size expressed with camera angles in radians.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>angSize</strong> &#8211; camera angle values in radians.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">corresponding normalized position in the image [0.0 - 1.0]</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p><a class="reference download internal" href="../../_downloads/alvideodevice_angletoimage.cpp"><tt class="xref download docutils literal"><span class="pre">alvideodevice_subscribe.cpp</span></tt></a></p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;iostream&gt;</span>
+<span class="cp">#include &lt;vector&gt;</span>
+
+<span class="cp">#include &lt;alproxies/alvideodeviceproxy.h&gt;</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Usage videodevice_angletoimage pIp&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">pIp</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+  <span class="c1">// Proxy to ALVideoDevice.</span>
+  <span class="n">AL</span><span class="o">::</span><span class="n">ALVideoDeviceProxy</span> <span class="n">cameraProxy</span><span class="p">(</span><span class="n">pIp</span><span class="p">);</span>
+
+  <span class="c1">// Example camera angles.</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">camAngles</span><span class="p">;</span>
+  <span class="n">camAngles</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="mf">0.1f</span><span class="p">);</span>
+  <span class="n">camAngles</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="mf">0.1f</span><span class="p">);</span>
+
+  <span class="c1">// Retrieve image position in pixels.</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">imgPos</span> <span class="o">=</span> <span class="n">cameraProxy</span><span class="p">.</span><span class="n">getImgPosFromAngPos</span><span class="p">(</span><span class="n">camAngles</span><span class="p">);</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Camera angles &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">camAngles</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; correspond to &quot;</span>
+            <span class="o">&lt;&lt;</span> <span class="n">imgPos</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; in pixels&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+  <span class="n">camAngles</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+  <span class="c1">// Example camera angle size.</span>
+  <span class="n">camAngles</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="mf">0.1f</span><span class="p">);</span>
+  <span class="n">camAngles</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="mf">0.3f</span><span class="p">);</span>
+  <span class="c1">// Retrieve object size in pixels.</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">imSize</span> <span class="o">=</span> <span class="n">cameraProxy</span><span class="p">.</span><span class="n">getImgSizeFromAngSize</span><span class="p">(</span><span class="n">camAngles</span><span class="p">);</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Angle size &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">imSize</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; corresponds to &quot;</span>
+            <span class="o">&lt;&lt;</span> <span class="n">imSize</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; size in pixels&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="advanced-methods">
+<span id="alvideodevice-advancedmethods"></span><h2>Advanced methods<a class="headerlink" href="#advanced-methods" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ALVideoDeviceProxy::startFrameGrabber">
+<a class="reference internal" href="../stdtypes.html#i" title="int">int</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">startFrameGrabber</tt><big>(</big><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::startFrameGrabber" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens and initialize the video source device if it was not already opened.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<dl class="last docutils">
+<dt>The first module subscribing to ALVideoDevice will launch it automatically,</dt>
+<dd>so the main purpose of this method is to reduce time when the first vision module is subscribing.</dd>
+</dl>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">true if success</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::stopFrameGrabber">
+<a class="reference internal" href="../stdtypes.html#i" title="int">int</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">stopFrameGrabber</tt><big>(</big><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::stopFrameGrabber" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the video source device.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<dl class="last docutils">
+<dt>When the last vision module subscribed to ALVideoDevice unsubscribes, this</dt>
+<dd>doesn&#8217;t close the video source device as we assume that if some video was
+requested before, video will be again requested latter. But if this is not
+the case, closing the video source will save processing resources.</dd>
+</dl>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">true if success</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::isFrameGrabberOff">
+<a class="reference internal" href="../stdtypes.html#i" title="int">int</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">isFrameGrabberOff</tt><big>(</big><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::isFrameGrabberOff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Asks if the framegrabber is running or not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">true if off</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::getDirectRawImageLocal__ssCR">
+<a class="reference internal" href="../stdtypes.html#void" title="void">void*</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">getDirectRawImageLocal</tt><big>(</big><a class="reference internal" href="../stdtypes.html#ss" title="std::string">const std::string&amp;</a> <em>id</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::getDirectRawImageLocal__ssCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the latest image from the video source and returns a pointer to the locked ALImage, with data array pointing directly to raw data. There is no format conversion and no copy of the raw buffer.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">When image is not necessary anymore, a call to releaseDirectRawImage() is requested.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">When using this mode for several vision modules, if they need raw data for more than 25ms check that you have strictly less V.M. in this requesting direct raw images than the amount of kernel buffers.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Release all kernel buffers (using releaseDirectRawImage) before doing any action requesting a modification of the video source mode (e.g. resolution, switch between cameras).</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>id</strong> &#8211; Name under which the V.M. is known from ALVideoDevice.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Pointer to the locked image buffer, NULL if error.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Image pointer is valid only for local modules. For remote modules, the address space is different from the one of NAOqi.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::getDirectRawImageRemote__ssCR">
+<a class="reference internal" href="../stdtypes.html#AL::ALValue" title="AL::ALValue">AL::ALValue</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">getDirectRawImageRemote</tt><big>(</big><a class="reference internal" href="../stdtypes.html#ss" title="std::string">const std::string&amp;</a> <em>id</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::getDirectRawImageRemote__ssCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the latest image from the video source and send the data coming directly from the raw buffer as an ALValue through the network (no format conversion).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>id</strong> &#8211; Name under which the V.M. is known from ALVideoDevice.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>Array containing image informations:</p>
+<ul class="simple">
+<li>[0]: width;</li>
+<li>[1]: height;</li>
+<li>[2]: number of layers;</li>
+<li>[3]: ColorSpace;</li>
+<li>[4]: time stamp (seconds);</li>
+<li>[5]: time stamp (micro-seconds);</li>
+<li>[6]: array of size height * width * nblayers containing image data;</li>
+<li>[7]: camera ID (kTop=0, kBottom=1);</li>
+<li>[8]: left angle (radian);</li>
+<li>[9]: topAngle (radian);</li>
+<li>[10]: rightAngle (radian);</li>
+<li>[11]: bottomAngle (radian);</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::releaseDirectRawImage__ssCR">
+<a class="reference internal" href="../stdtypes.html#i" title="int">int</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">releaseDirectRawImage</tt><big>(</big><a class="reference internal" href="../stdtypes.html#ss" title="std::string">const std::string&amp;</a> <em>id</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::releaseDirectRawImage__ssCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Release image buffer locked by getDirectRawImageLocal().
+If the V.M. has no locked image buffer, does nothing.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>id</strong> &#8211; Name under which the V.M. is known from the V.I.M.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">true if success</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::onClientDisconnected__ssCR.AL::ALValueCR.ssCR">
+<a class="reference internal" href="../stdtypes.html#void" title="void">void</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">onClientDisconnected</tt><big>(</big><a class="reference internal" href="../stdtypes.html#ss" title="std::string">const std::string&amp;</a> <em>eventName</em>, <a class="reference internal" href="../stdtypes.html#AL::ALValue" title="AL::ALValue">const AL::ALValue&amp;</a> <em>eventContents</em>, <a class="reference internal" href="../stdtypes.html#ss" title="std::string">const std::string&amp;</a> <em>message</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::onClientDisconnected__ssCR.AL::ALValueCR.ssCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Callback when client is disconnected</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>eventName</strong> &#8211; The echoed event name</li>
+<li><strong>eventContents</strong> &#8211; The name of the client that has disconnected</li>
+<li><strong>message</strong> &#8211; Message provided when subscribing.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="simulator-methods">
+<span id="alvideodevice-simulatormethods"></span><h2>Simulator methods<a class="headerlink" href="#simulator-methods" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ALVideoDeviceProxy::putImage__AL::ALValueCR">
+<a class="reference internal" href="../stdtypes.html#b" title="bool">bool</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">putImage</tt><big>(</big><a class="reference internal" href="../stdtypes.html#AL::ALValue" title="AL::ALValue">const AL::ALValue&amp;</a> <em>imageBuffer</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::putImage__AL::ALValueCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allow image buffer pushing</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>imageBuffer</strong> &#8211; The image buffer in bitmap form</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">true if success</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::getExpectedImageParameters">
+<a class="reference internal" href="../stdtypes.html#AL::ALValue" title="AL::ALValue">AL::ALValue&amp;</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">getExpectedImageParameters</tt><big>(</big><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::getExpectedImageParameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called by the simulator to know expected image parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">ALValue of expected parameters: [int height, int width, int framerate]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ALVideoDeviceProxy::setSimCamInputSize__iCR.iCR">
+<a class="reference internal" href="../stdtypes.html#b" title="bool">bool</a> <tt class="descclassname">ALVideoDeviceProxy::</tt><tt class="descname">setSimCamInputSize</tt><big>(</big><a class="reference internal" href="../stdtypes.html#i" title="int">const int&amp;</a> <em>width</em>, <a class="reference internal" href="../stdtypes.html#i" title="int">const int&amp;</a> <em>height</em><big>)</big><a class="headerlink" href="#ALVideoDeviceProxy::setSimCamInputSize__iCR.iCR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set parameters for the images that the simulator will provide.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>width</strong> &#8211; width of images among 1280, 640, 320, 160</li>
+<li><strong>height</strong> &#8211; height of images among 960, 480, 240, 120</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">true if success</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          <div class="footernav">
+    &laquo; <a href="alvideodevice.html" title="ALVideoDevice">ALVideoDevice</a>
+     |
+    <a href="alvideodevice.html" title="ALVideoDevice" accesskey="U">ALVideoDevice</a>
+   |
+    <a href="alvideodevice-tuto.html" title="ALVideoDevice Tutorial">ALVideoDevice Tutorial</a> &raquo;</div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/naoqi/vision/alvideodevice-api.txt"
+             rel="nofollow">Show Source</a></li>
+    </ul>
+
+
+  <h3>Table Of Contents</h3>
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../contents.html">Site map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../news/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nao/index.html">NAO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../software/index.html">Software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/index.html">Programming Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../ref/index.html">References</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">NAOqi API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../core/index.html">NAOqi Core</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../motion/index.html">NAOqi Motion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../audio/index.html">NAOqi Audio</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">NAOqi Vision</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="alfacedetection.html">ALFaceDetection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="allandmarkdetection.html">ALLandMarkDetection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="alredballdetection.html">ALRedBallDetection</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="alvideodevice.html">ALVideoDevice</a><ul class="current">
+<li class="toctree-l5 current"><a class="current reference internal" href="">ALVideoDevice API</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="alvideodevice-tuto.html">ALVideoDevice Tutorial</a></li>
+<li class="toctree-l5"><a class="reference internal" href="alvideodevice-indepth.html">ALVideoDevice - Advanced</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="alvisionrecognition.html">ALVisionRecognition</a></li>
+<li class="toctree-l4"><a class="reference internal" href="alvisiontoolbox.html">ALVisionToolbox</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/index.html">NAOqi Sensors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../trackers/index.html">NAOqi Trackers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sensors/dcm.html">DCM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stdtypes.html">Standard types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cpp-classindex.html">&gt; All C++ Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cpp-funcindex.html">&gt; All C++ Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../naoqi-eventindex.html">&gt; All NAOqi Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../naoqi-memoryindex.html">&gt; All NAOqi Memory Keys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ref/cpp-api.html">C++ API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ref/python-api.html">Python API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../legal/notice.html">Legal notices</a></li>
+</ul>
+
+    <h3><a href="../../index.html">On this page</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">ALVideoDevice API</a><ul>
+<li><a class="reference internal" href="#method-list">Method list</a></li>
+<li><a class="reference internal" href="#main-methods">Main Methods</a></li>
+<li><a class="reference internal" href="#video-recording-and-replaying-methods">Video recording and replaying methods</a></li>
+<li><a class="reference internal" href="#video-source-parameters">Video source parameters</a></li>
+<li><a class="reference internal" href="#angles-management">Angles management</a></li>
+<li><a class="reference internal" href="#advanced-methods">Advanced methods</a></li>
+<li><a class="reference internal" href="#simulator-methods">Simulator methods</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="alvideodevice.html" title="ALVideoDevice">previous</a>
+     |
+    <a href="alvideodevice.html" title="ALVideoDevice" accesskey="U">up</a>
+   |
+    <a href="alvideodevice-tuto.html" title="ALVideoDevice Tutorial">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

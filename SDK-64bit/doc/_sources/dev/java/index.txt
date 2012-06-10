@@ -1,0 +1,527 @@
+.. _java:
+
+Java SDK
+========
+
+:ref:`Overview <sdk-index>` | :ref:`C++<cpp-introduction>` | :ref:`Python <python-introduction>`
+| :ref:`.Net <naoqi-dot-net>` | Java | :ref:`Matlab <matlab>` | :ref:`Urbi <urbi>`
+
+What it does
+------------
+
+**JNaoqi** is an open source project that allows you to call any NaoQi module
+method from java. The call syntax is the same as Python or .Net.
+
+**JNaoqi** project contains both binary and source code that needs to be compiled
+with Naoqi C++ SDK.
+
+Limitations
+-----------
+
+OpenNao doesn't have a java interpreter, the naoqi-java-sdk (jnaoqi) only allows
+you to call methods from PC to the robot (real or virtual).
+Each call uses the network.
+
+Requirements
+------------
+
+Requirements for compilation:
+ * Swig. Swig is a wrapper that allows using C++ method in another language, including Java
+ * Naoqi C++ SDK
+ * Java JDK
+
+
+
+
+Tutorial - Linux
+----------------
+
+In the tutorial we insert a value in ALMemory with TestProxy.java
+
+1) Download Naoqi C++ SDK
+2) Uncompress Naoqi C++ SDK
+
+
+.. code-block:: console
+
+   z$ pwd
+   /home/ALDEBARAN/dhoussin/Téléchargements
+
+   z$ ls
+   naoqi-sdk-1.12.0.48-linux32.tar.gz
+
+   z$ tar xvf naoqi-sdk-1.12.0.48-linux32.tar.gz 
+
+3) Download Jnaoqi project
+4) Uncompress Jnaoqi project
+
+.. code-block:: console
+
+   z$ ls
+   jnaoqi-java-1.12.0.30.tar.gz
+
+   z$ tar xvf jnaoqi-java-1.12.0.30.tar.gz 
+
+5) Set LD_LIBRARY_PATH
+
+.. code-block:: console
+
+
+    z$ export LD_LIBRARY_PATH=/home/ALDEBARAN/dhoussin/Téléchargements/jnaoqi/java/com/aldebaran/proxy:/home/ALDEBARAN/dhoussin/Téléchargements/naoqi-sdk-1.12.0.48-linux32/lib
+
+6) Run local naoqi or run robot.
+
+.. code-block:: console
+
+    z$ cd /home/ALDEBARAN/dhoussin/Téléchargements/naoqi-sdk-1.12.0.48-linux32/bin
+    z$ ./naoqi-bin &
+    z$  [INFO ] ..::: starting NAOqi version 1.12 :::..                                   [11-11-04 11:35]
+	[INFO ] Copyright (c) 2011, Aldebaran Robotics
+	[INFO ] Starting ALNetwork
+	[INFO ] NAOqi is listening on 0.0.0.0:9559
+	[INFO ] Loading "/home/ALDEBARAN/dhoussin/Téléchargements/naoqi-sdk-1.12.0.48-linux32/etc/naoqi/autoload.ini"
+	[INFO ] Starting ALMemory
+	[INFO ] Starting ALLogger
+	[INFO ] Starting ALPreferences
+	[INFO ] Starting ALFileManager
+	[INFO ] Starting ALLauncher
+	[INFO ] Starting ALBonjour
+	[INFO ] Starting ALResourceManager
+	[INFO ] Starting ALLeds
+	[INFO ] Starting ALSonar
+	[INFO ] Starting ALFsr
+	[INFO ] Starting ALRobotPose
+	[INFO ] Starting ALBattery
+	[INFO ] Starting ALSensors
+	[INFO ] Starting ALRobotModel
+	[INFO ] Starting ALMotion
+	[INFO ] Starting ALRedBallTracker
+	[INFO ] Starting ALMotionRecorder
+	[INFO ] Starting ALTextToSpeech
+	[INFO ] Starting ALFrameManager
+	[INFO ] Starting ALPythonBridge
+	[INFO ] Starting ALVideoDevice
+	[INFO ] Starting ALRedBallDetection
+	[INFO ] Starting ALBehaviorManager
+	[INFO ] NAOqi is ready...
+
+
+7) Edit TestProxy.java. Replace ip adresse connection by 127.0.0.1 or your robot ip.
+
+8) Execute Java example
+
+.. code-block:: console
+
+
+   z$ cd jnaoqi/java/
+   z$ pwd
+   /home/ALDEBARAN/dhoussin/Téléchargements/jnaoqi/java
+   z$ javac TestProxy.java
+   z$ java TestProxy
+
+   
+Java JDK installation (optional)
+------------------------------------------------
+
+Windows
++++++++
+
+Install the latest JDK from oracle/java web site.
+http://www.oracle.com/technetwork/java/javase/downloads/index.html
+
+Linux
++++++
+
+Tested on:
+ * java version "1.6.0_22"
+ * OpenJDK Runtime Environment (IcedTea6 1.10.2) (6b22-1.10.2-0ubuntu1~11.04.1)
+ * OpenJDK Server VM (build 20.0-b11, mixed mode)
+
+.. warning:: On Linux, do not install java from web site. Use Synaptic or apt-get
+
+
+JNaoQi Installation
+-------------------
+
+jnaoqi-java-x.xx.x.tar.gz contain source code, compiled library and .jar package.
+
+Linux/windows
++++++++++++++
+
+Uncompress jnaoqi. On linux you can use the command:
+
+.. code-block:: python
+
+  $~ tar xvf jnaoqi-java-1.12.0
+
+
+Content
++++++++
+
+
+* The project source code in the CMake format
+* **/java** folder contains examples, aldebaran package and precompiled library.
+* **/example** folder contains examples. Do no edit it.
+* **/proxy** folder contains headers to access all naoqi modules. Do not edit it.
+* jnaoqi.jar is a standard java package
+
+com.aldebaran.proxy
++++++++++++++++++++
+
+com.aldebaran.proxy is in the naoqi-java-sdk package.
+
+.. code-block:: java
+
+ import com.aldebaran.proxy.*;
+
+Package files always need to stay in the folder /com/aldebaran/proxy and the java path needs to point to this folder.
+
+
+
+Compilation (optional)
+----------------------
+
+JNaoqi sdk contains precompiled library but you may need to compile it yourself (different OS or Java version).
+JNaoqi respects CMake and qibuild format and can be compiled exactly the same way as others NaoQi libraries.
+
+.. code-block:: console
+
+  $~ cd jnaoqi
+  $~ mkdir build
+  $~ cd build
+  $~ cmake -DCMAKE_TOOLCHAIN_FILE=/your-c++-naoqi-sdk/toolchain-pc.cmake ..
+  $~ make
+
+After compilation, your jnaoqi/build/sdk/java folder contains the java naoqi SDK. It should be the same as precompile /java folder at the root.
+
+
+How to execute
+--------------
+
+Do not forget to define jnaoqi library path for java.
+
+Set java library path on linux for precompiled library
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+For a precompiled project:
+
+
+.. code-block:: console
+
+  $~ export LD_LIBRARY_PATH=/your-jnaoqi-path/java/com/aldebaran/proxy:/path-to-naoqi-SDK/lib
+
+For a compiled project:
+
+.. code-block:: console
+
+  $~ export LD_LIBRARY_PATH=/your-jnaoqi-path/build/sdk/java/com/aldebaran/proxy
+
+Set java library path on windows for precompiled library
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+add /your-jnaoqi-path/java/com/aldebaran/proxy to environement variable %PATH%
+
+
+Set java library path on linux if you compiled yourself
++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+If you have compiled yourself the wrapper, you needn't to add naoqi SDK lib folder in the LD_LIBRARY_PATH
+
+.. code-block:: console
+
+  $~ export LD_LIBRARY_PATH=/your-jnaoqi-path/java/com/aldebaran/proxy
+
+
+Compilation and execution
++++++++++++++++++++++++++
+
+.. code-block:: console
+
+  $~ path-to-naoqi-SDK/naoqi &
+  $~ javac TestProxy.java
+  $~ java TestProxy
+
+ALMemory from local naoqi should contain a java variable.
+
+
+Examples
+--------
+
+
+Say HelloWorld
+++++++++++++++
+
+.. code-block:: java
+
+ import com.aldebaran.proxy.*;
+
+ public class tts
+ {
+  static
+  {
+    System.loadLibrary("JNaoQi");
+  }
+
+  public static void main(String[] args)
+  {
+   // TTS proxy
+   ALTextToSpeechProxy ttsProxy = new ALTextToSpeechProxy("myRobotIP.local", 9559);
+
+   // Talk
+   ttsProxy.say("hello world");
+
+  }
+ }
+
+
+
+ALMemory - insertData
++++++++++++++++++++++
+
+.. code-block:: java
+
+ import com.aldebaran.proxy.*;
+
+ public class TestProxy
+ {
+   static
+   {
+     System.loadLibrary("JNaoQi");
+   }
+
+   public static void main(String[] args)
+  {
+   ALMemoryProxy memory;
+   memory = new ALMemoryProxy("127.0.0.1",9559);
+   memory.insertData("javavariable", 12);
+  }
+ }
+
+
+
+Video - grab an image
++++++++++++++++++++++
+
+.. code-block:: java
+
+ import com.aldebaran.proxy.*;
+
+ public class video
+ {
+  static
+  {
+    System.loadLibrary("JNaoQi");
+  }
+
+  public static void main(String[] args)
+  {
+   // video proxy
+   ALVideoDeviceProxy video;
+   video = new ALVideoDeviceProxy("myRobotIP.local", 9559);
+
+   // subscribe only once
+   video.subscribe("java", 1, 11, 250);
+
+   // get Image in Variant (also named ALValue)
+   Variant ret = video.getImageRemote("java");
+
+   // unsubscribe only once
+   video.unsubscribe("java");
+
+   // Video device documentation explain that image is element 6
+   Variant imageV = ret.getElement(6);
+
+   // display image from byte array
+   AwtImage image;
+   byte[] binaryImage = imageV.toBinary();
+   image = new AwtImage(binaryImage);
+  }
+ }
+
+
+
+Motion - cartesian interpolation
+++++++++++++++++++++++++++++++++
+
+.. code-block:: java
+
+  // don't forget to set stiffness before
+  // connect to NaoQi
+  ALMotionProxy motionProxy;
+  motionProxy = new ALMotionProxy("127.0.0.1", 9559);
+
+  String effector   = "LArm";
+  int space      = motion.SPACE_NAO;
+  int axisMask   = motion.AXIS_MASK_VEL;    // just control position
+  boolean isAbsolute = false;
+
+  //Since we are in relative, the current position is zero
+  float[] currentPos = {0.01f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+
+  // Define the changes relative to the current position
+  float dx         =  0.03f;     // translation axis X (meters)
+  float dy         =  0.03f;     // translation axis Y (meters)
+  float dz         =  0.0f;      // translation axis Z (meters)
+  float dwx        =  0.0f;      // rotation axis X (radians)
+  float dwy        =  0.0f;      // rotation axis Y (radians)
+  float dwz        =  0.0f;      // rotation axis Z (radians)
+  float[] targetPos  = {dx, dy, dz, dwx, dwy, dwz};
+
+  // Go to the target and back again
+  Variant targetPosV =  new  Variant(targetPos);
+  Variant currentPosV = new  Variant(currentPos);
+  Variant pathV = new Variant();
+  pathV.push_back(targetPosV);
+  pathV.push_back(currentPosV);
+
+  Variant t1 = new Variant(2.0f);
+  Variant t2 = new Variant(4.0f);
+
+  Variant timesV = new Variant();
+  timesV.push_back(t1);
+  timesV.push_back(t2);
+
+  motionProxy.positionInterpolation(effector, space, pathV, axisMask, timesV, isAbsolute);
+
+
+Motion - Raise the stiffness of the body
+++++++++++++++++++++++++++++++++++++++++
+
+.. code-block:: java
+
+ import com.aldebaran.proxy;
+
+ public class MotionStiffness
+ {
+  static
+  {
+    System.loadLibrary("JNaoQi");
+  }
+
+  public static void main(String[] args)
+  {
+   ALMotionProxy motionProxy;
+   motionProxy = new ALMotionProxy("myRobotIP.local",9559);
+
+   // We use the "Body" name to signify the collection of all joints
+    motionProxy.stiffnessInterpolation(new Variant("Body"), new Variant(1.0f), new Variant (1.0f));
+  }
+ }
+
+Use jnaoqi.jar with Eclipse
+---------------------------
+
+jnaoqi.jar contains dynamic library libJNaoqi.so on Linux, JNaoqi.dll on windows, libJNaoQi.dylib on MacOS. Java cannot load a Library from .jar. You'll have to make it by yourself. First import jnaoqi.jar in Eclipse. If you try to run an example that use jnaoqi.jar, java will raise a link error. The following example load dynamicaly the dynamic library:
+
+
+.. code-block:: java
+
+ import com.aldebaran.proxy;
+
+
+ import com.aldebaran.proxy.ALMemoryProxy;
+ import java.util.ArrayList;
+ import java.io.*;
+
+ public class main
+ {
+
+   static {	
+        try {
+	       // load library
+               System.loadLibrary("JNaoQi");
+
+             } catch (UnsatisfiedLinkError e) 
+             {
+                // if we use .jar we firt copy the library from package before load it
+        	loadBinaries();
+             }
+ }
+ 
+  public static void loadBinaries()
+  {
+     String os = System.getProperty("os.name").toLowerCase();
+     ArrayList<String> bins = new ArrayList<String>(){{
+         add("libJNaoQi.so");
+     }};  
+ 
+ 
+     File f = null;
+     for(String bin : bins)
+     {
+             InputStream in = ALMemoryProxy.class.getResourceAsStream(bin);
+             byte[] buffer = new byte[1024];
+             int read = -1;
+             try 
+             {
+                 String[] temp = bin.split("/");
+                 f = new File("./", temp[temp.length-1]);     
+                 FileOutputStream fos = new FileOutputStream(f);    
+ 
+                 while((read = in.read(buffer)) != -1) 
+                 {
+                     fos.write(buffer, 0, read);
+                 }
+                 fos.close();
+                 in.close();
+             } catch (IOException e) 
+             {
+                 e.printStackTrace();
+             }
+         }
+         // now load the file
+         System.load(f.getAbsolutePath());
+  } 
+
+
+   public static void main(String[] args)
+   { 
+  	// ALMemory proxy
+ 	ALMemoryProxy memory;
+ 
+ 	// connect to local Naoqi
+ 	memory = new ALMemoryProxy("10.0.252.130",9559);
+  
+ 	// call method ALMemory::insertData
+ 	memory.insertData("Hello from Java", 14);
+   }
+  }
+
+
+
+Type conversion
+---------------
+
+
+Module API methods sometimes require or return an ALValue. ALValue is a Variant in Java and can be converted in a simple java type.
+
+====================   =================    =============   ====================
+C++                    JNI                  Java 	        Variant conversion
+====================   =================    =============   ====================
+bool                   jbool                Boolean         Variant::toBool()
+int                    jint                 int             Variant::toInt()
+float                  jfloat               float           Variant::toFloat()
+string                 jstring              String          Variant::toString()
+ALValue::binary        jbytearray           byte[]          Variant::toByteArray()
+vector<float>          jfloatarray          float[]         Variant::toFloatArray()
+vector<int>            jintarray            int[]           Variant::toIntArray()
+vector<string>         jobjectarray         String[]        Variant::toStringArray()
+ALValue                None	                Variant         Any conversion method
+====================   =================    =============   ====================
+
+
+
+Troubleshooting
+---------------
+
+UnsatisfiedLinkError
+++++++++++++++++++++
+
+If a java command returns an UnsatisfiedLinkError:
+ Exception in thread "main" java.lang.UnsatisfiedLinkError: no JNaoQi in java.library.path
+
+Your LD_LIBRARY_PATH (linux) or %path% (windows) needs to be updated and point to /com/aldebaran/proxy folder.
+The folder should contain JNaoQi.dll (windows) or libJNaoQi.so (linux).
+
+
+
+

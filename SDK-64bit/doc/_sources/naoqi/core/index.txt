@@ -1,0 +1,47 @@
+.. _naoqi-core:
+
+NAOqi Core
+==========
+
+.. toctree::
+   :hidden:
+
+   albehaviormanager
+   albonjour
+   almemory
+   almodule
+   alpreferences
+   alresourcemanager
+   allauncher
+   allogger
+
+
+Core modules
+------------
+
+**NAOqi** comes with a list of core modules that are always available.
+
+Every module comes with a list of default methods.
+
+You can read the API that is shared by every module in the :ref:`almodule-api`
+section.
+
+A few general purpose modules are also available by default.
+
+
+* :ref:`albehaviormanager`
+  starts and stops behaviors
+* :ref:`albonjour`
+  advertises NAOqi on Bonjour
+* :ref:`almemory`
+  gets and inserts data for every other module to use
+* :ref:`almodule`
+  ALModule bound methods
+* :ref:`alpreferences`
+  reads and saves settings from configuration files
+* :ref:`alresourcemanager`
+  handles resources
+* :ref:`ALLauncher <allauncher>`
+  (deprecated) loads dynamic libraries inside NAOqi process and runs executables
+* :ref:`ALLogger <allogger>`
+  (deprecated)  logs information on the robot from a remote machine

@@ -1,0 +1,70 @@
+
+.. |project| image:: /medias/desktop/choregraphe/project_icon.png
+   :width: 17 px
+   :height: 22 px
+   :class: img-inline
+
+
+.. _choregraphe-reference-project:
+
+Project
+========
+
+What is a Project
+-----------------
+
+**Project** is the name of the files |project| allowing you to save
+on your computer:
+
+* a :ref:`behavior` and 
+* all its potentially :ref:`attached files <choregraphe-reference-attached-files>` (music, C++ module, etc).
+
+
+How to manage Projects
+----------------------
+
+* The **File** menu allows you to create, open, save and import a Project.
+
+* The :ref:`choregraphe-overview-project-content` allows you to manage the files
+  attached to the current project.
+
+To manage the :ref:`behavior` contained in the project, 
+see :ref:`choregraphe-overview-behavior-manager-panel`.
+
+File format
+------------
+
+By default, a **Project** is a single compressed file with a **CRG** extension.
+
+| An option allows you to save Projects as a **directory** of files.
+| For further details, see :ref:`choregraphe-howto-open-save-directory`.
+
+
+.. _choregraphe-howto-open-save-directory:
+
+How to open/save a project or a box library as a directory
+----------------------------------------------------------
+To be able to open / save a project or a library as a directory:
+
+=====  =========================================================================
+Step    Action                                              
+=====  =========================================================================
+1.      Choose **Edit** > **Preferences**.
+
+2.      Check the option **Show advanced load/save options**.
+
+3.      Restart Choregraphe.
+
+        In the **File** menu and the **Box library** some new options 
+        appeared allowing you to save/open a project or a box library
+        as a directory.
+       
+        .. image:: /medias/desktop/choregraphe/file_normal_advance.png
+       
+        .. image:: /medias/desktop/choregraphe/boxLibrary_normal_advance.png
+
+4.      For both project and box library, browse the directory with the 
+        browser and click **Ok**.
+=====  =========================================================================
+
+

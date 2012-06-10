@@ -1,0 +1,486 @@
+.. _nao-masses-33:
+
+Masses V3.3
+-----------
+
+:ref:`nao-hardware` | :ref:`hardware-product-range` | Motors & Kinematics |
+:ref:`hardware-sensors` | :ref:`hardware-optional-device`
+
+:ref:`hardware-kinematics` | :ref:`nao-links-33` | :ref:`nao-joints-33` | *Masses V3.3*
+
+----------------------------
+
+This page details the mass, center of mass and inertial matrix of each solid (S) on the right side of a NAO V3.3.
+
+The center of mass position and the inertial matrix are described relative to the local coordinate system of the current solid (S) (o, R).
+
+All solids (S) and local coordinate system are described relative to the zero posture: standing with straight legs and arms pointing forwards).
+
+.. image:: /medias/nao/hardware/hardware_inertialunit.png
+   :height: 490 px
+   :width: 320 px
+
+.. math::
+    \text{Mass (kg)}
+
+.. math::
+    \text{CoM(S)} = \left[\begin{array}{c}
+    X_G \\ Y_G \\ Z_G
+    \end{array} \right]_{(o, R)} \text{(m)}
+
+
+.. math::
+    \left[I_o(S)\right]_R = \left[\begin{array}{ccc}
+    I_{xx} & I_{xy} & I_{xz} \\
+    I_{yx} & I_{yy} & I_{yz} \\
+    I_{zx} & I_{zy} & I_{zz}
+    \end{array}\right]_R (\text{kg}*\text{m}^2)
+
+NAO
++++
+
++--------------+-------+
+| NAO H25 (kg) | 4.996 |
++--------------+-------+
+| NAO H21 (kg) | 4.879 |
++--------------+-------+
+
+Torso
++++++
+
+.. image:: /medias/nao/hardware/hardware_thoraxmass_3.3.png
+   :height: 506 px
+   :width: 341 px
+
+.. math::
+    \text{Mass} = 1.03948
+
+.. math::
+    \text{CoM(S)} = \left[
+                    \begin{array}{c}
+                      -0.00415 \\
+                      +0.00007 \\
+                      +0.04258
+                    \end{array}
+                    \right]_{(o, R)}
+
+
+.. math::
+    \left[I_o(S)\right]_R = \left[
+                            \begin{array}{ccc}
+                              +0.00496741976 & -0.00001247398 & -0.00016446814 \\
+                              -0.00001247398 & +0.00479135246 & +0.00002477669 \\
+                              -0.00016446814 & +0.00002477669 & +0.00159784829
+                            \end{array}
+                            \right]_R
+
+Neck - (HeadYaw)
+++++++++++++++++
+
+.. image:: /medias/nao/hardware/hardware_neckmass_3.3.png
+   :height: 279 px
+   :width: 146 px
+
+.. math::
+    \text{Mass} = 0.05930
+
+.. math::
+    \text{CoM(S)} = \left[
+                    \begin{array}{c}
+                      -0.00002 \\
+                      +0.00017 \\
+                      -0.02556
+                    \end{array}
+                    \right]_{(o, R)}
+
+
+.. math::
+    \left[I_o(S)\right]_R = \left[
+                            \begin{array}{ccc}
+                              +0.00006180308 & +0.00000000205 & +0.00000004948 \\
+                              +0.00000000205 & +0.00006281859 & +0.00000005067 \\
+                              +0.00000004948 & +0.00000005067 & +0.00000543977
+                            \end{array}
+                            \right]_R
+
+
+Head - (HeadPitch)
+++++++++++++++++++
+
+.. image:: /medias/nao/hardware/hardware_headmass_3.3.png
+   :height: 312 px
+   :width: 337 px
+
+.. math::
+    \text{Mass} = 0.52065
+
+.. math::
+    \text{CoM(S)} = \left[
+                    \begin{array}{c}
+                      +0.00120 \\
+                      -0.00084 \\
+                      +0.05353
+                    \end{array}
+                    \right]_{(o, R)}
+
+
+.. math::
+    \left[I_o(S)\right]_R = \left[
+                            \begin{array}{ccc}
+                              +0.00226587004 & -0.00000787181 & +0.00001192653 \\
+                              -0.00000787181 & +0.00226420513 & +0.00000231846 \\
+                              +0.00001192653 & +0.00000231846 & +0.00087373321
+                            \end{array}
+                            \right]_R
+
+Right Shoulder - (RShoulderPitch)
++++++++++++++++++++++++++++++++++
+
+.. image:: /medias/nao/hardware/hardware_rshouldermass_3.3.png
+   :height: 231 px
+   :width: 237 px
+
+.. math::
+    \text{Mass} = 0.06996
+
+.. math::
+    \text{CoM(S)} = \left[
+                    \begin{array}{c}
+                      -0.00178 \\
+                      +0.02496 \\
+                      +0.00018
+                    \end{array}
+                    \right]_{(o, R)}
+
+
+.. math::
+    \left[I_o(S)\right]_R = \left[
+                            \begin{array}{ccc}
+                              +0.00007102499 & -0.00000202467 & -0.00000001722 \\
+                              -0.00000202467 & +0.00001405799 & +0.00000000841 \\
+                              -0.00000001722 & +0.00000000841 & +0.00007316600
+                            \end{array}
+                            \right]_R
+
+Right Bicep - (RShoulderRoll)
++++++++++++++++++++++++++++++
+
+.. image:: /medias/nao/hardware/hardware_rbicepmass_3.3.png
+   :height: 278 px
+   :width: 404 px
+
+.. math::
+    \text{Mass} = 0.12309
+
+.. math::
+    \text{CoM(S)} = \left[
+                    \begin{array}{c}
+                      +0.01885 \\
+                      -0.00577 \\
+                      +0.00065
+                    \end{array}
+                    \right]_{(o, R)}
+
+
+.. math::
+    \left[I_o(S)\right]_R = \left[
+                            \begin{array}{ccc}
+                              +0.00008228413 & -0.00003978057 & +0.00000752601 \\
+                              -0.00003978057 & +0.00029001445 & -0.00000152945 \\
+                              +0.00000752601 & -0.00000152945 & +0.00026842331
+                            \end{array}
+                            \right]_R
+
+Right Elbow - (RElbowYaw)
++++++++++++++++++++++++++
+
+.. image:: /medias/nao/hardware/hardware_relbowmass_3.3.png
+   :height: 171 px
+   :width: 242 px
+
+.. math::
+    \text{Mass} = 0.05971
+
+.. math::
+    \text{CoM(S)} = \left[
+                    \begin{array}{c}
+                      -0.02560 \\
+                      +0.00001 \\
+                      -0.00019
+                    \end{array}
+                    \right]_{(o, R)}
+
+
+.. math::
+    \left[I_o(S)\right]_R = \left[
+                            \begin{array}{ccc}
+                              +0.00000550319 & -0.00000002243 & -0.00000001534 \\
+                              -0.00000002243 & +0.00006225405 & +0.00000000559 \\
+                              -0.00000001534 & +0.00000000559 & +0.00006325124
+                            \end{array}
+                            \right]_R
+
+
+Right Motorized ForeArm - (RElbowRoll)
+++++++++++++++++++++++++++++++++++++++
+
+.. image:: /medias/nao/hardware/hardware_rmotorizedforearmmass_3.3.png
+   :height: 243 px
+   :width: 263 px
+
+.. math::
+    \text{Mass} = 0.07724
+
+.. math::
+    \text{CoM(S)} = \left[
+                    \begin{array}{c}
+                      +0.02556 \\
+                      -0.00273 \\
+                      +0.00096
+                    \end{array}
+                    \right]_{(o, R)}
+
+
+.. math::
+    \left[I_o(S)\right]_R = \left[
+                            \begin{array}{ccc}
+                              +0.00002519483 & -0.00000216293 & +0.00000071846 \\
+                              -0.00000216293 & +0.00008890315 & -0.00000010809 \\
+                              +0.00000071846 & -0.00000010809 & +0.00008686867
+                            \end{array}
+                            \right]_R
+
+Right Motorized Hand - (RWristYaw)
+++++++++++++++++++++++++++++++++++
+
+.. image:: /medias/nao/hardware/hardware_rmotorizedhandmass_3.3.png
+   :height: 257 px
+   :width: 295 px
+
+.. math::
+    \text{Mass} = 0.16653
+
+.. math::
+    \text{CoM(S)} = \left[
+                    \begin{array}{c}
+                      +0.03180 \\
+                      -0.00083\\
+                      +0.00477
+                    \end{array}
+                    \right]_{(o, R)}
+
+
+.. math::
+    \left[I_o(S)\right]_R = \left[
+                            \begin{array}{ccc}
+                              +0.00006105675 & -0.00000503640 & +0.00003895369 \\
+                              -0.00000503640 & +0.00027947351 & -0.00000293076 \\
+                              +0.00003895369 & -0.00000293076 & +0.00027998803
+                            \end{array}
+                            \right]_R
+
+
+Right No Motorized Hand - (RElbowRoll)
+++++++++++++++++++++++++++++++++++++++
+
+.. image:: /medias/nao/hardware/hardware_rnonmotorizedhandmass_3.3.png
+   :height: 426 px
+   :width: 521 px
+
+.. math::
+    \text{Mass} = 0.18500
+
+.. math::
+    \text{CoM(S)} = \left[
+                    \begin{array}{c}
+                      +0.06536 \\
+                      -0.00034 \\
+                      -0.00002
+                    \end{array}
+                    \right]_{(o, R)}
+
+
+.. math::
+    \left[I_o(S)\right]_R = \left[
+                            \begin{array}{ccc}
+                              +0.00007831052 & +0.00001006758 & -0.00000756942 \\
+                              +0.00001006758 & +0.00112996801 & -0.00000013237 \\
+                              -0.00000756942 & -0.00000013237 & +0.00112695518
+                            \end{array}
+                            \right]_R
+
+Right Pelvis - (RHipYawPitch)
++++++++++++++++++++++++++++++
+
+.. image:: /medias/nao/hardware/hardware_rpelvismass_3.3.png
+   :height: 210 px
+   :width: 221 px
+
+.. math::
+    \text{Mass} = 0.07117
+
+.. math::
+    \text{CoM(S)} = \left[
+                    \begin{array}{c}
+                      -0.00766 \\
+                      +0.01200 \\
+                      +0.02717
+                    \end{array}
+                    \right]_{(o, R)}
+
+
+.. math::
+    \left[I_o(S)\right]_R = \left[
+                            \begin{array}{ccc}
+                              +0.00008997164 & -0.00000500214 & -0.00001273548 \\
+                              -0.00000500214 & +0.00010552250 & +0.00002770075 \\
+                              -0.00001273548 & +0.00002770075 & +0.00006688382
+                            \end{array}
+                            \right]_R
+
+
+Right Hip - (RHipRoll)
+++++++++++++++++++++++
+
+.. image:: /medias/nao/hardware/hardware_rhipmass_3.3.png
+   :height: 215 px
+   :width: 228 px
+
+.. math::
+    \text{Mass} = 0.13530
+
+.. math::
+    \text{CoM(S)} = \left[
+                    \begin{array}{c}
+                      -0.01649 \\
+                      -0.00029 \\
+                      -0.00475
+                    \end{array}
+                    \right]_{(o, R)}
+
+
+.. math::
+    \left[I_o(S)\right]_R = \left[
+                            \begin{array}{ccc}
+                              +0.00002791129 & +0.00000004765 & +0.00000530958 \\
+                              +0.00000004765 & +0.00010146847 & +0.00000000007 \\
+                              +0.00000530958 & +0.00000000007 & +0.00009209165
+                            \end{array}
+                            \right]_R
+
+Right Thigh - (RHipPitch)
++++++++++++++++++++++++++
+
+.. image:: /medias/nao/hardware/hardware_rthighmass_3.3.png
+   :height: 425 px
+   :width: 300 px
+
+.. math::
+    \text{Mass} = 0.39421
+
+.. math::
+    \text{CoM(S)} = \left[
+                    \begin{array}{c}
+                    +0.00132 \\
+                    -0.00235 \\
+                    -0.05352
+                    \end{array}
+                    \right]_{(o, R)}
+
+
+.. math::
+    \left[I_o(S)\right]_R = \left[
+                            \begin{array}{ccc}
+                              +0.00163011959 & +0.00000031939 & -0.00008287048 \\
+                              +0.00000031939 & +0.00159269948 & +0.00004333919 \\
+                              -0.00008287048 & +0.00004333919 & +0.00030120888
+                            \end{array}
+                            \right]_R
+
+
+Right Tibia - (RKneePitch)
+++++++++++++++++++++++++++
+
+.. image:: /medias/nao/hardware/hardware_rtibiamass_3.3.png
+   :height: 395 px
+   :width: 290 px
+
+.. math::
+    \text{Mass} = 0.29159
+
+.. math::
+    \text{CoM(S)} = \left[
+                    \begin{array}{c}
+                    +0.00422 \\
+                    -0.00252 \\
+                    -0.04868
+                    \end{array}
+                    \right]_{(o, R)}
+
+
+.. math::
+    \left[I_o(S)\right]_R = \left[
+                            \begin{array}{ccc}
+                              +0.00115382550 & +0.00000077529 & -0.00003231279 \\
+                              +0.00000077529 & +0.00110377729 & +0.00004396728 \\
+                              -0.00003231279 & +0.00004396728 & +0.00018861038
+                            \end{array}
+                            \right]_R
+
+Right Ankle - (RAnklePitch)
++++++++++++++++++++++++++++
+
+.. image:: /medias/nao/hardware/hardware_ranklemass_3.3.png
+   :height: 221 px
+   :width: 238 px
+
+.. math::
+    \text{Mass} = 0.13892
+
+.. math::
+    \text{CoM(S)} = \left[
+                    \begin{array}{c}
+                    +0.00142 \\
+                    -0.00028 \\
+                    +0.00638
+                    \end{array}
+                    \right]_{(o, R)}
+
+
+.. math::
+    \left[I_o(S)\right]_R = \left[
+                            \begin{array}{ccc}
+                              +0.00003882614 & -0.00000004711 & -0.00000221327 \\
+                              -0.00000004711 & +0.00007211571 & +0.00000000686 \\
+                              -0.00000221327 & +0.00000000686 & +0.00005352041
+                            \end{array}
+                            \right]_R
+
+Right Foot - (RAnkleRoll)
++++++++++++++++++++++++++
+
+.. image:: /medias/nao/hardware/hardware_rfootmass_3.3.png
+   :height: 327 px
+   :width: 395 px
+
+.. math::
+    \text{Mass} = 0.16175
+
+.. math::
+    \text{CoM(S)} = \left[
+                    \begin{array}{c}
+                    +0.02540 \\
+                    -0.00332 \\
+                    -0.03241
+                    \end{array}
+                    \right]_{(o, R)}
+
+
+.. math::
+    \left[I_o(S)\right]_R = \left[
+                            \begin{array}{ccc}
+                            +0.00026961204 & -0.00000587690 & -0.00013924446 \\
+                            -0.00000587690 & +0.00064387818 & +0.00001887096 \\
+                            -0.00013924446 & +0.00001887096 & +0.00052519167
+                            \end{array}
+                            \right]_R

@@ -1,0 +1,148 @@
+.. _control-cartesian-tuto:
+
+Cartesian control Tutorial: The Hula-Hoop motion
+================================================
+
+:ref:`naoqi-motion` || :ref:`Overview<control-cartesian>` | :ref:`API <control-cartesian-api>` |
+Tutorial
+
+-----------------
+
+
+Introduction
+------------
+
+This tutorial explains how to use cartesian control API in the context of making NAO a Hula-Hoop
+motion (Torso control in position and in rotation).
+
+
+.. note::
+
+   The tutorial is written in Python.
+
+.. _control-cartesian-tuto-download:
+
+Download
+--------
+
+You can download the Hula Hoop example here:
+:download:`motion_hulaHoop.py </examples/python/motion/motion_hulaHoop.py>`
+
+To be executed, this tutorial requires a config file:
+:download:`config.py </examples/python/motion/config.py>`. Modify the config file to enter
+your robot IP, and place it in the same folder as the example.
+
+
+Please refer to the section: :ref:`python-install-guide` for any troubleshooting linked to python.
+
+
+Code review
+-----------
+
+In this section we describe each important piece of code of the example.
+
+NAOqi tools
++++++++++++
+
+First, we import some external library:
+ - config: the config file (see above the :ref:`control-cartesian-tuto-download` section)
+ - motion: some useful defintion such as SPACE.
+ - almath: an optimized mathematic toolbox for robotics.
+   For further details, see: `libalmath API reference <../../ref/libalmath/index.html>`_.
+
+Then, the proxy to **ALMotion** module is created. This proxy is useful to call **ALMotion** API.
+
+.. code-block:: python
+
+  import config
+  import motion
+  import almath
+
+  def main():
+      '''
+          Example showing a Hula Hoop Motion
+          with the NAO cartesian control of torso
+      '''
+
+      motionProxy = config.loadProxy("ALMotion")
+
+
+NAO initialization
+++++++++++++++++++
+
+| When doing cartesian control, it is important to be sure that NAO is in a good configuration. To
+  have the maximum range of control, the maximum stability and far away of :term:`singularity`.
+| A :ref:`PoseInit <control-joint-tuto>` is a good posture before a cartesian control
+  of the NAO Torso.
+
+
+.. code-block:: python
+
+    # Set NAO in Stiffness On
+    config.StiffnessOn(motionProxy)
+
+    # Send NAO to Pose Init
+    config.PoseInit(motionProxy)
+
+Hula hoop motion
+++++++++++++++++++++
+
+We define the hula hoop motion with four checkPoints:
+ - forward  / bend backward
+ - right    / bend left
+ - backward / bend forward
+ - left     / bend right
+
+.. image:: /medias/dev/modules/motion/motion_hulaHoop.png
+   :scale: 50%
+
+We definie two loops of hula hoop. You can accelerate the motion by playing with the timeOneMove
+variable.
+
+.. code-block:: python
+
+    # Define the changes relative to the current position
+    dx         = 0.07                    # translation axis X (meter)
+    dy         = 0.07                    # translation axis Y (meter)
+    dwx        = 0.15                    # rotation axis X (rad)
+    dwy        = 0.15                    # rotation axis Y (rad)
+
+    # define a path of two hula hoop loops
+    path = [ [+dx, 0.0, 0.0,  0.0, -dwy, 0.0],  # point 01 : forward  / bend backward
+             [0.0, -dy, 0.0, -dwx,  0.0, 0.0],  # point 02 : right    / bend left
+             [-dx, 0.0, 0.0,  0.0,  dwy, 0.0],  # point 03 : backward / bend forward
+             [0.0, +dy, 0.0,  dwx,  0.0, 0.0],  # point 04 : left     / bend right
+
+             [+dx, 0.0, 0.0,  0.0, -dwy, 0.0],  # point 01 : forward  / bend backward
+             [0.0, -dy, 0.0, -dwx,  0.0, 0.0],  # point 02 : right    / bend left
+             [-dx, 0.0, 0.0,  0.0,  dwy, 0.0],  # point 03 : backward / bend forward
+             [0.0, +dy, 0.0,  dwx,  0.0, 0.0],  # point 04 : left     / bend right
+
+             [+dx, 0.0, 0.0,  0.0, -dwy, 0.0],  # point 05 : forward  / bend backward
+             [0.0, 0.0, 0.0,  0.0,  0.0, 0.0] ] # point 06 : Back to init pose
+
+    timeOneMove  = 0.4 #seconds
+    times = []
+    for i in range(len(path)):
+        times.append( (i+1)*timeOneMove )
+
+
+Call the cartesian control API
+++++++++++++++++++++++++++++++++
+
+| Here, we specify that we want to control the *Torso* (see :ref:`motion-cartesian-effectors`)
+  in the SPACE_NAO (see :ref:`motion-effectors-space`) and that we want to control all the motion with
+  a AXIS_MASK_ALL (see :ref:`motion-axis-masks`).
+| We also specify that the torso path is definied in relative with the initial robot position.
+
+.. code-block:: python
+
+    # call the cartesian control API
+    effector   = "Torso"
+    space      =  motion.SPACE_NAO
+
+    axisMask   = almath.AXIS_MASK_ALL
+    isAbsolute = False
+
+    motionProxy.positionInterpolation(effector, space, path,
+                                      axisMask, times, isAbsolute)

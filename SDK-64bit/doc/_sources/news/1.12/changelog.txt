@@ -1,0 +1,145 @@
+Changelog 1.12
+====================
+
+
+1.12.0.63  -- Public release
+-----------------------------
+
+* **NAOqi**
+
+  * Fix #5795 NAO 4: heat on shoulder pitch
+  * Fix #5879 Inertial unit send more 'nacks' than before, causing false
+    positives for fall manager
+
+* **Monitor**
+
+  * Fix #5905 Camera Monitor: notify users that fps are limited
+
+* **OpenNAO**
+
+  * Fix #5906 Persistent data: passwd does not move shadow file,
+    ensure that passwords are kept after software update.
+
+* **Hal**
+
+  * Fix #5881 HipYaw pitch overheating
+
+* **Choregraphe**
+
+  * Fix #3520 The hand slider is not precise enough
+  * Fix #5774 Crash Choregraphe when attached file is too big
+  * Fix #5235 Default IP changed from "localhost" to "127.0.0.1"
+  * Fix #4939 When setting a default behavior from a Choregraphe 1.12 on a
+    NAOqi 1.10, it is not played on start-up
+  * Fix #4664 Prevent from zooming in the motion timeline outside the timeline editor
+
+
+1.12.0.49 - RC1
+---------------
+
+* **NAOqi**
+
+  * Fix #5476 Sentinel: Emergency stiffness removal does not work when system
+    menu is activated
+  * Fix #2065 Missing Portuguese and Korean Chest button translations
+  * Fix #5158 interaction problem between animation-mode and fallmanager
+
+* **NAOqi - Core**
+
+  * Fix #5225 Launch python modules and executables from autoload.ini
+
+
+* **NAOqi - Motion**
+
+  * Fix #5300 Instabilities when walking backwards
+
+* **Choregraphe**
+
+  * Fix #5562 videoMonitor is at 5fps
+  * Fix #5188 After a few PLAY / STOP in the video monitor of choregraphe, the video can not retrieved anymore.
+  * Fix #5156 ALBehaviorManager - runBehavior doesn't work on a sub behavior anymore
+
+* **OpenNAO**
+
+  * Fix #4978 on V4 /media/internal is not persistent
+  * Fix #143, #4022 DFU v2
+  * Fix #4428 infrared remote discovery not terminating on the webpage
+
+1.12.0.42 - Beta2
+-----------------
+
+* **NAOqi - Audio**
+
+  * Fix #5179 xRemoveBrackets segfaults
+
+* **NAOqi - Core**
+
+  * Fix #4474, #4825, #4359, #4940 : deadlock or crashes when connecting/deconnecting  brokers
+
+* **Choregraphe**
+
+  * Fix #4696, #3788, #4969, #4234: cleaning of e-mail boxes
+  * Fix #4836 Video acquisition continued even if video monitor widget is closed
+  * Fix #5074 Crash in ALBehaviorManager
+  * Fix #4836 fix the pause/resume video process at initialisation
+
+* **Choregraphe - Boxes**
+
+  * Fix #4973 MP3 files: late and incomplete playing => modify the tooltip
+  * Fix #4392 IR Send Key box: cannot enter custom remote control config. name
+
+* **.Net SDK**
+
+  * New #4766 Suppoprt using TTS in Japanese
+
+
+1.12.0.30 - Beta1
+-----------------
+
+* **Motion/DCM**
+
+  * Fix #3957 - FS#5841 Motion and DCM can be used at the
+    same time on different joints, but when changing from using DCM on a joint to
+    using motion, the user is required to set stiffness to zero during the transition.	
+  * Fix #3313 - FS#5158 RHipYawPitch does not respond. Workaround: RHipYawPitch
+    and LHipYawPitch are the 2 names of the same joint, use LHipYawPitch to control the hips.
+  
+* **Audio**
+
+  * Fix #3952 - FS#5836 Synchronous call to say or playFile from a remote python script
+    are regularly not returning.
+  
+* **Network**
+
+  * Fix #3853 - FS#5728 The connection is not stable with Wifi roaming (related bug FS#5379).
+  
+* **Choregraphe**
+
+  * Fix #3744 - FS#5609 Choice box does not work in Chinese, German, Italian,
+    Japanese, Korean and Portuguese.	
+
+* **NAOqi**
+
+  * Fix #2720 - FS#4471  Instability issues (related bugs: FS#4384, FS#3896, FS#117).
+
+  * Fix #1158 - FS#1824 When compiling modules in debug mode for C++ projects, many warnings occur.
+
+* **NAOqi - Audio**
+
+  * Fix #2505 - FS#4245 Synchronization issue between music and move.
+
+* **NAO**
+
+  * Fix #2065 - FS#3764 if NAO is not set in English or French, when pressing his chest
+    button, he cannot pronounce properly the sentence.	
+
+* **NAOqi - ALMemory**
+
+  * Fix #1720  - FS#3213 Choregraphe may consider that a behavior is still
+    running although it is finished.
+
+* **Languages compatibility**
+
+  * Fix #1276 - FS#2235 Python scripts: The float values are
+    truncated on French Linux OS.
+

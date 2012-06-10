@@ -1,0 +1,33 @@
+.. _replacing-battery:
+
+Replacing the battery
+============================
+
+.. seealso::
+
+   - :ref:`charging-battery`
+   - :ref:`Battery Hardware <hardware-battery>`
+   - :ref:`albattery`
+
+
+If your battery needs to be replaced:
+
+#. Read the :ref:`Safety<nao-safety>` guidelines.
+
+#. Disconnect the power cable from the plug located on NAO's back.
+
+#. Remove the four screws of the battery cover. You will need a Phillips 0 screwdriver.
+
+   .. image:: /medias/nao/gs_vis_dos.png
+      :height: 192 px
+      :width: 142 px
+
+#. Remove the used battery and replace it with a new one.
+
+   .. image:: /medias/nao/hardware/hardware_battery.jpg
+      :height: 250 px
+      :width: 250 px
+
+#. Once it fits snuggly in its slot, place the cover back into position and tighten all four screws.
+
+#. Refer to the :ref:`charging-battery` section to charge your new battery.

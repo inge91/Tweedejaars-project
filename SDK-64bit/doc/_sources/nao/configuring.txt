@@ -1,0 +1,27 @@
+.. _configuring-nao:
+
+Configuring NAO
+====================
+
+This chapter gathers information about NAO configuration.
+
+Most of configuration tasks are easily accessible on NAO Web page.
+
+
+.. toctree::
+   :maxdepth: 1
+
+   nao-webpage
+   remote-control
+
+
+
+For a full overview of all possible network connection types available on NAO, see:
+
+
+.. toctree::
+   :maxdepth: 1
+
+   connectivity
+
+

@@ -1,0 +1,934 @@
+.. _alvideodevice-api:
+
+ALVideoDevice API
+=================
+
+:ref:`naoqi-vision` || :ref:`Overview <alvideodevice>` | API |
+:ref:`Tutorial <alvideodevice-tuto>` | :ref:`API-advanced`
+
+-------------
+
+.. seealso::
+
+   - :ref:`Video camera Hardware<hardware-video>`
+
+
+Namespace : **AL**
+
+.. code-block:: cpp
+
+  #include <alproxies/alvideodeviceproxy.h>
+
+
+Method list
+-----------
+
+As any module, this module inherits methods from :ref:`almodule-api`.
+It also has the following specific methods:
+
+.. cpp:class:: ALVideoDeviceProxy
+
+* :cpp:func:`ALVideoDeviceProxy::getActiveCamera`
+* :cpp:func:`ALVideoDeviceProxy::getAngPosFromImgPos`
+* :cpp:func:`ALVideoDeviceProxy::getAngSizeFromImgSize`
+* :cpp:func:`ALVideoDeviceProxy::getCurrentImageNumber`
+* :cpp:func:`ALVideoDeviceProxy::getDirectRawImageLocal`
+* :cpp:func:`ALVideoDeviceProxy::getDirectRawImageRemote`
+* :cpp:func:`ALVideoDeviceProxy::getExpectedImageParameters`
+* :cpp:func:`ALVideoDeviceProxy::getGVMColorSpace`
+* :cpp:func:`ALVideoDeviceProxy::getGVMFrameRate`
+* :cpp:func:`ALVideoDeviceProxy::getGVMResolution`
+* :cpp:func:`ALVideoDeviceProxy::getImageLocal`
+* :cpp:func:`ALVideoDeviceProxy::getImageRemote`
+* :cpp:func:`ALVideoDeviceProxy::getImgInfoFromAngInfo`
+* :cpp:func:`ALVideoDeviceProxy::getImgInfoFromAngInfoWithRes`
+* :cpp:func:`ALVideoDeviceProxy::getImgPosFromAngPos`
+* :cpp:func:`ALVideoDeviceProxy::getImgSizeFromAngSize`
+* :cpp:func:`ALVideoDeviceProxy::getParam`
+* :cpp:func:`ALVideoDeviceProxy::getVIMColorSpace`
+* :cpp:func:`ALVideoDeviceProxy::getVIMFrameRate`
+* :cpp:func:`ALVideoDeviceProxy::getVIMResolution`
+* :cpp:func:`ALVideoDeviceProxy::isFrameGrabberOff`
+* :cpp:func:`ALVideoDeviceProxy::nextImage`
+* :cpp:func:`ALVideoDeviceProxy::onClientDisconnected`
+* :cpp:func:`ALVideoDeviceProxy::previousImage`
+* :cpp:func:`ALVideoDeviceProxy::putImage`
+* :cpp:func:`ALVideoDeviceProxy::recordVideo`
+* :cpp:func:`ALVideoDeviceProxy::releaseDirectRawImage`
+* :cpp:func:`ALVideoDeviceProxy::releaseImage`
+* :cpp:func:`ALVideoDeviceProxy::replaySpeed`
+* :cpp:func:`ALVideoDeviceProxy::resolutionToSizes`
+* :cpp:func:`ALVideoDeviceProxy::setColorSpace`
+* :cpp:func:`ALVideoDeviceProxy::setFrameRate`
+* :cpp:func:`ALVideoDeviceProxy::setParam`
+* :cpp:func:`ALVideoDeviceProxy::setParamDefault`
+* :cpp:func:`ALVideoDeviceProxy::setResolution`
+* :cpp:func:`ALVideoDeviceProxy::setSimCamInputSize`
+* :cpp:func:`ALVideoDeviceProxy::setVideo`
+* :cpp:func:`ALVideoDeviceProxy::sizesToResolution`
+* :cpp:func:`ALVideoDeviceProxy::startFrameGrabber`
+* :cpp:func:`ALVideoDeviceProxy::stopFrameGrabber`
+* :cpp:func:`ALVideoDeviceProxy::stopVideo`
+* :cpp:func:`ALVideoDeviceProxy::subscribe`
+* :cpp:func:`ALVideoDeviceProxy::unsubscribe`
+* :cpp:func:`ALVideoDeviceProxy::unsubscribeAllInstances`
+
+
+**Groups**
+
+* :ref:`ALVideoDevice::mainMethods`
+* :ref:`ALVideoDevice::videoRecordingAndReplayingMethods`
+* :ref:`ALVideoDevice::videoSourceParameters`
+* :ref:`ALVideoDevice::anglesManagementMethods`
+* :ref:`ALVideoDevice::advancedMethods`
+* :ref:`ALVideoDevice::simulatorMethods`
+
+
+
+.. _ALVideoDevice::mainMethods:
+
+Main Methods
+------------
+
+.. cpp:function:: std::string ALVideoDeviceProxy::subscribe( const std::string& vmName, const int& resolution, const int& colorSpace, const int& fps )
+
+  Subscribe to ALVideoDevice. When a Video Module registers to ALVideoDevice, a buffer of the requested image format is added to the buffers list.
+  Returns the name under which the V.M. will be known from ALVideoDevice (useful when several V.M. try to subscribe using the same name, the 3rd one getting _3 added to its name for instance).
+
+  :param vmName: Name of the subscribing V.M.
+
+  :param resolution: Resolution requested. { 0 = kQQVGA, 1 = kQVGA, 2 = kVGA, 3 = k4VGA }
+
+  :param colorSpace: Colorspace requested. { 0 = kYuv, 9 = kYUV422, 10 = kYUV, 11 = kRGB, 12 = kHSY, 13 = kBGR }
+
+  :param fps: Fps (frames per second) requested to the video source. The OV7670 VGA camera can only run at 30fps, the MT9M114 HD camera will be able to run faster with some special modes in a near future. 
+      Compared to a local module, the obtained framerate for a remote module will depend on the network available bandwith (e.g. we can reach raw ``1280x960@10fps`` using a Gigabit Ethernet connection with the HD camera).
+
+  :return: Name under which the V.M. is known from ALVideoDevice, NULL if failed.
+
+  :download:`alvideodevice_subscribe.cpp </samples/cpp/alvideodevice/alvideodevice_subscribe.cpp>`
+
+  .. literalinclude:: /samples/cpp/alvideodevice/alvideodevice_subscribe.cpp
+     :language: cpp
+
+
+.. cpp:function:: void ALVideoDeviceProxy::unsubscribe(const std::string& pName)
+
+  Used to unsubscribe a V.M. from ALVideoDevice.
+
+  :param pName: Name under which the V.M. is known from ALVideoDevice.
+
+  :download:`alvideodevice_subscribe.cpp </samples/cpp/alvideodevice/alvideodevice_subscribe.cpp>`
+
+  .. literalinclude:: /samples/cpp/alvideodevice/alvideodevice_subscribe.cpp
+     :language: cpp
+
+
+.. cpp:function:: void ALVideoDeviceProxy::unsubscribeAllInstances(const std::string& pName)
+
+  Used to unsubscribe all instances for a given V.M. (e.g. VisionModule and VisionModule_5) from ALVideoDevice.
+
+  :param pName: Root name of the V.M. (e.g. with the example above this will be VisionModule).
+
+
+.. cpp:function:: void * ALVideoDeviceProxy::getImageLocal(const std::string& id)
+
+  Retrieves the latest image from the video source, applies eventual transformations
+  to the image to provide the format requested by the vision module and returns
+  a pointer to a locked ALImage.
+
+  .. warning::
+     When the image is not necessary anymore, a call to releaseImage() is requested.
+     If the V.M. didn't release the previous image, returns NULL.
+
+  :param id: Name under which the V.M. is known from ALVideoDevice
+
+  :return: Pointer to the locked image buffer, NULL if error (e.g. if the previous image was not released). 
+
+  .. warning::
+     Image pointer is valid only if your module is running locally, not for remote modules.
+
+  :download:`alvideodevice_subscribe.cpp </samples/cpp/alvideodevice/alvideodevice_imagelocal.cpp>`
+
+  .. literalinclude:: /samples/cpp/alvideodevice/alvideodevice_imagelocal.cpp
+     :language: cpp
+
+
+.. cpp:function:: AL::ALValue ALVideoDeviceProxy::getImageRemote(const std::string& id)
+
+  Retrieves the latest image from the video source, applies eventual transformations to the image to provide the format requested by the vision module and send it as an ALValue through the network. 
+
+  :param id: Name under which the V.M. is known from ALVideoDevice.
+
+  :return: Array containing image informations:
+
+      - [0] : width;
+      - [1] : height;
+      - [2] : number of layers;
+      - [3] : ColorSpace;
+      - [4] : timestamp (seconds);
+      - [5] : timestamp (micro-seconds);
+      - [6] : array of size height * width * nblayers containing image data;
+      - [7] : camera ID (kTop=0, kBottom=1);
+      - [8] : left angle  (radian);
+      - [9] : topAngle    (radian);
+      - [10]: rightAngle  (radian);
+      - [11]: bottomAngle (radian);
+
+
+  :download:`alvideodevice_subscribe.cpp </samples/cpp/alvideodevice/alvideodevice_imageremote.cpp>`
+
+  .. literalinclude:: /samples/cpp/alvideodevice/alvideodevice_imageremote.cpp
+     :language: cpp
+
+
+.. cpp:function:: int ALVideoDeviceProxy::releaseImage(const std::string& id)
+
+  Release image buffer locked by getImageLocal(). If V.M. had no locked image buffer, does nothing.
+
+  :param id: Name under which the V.M. is known from ALVideoDevice.
+
+  :return: true if success
+
+.. note::
+  It is not mandatory to use releaseImage to release an image obtained by
+  getImageRemote. However, it's a good habit to place it in order to ease the switch
+  from a remote behavior to a local one and this will not use CPU (this method
+  returns directly when it follows a getImageRemote).
+
+:download:`alvideodevice_subscribe.cpp </samples/cpp/alvideodevice/alvideodevice_imagelocal.cpp>`
+
+.. literalinclude:: /samples/cpp/alvideodevice/alvideodevice_imagelocal.cpp
+     :language: cpp
+
+
+.. cpp:function:: int ALVideoDeviceProxy::getParam(const int& pParam)
+
+  Get the value of a video source specific parameter.
+  
+  .. warning::
+     
+	 Depending on the type of the video source, available parameters may change.
+
+  :param pParam: Parameter's reference. See below the parameters list according to the type of video source.
+
+  :return: Parameter's value. See below the parameters list according to the type of video source (values are available in :ref:`ALVideoDevice::cameraParameters` ).
+
+    **video source: OV7670 VGA camera**
+
+    - kCameraSetDefaultParamsID,
+    - kCameraSelectID,
+    - kCameraFastSwitchID (advanced function that needs both camera to run same format. Parameter value has no signification),
+    - kCameraResolutionID (possible resolutions for the video source, not as requested by a Vision Module; e.g. QQVGA isn't provided directly by the camera),
+    - kCameraHFlipID,
+    - kCameraVFlipID,
+    - kCameraBrightnessID,
+    - kCameraContrastID,
+    - kCameraSaturationID,
+    - kCameraHueID,
+    - kCameraSharpnessID (0-1: no sharpness - 2: medium sharpness - 3-5: high sharpness - higher: cartoon effect),
+    - kCameraAutoWhiteBalanceID,
+    - kCameraRedChromaID,
+    - kCameraBlueChromaID,
+    - kCameraAutoExpositionID,
+    - kCameraExposureID,
+    - kCameraAutoGainID,
+    - kCameraGainID,
+    - kCameraExposureCorrectionID (correction by n/3 IL, switch automatically in average-based AEC algorithm if n!=0 and back to histogram-based for n=0),
+    - kCameraAecAlgorithmID,
+    - kCameraAwbGreenGainID,
+    - kCameraAblcID,
+    - kCameraAblcTargetID,
+    - kCameraAblcStableRangeID,
+    - kCameraBlcBlueID,
+    - kCameraBlcRedID,
+    - kCameraBlcGbID,
+    - kCameraBlcGrID,
+
+    **video source: MT9M114 HD camera**
+
+    - kCameraSetDefaultParamsID,
+    - kCameraSelectID,
+    - kCameraResolutionID (possible resolutions for the video source, not as requested by a Vision Module; e.g. QQVGA isn't provided directly by the camera),
+    - kCameraHFlipID,
+    - kCameraVFlipID,
+    - kCameraBrightnessID,
+    - kCameraContrastID,
+    - kCameraSaturationID,
+    - kCameraHueID,
+    - kCameraSharpnessID
+    - kCameraAutoWhiteBalanceID,
+    - kCameraWhiteBalanceID,
+    - kCameraAutoExpositionID,
+    - kCameraExposureID,
+    - kCameraGainID,
+    - kCameraBacklightCompensationID
+
+    **video source: simulatorcam**
+
+    - kCameraResolutionID,
+    - kCameraSelectID
+
+    **video source: filecam**
+
+    - kCameraResolutionID,
+    - kCameraSelectID
+
+
+:download:`alvideodevice_subscribe.cpp </samples/cpp/alvideodevice/alvideodevice_getparam.cpp>`
+
+
+.. literalinclude:: /samples/cpp/alvideodevice/alvideodevice_getparam.cpp
+   :language: cpp
+
+
+.. cpp:function:: void ALVideoDeviceProxy::setParam( const int& param, const int& newValue )
+
+  Sets the value of a specific parameter for the video source.
+
+  :param param: Parameter's reference. See below the parameters list according to the type of video source (values are available in :ref:`ALVideoDevice::cameraParameters` ).
+
+    **video source: OV7670 VGA camera**
+
+    - kCameraSetDefaultParamsID,
+    - kCameraSelectID,
+    - kCameraFastSwitchID (advanced function that needs both camera to run same format. Parameter value has no signification),
+    - kCameraResolutionID (possible resolutions for the video source, not as requested by a Vision Module; e.g. QQVGA isn't provided directly by the camera),
+    - kCameraHFlipID,
+    - kCameraVFlipID,
+    - kCameraBrightnessID,
+    - kCameraContrastID,
+    - kCameraSaturationID,
+    - kCameraHueID,
+    - kCameraSharpnessID (0-1: no sharpness - 2: medium sharpness - 3-5: high sharpness - higher: cartoon effect)
+    - kCameraAutoWhiteBalanceID,
+    - kCameraRedChromaID,
+    - kCameraBlueChromaID,
+    - kCameraAutoExpositionID,
+    - kCameraExposureID,
+    - kCameraAutoGainID,
+    - kCameraGainID,
+    - kCameraExposureCorrectionID (correction by n/3 IL, switch automatically in average-based AEC algorithm if n!=0 and back to histogram-based for n=0),
+    - kCameraAecAlgorithmID,
+    - kCameraAwbGreenGainID,
+    - kCameraAblcID,
+    - kCameraAblcTargetID,
+    - kCameraAblcStableRangeID,
+    - kCameraBlcBlueID,
+    - kCameraBlcRedID,
+    - kCameraBlcGbID,
+    - kCameraBlcGrID,
+
+    .. note::
+       The disabled camera will get back to auto gain/exposure/white balance settings after a while. This is a camera issue when it is freezed.
+
+    .. note::
+       Fast switch usually switchs between cameras in 66ms (33ms for waked up sensor exposure + 33ms for data transfer) after previous image completion. However, sometimes we can observe a clipped image from the former camera after 66ms. This is an electronical issue and so we suggest to considere only images after 100ms
+
+
+    **video source: MT9M114 HD camera**
+
+    - kCameraSetDefaultParamsID,
+    - kCameraSelectID,
+    - kCameraResolutionID (possible resolutions for the video source, not as requested by a Vision Module; e.g. QQVGA isn't provided directly by the camera),
+    - kCameraHFlipID,
+    - kCameraVFlipID,
+    - kCameraBrightnessID,
+    - kCameraContrastID,
+    - kCameraSaturationID,
+    - kCameraHueID,
+    - kCameraSharpnessID,
+    - kCameraAutoWhiteBalanceID,
+    - kCameraWhiteBalanceID,
+    - kCameraAutoExpositionID,
+    - kCameraExposureID,
+    - kCameraGainID,
+    - kCameraBacklightCompensationID
+
+    **video source: simulatorcam**
+
+    - kCameraResolutionID,
+    - kCameraSelectID
+
+    **video source: filecam**
+
+    - kCameraResolutionID,
+    - kCameraSelectID	 
+
+  
+  :param newValue: Parameter's new value.
+
+
+:download:`alvideodevice_subscribe.cpp </samples/cpp/alvideodevice/alvideodevice_setparam.cpp>`
+
+.. literalinclude:: /samples/cpp/alvideodevice/alvideodevice_setparam.cpp
+   :language: cpp
+
+
+
+.. cpp:function:: void ALVideoDeviceProxy::setParamDefault(const int& param)
+
+  Sets a specific parameter for the video source at its default value.
+
+  :param param: Parameter's reference. See below the parameters list according to the type of video source (values are available in :ref:`ALVideoDevice::cameraParameters` ).
+
+    **video source: OV7670 VGA camera**
+
+    - kCameraSetDefaultParamsID,
+    - kCameraSelectID,
+    - kCameraFastSwitchID (advanced function that needs both camera to run same format. Parameter value has no signification),
+    - kCameraResolutionID (possible resolutions for the video source, not as requested by a Vision Module; e.g. QQVGA isn't provided directly by the camera),
+    - kCameraHFlipID,
+    - kCameraVFlipID,
+    - kCameraBrightnessID,
+    - kCameraContrastID,
+    - kCameraSaturationID,
+    - kCameraHueID,
+    - kCameraSharpnessID (0-1: no sharpness - 2: medium sharpness - 3-5: high sharpness - higher: cartoon effect)
+    - kCameraAutoWhiteBalanceID,
+    - kCameraRedChromaID,
+    - kCameraBlueChromaID,
+    - kCameraAutoExpositionID,
+    - kCameraExposureID,
+    - kCameraAutoGainID,
+    - kCameraGainID,
+    - kCameraExposureCorrectionID (correction by n/3 IL, switch automatically in average-based AEC algorithm if n!=0 and back to histogram-based for n=0),
+    - kCameraAecAlgorithmID,
+    - kCameraAwbGreenGainID,
+    - kCameraAblcID,
+    - kCameraAblcTargetID,
+    - kCameraAblcStableRangeID,
+    - kCameraBlcBlueID,
+    - kCameraBlcRedID,
+    - kCameraBlcGbID,
+    - kCameraBlcGrID,
+
+    **video source: MT9M114 HD camera**
+
+    - kCameraSetDefaultParamsID,
+    - kCameraSelectID,
+    - kCameraResolutionID (possible resolutions for the video source, not as requested by a Vision Module; e.g. QQVGA isn't provided directly by the camera),
+    - kCameraHFlipID,
+    - kCameraVFlipID,
+    - kCameraBrightnessID,
+    - kCameraContrastID,
+    - kCameraSaturationID,
+    - kCameraHueID,s
+    - kCameraSharpnessID,
+    - kCameraAutoWhiteBalanceID,
+    - kCameraWhiteBalanceID,
+    - kCameraAutoExpositionID,
+    - kCameraExposureID,
+    - kCameraGainID,
+    - kCameraBacklightCompensationID
+
+    **video source: simulatorcam**
+
+    - kCameraResolutionID,
+    - kCameraSelectID
+
+    **video source: filecam**
+
+    - kCameraResolutionID,
+    - kCameraSelectID
+
+
+
+:download:`alvideodevice_subscribe.cpp </samples/cpp/alvideodevice/alvideodevice_setparamdefault.cpp>`
+
+.. literalinclude:: /samples/cpp/alvideodevice/alvideodevice_setparamdefault.cpp
+   :language: cpp
+
+
+.. cpp:function:: bool ALVideoDeviceProxy::setResolution( const std::string& id, const int& size )
+
+  Change the resolution requested by a Vision Module
+
+  :param id: Name under which the V.M. is known from ALVideoDevice.
+
+  :param size: 
+
+   - video source OV7670 VGA camera: { 0 = kQQVGA, 1 = kQVGA, 2 = kVGA } 
+   - video source MT9M114 HD camera: { 0 = kQQVGA, 1 = kQVGA, 2 = kVGA, 3 = k4VGA (1280x960) }
+   - video source simulatorcam: { 0 = kQQVGA, 1 = kQVGA, 2 = kVGA } 
+   - video source filecam: any resolution smaller or equal to the one of the images in the file (accessible with getVIMResolution).
+ 
+  :return: true if success
+
+
+.. cpp:function:: bool ALVideoDeviceProxy::setColorSpace( const std::string& id, const int& colorSpace )
+
+  Change the colorspace requested by a Vision Module.
+
+  :param id: Name under which the V.M. is known from ALVideoDevice.
+
+  :param colorSpace: Parameter's reference among
+
+   - kYuvColorSpace = 0;
+   - kyUvColorSpace = 1;
+   - kyuVColorSpace = 2;
+   - kRgbColorSpace = 3;
+   - krGbColorSpace = 4;
+   - krgBColorSpace = 5;
+   - kHsyColorSpace = 6;
+   - khSyColorSpace = 7;
+   - khsYColorSpace = 8;
+   - kYUV422ColorSpace = 9;
+   - kYUVColorSpace = 10;
+   - kRGBColorSpace = 11;
+   - kHSYColorSpace = 12;
+   - kBGRColorSpace = 13;     // for using with opencv
+   - kYYCbCrColorSpace = 14;  // for tiff implementation
+   - kH2RGBColorSpace = 15;   // H from "HSY to RGB" in fake colors
+   - kHSMixedColorSpace = 16; // HS and (H +S)/2
+
+  :return: true if success
+
+
+.. cpp:function:: bool ALVideoDeviceProxy::setFrameRate( const std::string& id, const int& frameRate )
+
+  Change the framerate requested to the video source by the Vision Module.
+
+  :param id: Name under which the V.M. is known from ALVideoDevice.
+
+  :param frameRate: images per seconds. The OV7670 VGA camera can only run at 30fps,
+   the MT9M114 HD camera will be able to run faster with some special modes in a near future.
+
+  :return: true if success
+
+.. note::
+   The requested framerate will be achieved locally. Remotely, the achieved framerate will depend on the network available bandwith (e.g. we can reach raw ``1280x960@10fps`` using a Gigabit Ethernet connection with the HD camera).
+
+
+.. cpp:function:: int ALVideoDeviceProxy::getGVMResolution(const std::string& id)
+
+  Get the resolution of a particular Vision Module
+
+  :param id: Name under which the V.M. is known from ALVideoDevice.
+
+  :return: { 0 = kQQVGA, 1 = kQVGA, 2 = kVGA, 3 = k4VGA }  -1: can't access video source
+
+
+.. cpp:function:: int ALVideoDeviceProxy::getGVMColorSpace(const std::string& id)
+
+  Get the color space of a particular Vision Module.
+
+  :param id: Name under which the V.M. is known from ALVideoDevice.
+
+  :return:   -1: can't access video source
+
+   - kYuvColorSpace = 0;
+   - kyUvColorSpace = 1;
+   - kyuVColorSpace = 2;
+   - kRgbColorSpace = 3;
+   - krGbColorSpace = 4;
+   - krgBColorSpace = 5;
+   - kHsyColorSpace = 6;
+   - khSyColorSpace = 7;
+   - khsYColorSpace = 8;
+   - kYUV422ColorSpace = 9;
+   - kYUVColorSpace = 10;
+   - kRGBColorSpace = 11;
+   - kHSYColorSpace = 12;
+   - kBGRColorSpace = 13;     // for using with opencv
+   - kYYCbCrColorSpace = 14;  // for tiff implementation
+   - kH2RGBColorSpace = 15;   // H from "HSY to RGB" in fake colors
+   - kHSMixedColorSpace = 16; // HS and (H +S)/2
+
+
+.. cpp:function:: int ALVideoDeviceProxy::getGVMFrameRate(const std::string& id)
+
+  Get the frame rate that a particular Vision Module has requested to the camera.
+  This doesn't mean the video source is able to run at this frame rate
+  (see :cpp:func:`ALVideoDeviceProxy::getVIMFrameRate` to know the video source framerate).
+  This doesn't either mean that a remote module will obtain images at this framerate due to network bandwith limitations.
+
+  :param id: Name under which the V.M. is known from ALVideoDevice.
+
+  :return: The Vision Module framerate, or -1 if we can't access video source
+
+
+.. cpp:function:: int ALVideoDeviceProxy::sizesToResolution( const int& width, const int& height )
+
+  return the resolution from sizes
+
+  :param width: width of the image
+
+  :param height: height of the image
+
+  :return: { 0 = kQQVGA, 1 = kQVGA, 2 = kVGA, 3 = k4VGA }  or -1 if the inputs are invalid
+
+
+:download:`alvideodevice_subscribe.cpp </samples/cpp/alvideodevice/alvideodevice_sizestoresolution.cpp>`
+ 
+.. literalinclude:: /samples/cpp/alvideodevice/alvideodevice_sizestoresolution.cpp
+   :language: cpp
+
+
+.. cpp:function:: AL::ALValue ALVideoDeviceProxy::resolutionToSizes(const int& resolution)
+
+  return the width and the height of a resolution
+
+  :param resolution: { 0 = kQQVGA, 1 = kQVGA, 2 = kVGA }
+
+  :return: array of sizes: (return [-1;-1] if the format is invalid) [0] : width; [1] : height;
+
+
+:download:`alvideodevice_subscribe.cpp </samples/cpp/alvideodevice/alvideodevice_resolutiontosizes.cpp>`
+
+.. literalinclude:: /samples/cpp/alvideodevice/alvideodevice_resolutiontosizes.cpp
+   :language: cpp
+
+
+.. _ALVideoDevice::videoRecordingAndReplayingMethods:
+
+Video recording and replaying methods
+-------------------------------------
+
+.. cpp:function:: bool ALVideoDeviceProxy::recordVideo( const std::string& id, const std::string& path, const int& totalNumber, const int& period )
+
+  BETA - background record of an .arv raw format video from the images processed by a Vision Module
+
+  :param id: Name under which the V.M. is known from ALVideoDevice
+
+  :param path: Name with the absolute path (pathToMyFile/filename.arv) of the ``arv`` video file to record
+
+  :param totalNumber: number of images to be recorded. 0xFFFFFFFF for "unlimited"
+
+  :param period: one image recorded every pPeriod images
+
+  :return: true if success
+
+
+:download:`alvideodevice_subscribe.cpp </samples/python/alvideodevice/getImageLocal_and_recordArv.py>`
+
+.. literalinclude:: /samples/python/alvideodevice/getImageLocal_and_recordArv.py
+   :language: py
+
+
+.. cpp:function:: bool ALVideoDeviceProxy::stopVideo(const std::string& id)
+
+  BETA - stop writing the video sequence
+
+  :param id: Name under which the V.M. is known from ALVideoDevice.
+
+  :return: true if success
+
+
+.. cpp:function:: void * ALVideoDeviceProxy::setVideo(const std::string& filePath, const AL::ALValue& range, const bool& loop, const int& replayMode, const int& streamNumber)
+
+  BETA - Set the parameters to play a video.
+
+  :param filePath: Name with the absolute path of the ``arv`` video file to replay
+
+  :param range: If set to ``NULL`` the complete file will be replayed. If an array is provided (e.g. [3, 142]), only frames in that range will be replayed.
+
+  :param loop: Loop if set to ``true``. 
+
+  :param replayMode: Controls the replay mode : 
+
+    - 0 replay frame per frame (using nextImage/previousImage) if replaySpeed is set to 0, or at a frame rate defined by the user.  
+    - 1 replay tries to comply with original image acquisition timestamp intervals (vision modules will lose frames if their process is too. long).
+
+  :param streamNumber: for multi stream videos, select which stream to play. Default should be 0.
+
+  :Return:   true if success
+
+
+:download:`alvideodevice_subscribe.cpp </samples/python/alvideodevice/replayArvVideo.py>`
+
+.. literalinclude:: /samples/python/alvideodevice/replayArvVideo.py
+   :language: py
+
+
+.. cpp:function:: void *  ALVideoDeviceProxy::replaySpeed(const std::vector<float>& imagesPerSecond)
+
+  BETA - When replaying in mode 0, set the speed for replaying the video sequence.
+
+  :param imagesPerSecond: Set the desired images per second. O will act like if the video source was always sending the same image.
+
+
+.. cpp:function:: void *  ALVideoDeviceProxy::previousImage()
+
+  BETA - When replaying in mode 0, ask for the previous image.
+
+
+.. cpp:function:: void * ALVideoDeviceProxy::nextImage()
+
+  BETA - When replaying in mode 0, ask for the next image.
+
+
+.. cpp:function:: int ALVideoDeviceProxy::getCurrentImageNumber()
+
+  BETA - Ask for the position of the current image in the sequence.
+
+  :return: Returns the index of the current image.
+
+
+
+.. _ALVideoDevice::videoSourceParameters:
+
+Video source parameters
+-----------------------
+
+
+.. cpp:function:: int ALVideoDeviceProxy::getActiveCamera()
+
+  Get the active camera ID
+
+  :return: 
+    - 0: top camera
+    - 1: bottom camera
+
+
+:download:`alvideodevice_subscribe.cpp </samples/cpp/alvideodevice/alvideodevice_getactivecamera.cpp>`
+ 
+.. literalinclude:: /samples/cpp/alvideodevice/alvideodevice_getactivecamera.cpp
+   :language: cpp
+
+
+.. cpp:function:: int ALVideoDeviceProxy::getVIMColorSpace()
+
+  Get the color space of the video source before enventual conversion.
+
+  :return: { 0 = kYuv, 9 = kYUV422, 10 = kYUV, 11 = kRGB, 12 = kHSY, 13 = kBGR }  -1 can't access video source
+
+
+.. cpp:function:: int ALVideoDeviceProxy::getVIMFrameRate()
+
+  Get the internal frame rate of the video source.
+
+  :return: video source framerate. -1: can't access video source
+
+
+.. cpp:function:: int ALVideoDeviceProxy::getVIMResolution()
+
+  Get the resolution of the video source before eventual conversion.
+
+  :return: { 0 = kQQVGA, 1 = kQVGA, 2 = kVGA, 3 = k4VGA }  -1: can't access video source
+
+
+
+.. _ALVideoDevice::anglesManagementMethods:
+
+Angles management
+-----------------
+
+.. cpp:function:: std::vector<float> ALVideoDeviceProxy::getAngPosFromImgPos(const std::vector<float>& imgPos)
+
+  Returns position as angles relative to camera axis given a normalized position in the image.
+
+  :param imgPos: normalized position in the image [0.0 - 1.0]
+
+  :return: corresponding angles values in radians.
+
+
+:download:`alvideodevice_subscribe.cpp </samples/cpp/alvideodevice/alvideodevice_imagetoangle.cpp>`
+
+.. literalinclude:: /samples/cpp/alvideodevice/alvideodevice_imagetoangle.cpp
+   :language: cpp
+
+
+.. cpp:function:: std::vector<float> ALVideoDeviceProxy::getAngSizeFromImgSize(const std::vector<float>& imgSize)
+
+  From a normalized size in the image, returns size expressed as angles in radian relative to camera axis.
+
+  :param imgSize: normalized position in the image [0.0 - 1.0]
+
+  :return: corresponding angles values in radians.
+
+
+:download:`alvideodevice_subscribe.cpp </samples/cpp/alvideodevice/alvideodevice_imagetoangle.cpp>`
+  
+.. literalinclude:: /samples/cpp/alvideodevice/alvideodevice_imagetoangle.cpp
+   :language: cpp
+
+
+.. cpp:function:: std::vector<float> ALVideoDeviceProxy::getImgInfoFromAngInfo(const std::vector<float>& angles)
+
+  Returns [X, Y, width, height] normalized info in the image from these info expressed as angles in radians (as returned by vision extractors).
+
+  :param angles: camera angle values in radians.
+
+  :return: corresponding normalized position and size info: [X, Y, width, height].
+
+
+.. cpp:function:: std::vector<float> ALVideoDeviceProxy::getImgInfoFromAngInfoWithRes( const std::vector<float>& angInfo, const int& resIndex )
+
+  Returns [X, Y, width, height] info as pixels in the image from these info expressed as angles in radians (as returned by vision extractors).
+
+  :param angInfo: camera angle values in radians.
+
+  :param resIndex: image resolution
+
+  :return: corresponding pixels position and size info: [X, Y, width, height].
+
+
+.. cpp:function:: std::vector<float> ALVideoDeviceProxy::getImgPosFromAngPos(const std::vector<float>& angPos)
+
+  Returns a normalized position in the image from a position expressed with camera angles in radians.
+
+  :param angPos: camera angle values in radians.
+
+  :return: corresponding normalized position in the image [0.0 - 1.0]
+
+
+
+:download:`alvideodevice_subscribe.cpp </samples/cpp/alvideodevice/alvideodevice_angletoimage.cpp>`
+
+.. literalinclude:: /samples/cpp/alvideodevice/alvideodevice_angletoimage.cpp
+   :language: cpp
+
+
+.. cpp:function:: std::vector<float> ALVideoDeviceProxy::getImgSizeFromAngSize(const std::vector<float>& angSize)
+
+  Returns a normalized size from a size expressed with camera angles in radians.
+
+  :param angSize: camera angle values in radians.
+
+  :return: corresponding normalized position in the image [0.0 - 1.0]
+
+
+:download:`alvideodevice_subscribe.cpp </samples/cpp/alvideodevice/alvideodevice_angletoimage.cpp>`
+ 
+.. literalinclude:: /samples/cpp/alvideodevice/alvideodevice_angletoimage.cpp
+   :language: cpp
+
+
+
+.. _ALVideoDevice::advancedMethods:
+
+Advanced methods
+----------------
+
+
+.. cpp:function:: int ALVideoDeviceProxy::startFrameGrabber()
+
+  Opens and initialize the video source device if it was not already opened.
+
+  .. note::
+     The first module subscribing to ALVideoDevice will launch it automatically, 
+	 so the main purpose of this method is to reduce time when the first vision module is subscribing.
+
+
+  :return: true if success
+
+
+.. cpp:function:: int ALVideoDeviceProxy::stopFrameGrabber()
+
+  Close the video source device.
+
+  .. note::
+     When the last vision module subscribed to ALVideoDevice unsubscribes, this
+	 doesn't close the video source device as we assume that if some video was
+	 requested before, video will be again requested latter. But if this is not
+	 the case, closing the video source will save processing resources.
+
+
+  :return: true if success
+
+
+.. cpp:function:: int ALVideoDeviceProxy::isFrameGrabberOff()
+
+  Asks if the framegrabber is running or not.
+
+  :return: true if off
+
+
+.. cpp:function:: void * ALVideoDeviceProxy::getDirectRawImageLocal(const std::string& id)
+   
+  Retrieves the latest image from the video source and returns a pointer to the locked ALImage, with data array pointing directly to raw data. There is no format conversion and no copy of the raw buffer.
+  
+  .. warning::
+     When image is not necessary anymore, a call to releaseDirectRawImage() is requested.
+  
+  .. warning::
+     When using this mode for several vision modules, if they need raw data for more than 25ms check that you have strictly less V.M. in this requesting direct raw images than the amount of kernel buffers.
+  
+  .. warning::
+     Release all kernel buffers (using releaseDirectRawImage) before doing any action requesting a modification of the video source mode (e.g. resolution, switch between cameras).
+
+
+
+  :param id: Name under which the V.M. is known from ALVideoDevice.
+
+  :return:   Pointer to the locked image buffer, NULL if error.
+  
+  .. warning::
+     Image pointer is valid only for local modules. For remote modules, the address space is different from the one of NAOqi.
+
+
+
+.. cpp:function:: AL::ALValue ALVideoDeviceProxy::getDirectRawImageRemote(const std::string& id)
+
+  Retrieves the latest image from the video source and send the data coming directly from the raw buffer as an ALValue through the network (no format conversion).
+
+  :param id: Name under which the V.M. is known from ALVideoDevice.
+
+  :return:  Array containing image informations:
+
+      - [0]: width;
+      - [1]: height;
+      - [2]: number of layers;
+      - [3]: ColorSpace;
+      - [4]: time stamp (seconds);
+      - [5]: time stamp (micro-seconds);
+      - [6]: array of size height * width * nblayers containing image data;
+      - [7]: camera ID (kTop=0, kBottom=1);
+      - [8]: left angle (radian);
+      - [9]: topAngle (radian);
+      - [10]: rightAngle (radian);
+      - [11]: bottomAngle (radian);
+
+.. cpp:function:: int ALVideoDeviceProxy::releaseDirectRawImage(const std::string& id)
+
+  Release image buffer locked by getDirectRawImageLocal().
+  If the V.M. has no locked image buffer, does nothing.
+
+  :param id: Name under which the V.M. is known from the V.I.M.
+
+  :return: true if success
+
+
+.. cpp:function:: void ALVideoDeviceProxy::onClientDisconnected( const std::string& eventName, const AL::ALValue& eventContents, const std::string& message )
+
+  Callback when client is disconnected
+
+  :param eventName: The echoed event name
+
+  :param eventContents: The name of the client that has disconnected
+
+  :param message: Message provided when subscribing.
+
+
+.. _ALVideoDevice::simulatorMethods:
+
+Simulator methods
+------------------
+
+
+.. cpp:function:: bool ALVideoDeviceProxy::putImage(const AL::ALValue& imageBuffer)
+
+  Allow image buffer pushing
+
+  :param imageBuffer: The image buffer in bitmap form
+
+  :return: true if success
+
+
+.. cpp:function:: AL::ALValue& ALVideoDeviceProxy::getExpectedImageParameters()
+
+  Called by the simulator to know expected image parameters
+
+  :return: ALValue of expected parameters: [int height, int width, int framerate]
+
+
+.. cpp:function:: bool ALVideoDeviceProxy::setSimCamInputSize(const int& width, const int& height)
+
+  Set parameters for the images that the simulator will provide.
+
+  :param width: width of images among 1280, 640, 320, 160
+
+  :param height: height of images among 960, 480, 240, 120
+
+  :return: true if success

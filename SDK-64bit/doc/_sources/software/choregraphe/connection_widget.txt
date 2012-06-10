@@ -1,0 +1,170 @@
+.. |parameter-button| image:: /medias/desktop/choregraphe/parameter_button.png
+   :class: img-inline
+
+.. |search-previous| image:: /medias/desktop/choregraphe/search_previous.png
+   :class: img-inline
+
+.. |connect-button| image:: /medias/desktop/connect-to_button.png
+   :class: img-inline   
+
+.. _connection-widget:
+
+Connection widget
+==================
+
+What is the Connection widget
+------------------------------
+
+The **Connection** widget displays the list of connected robots whether they are real or virtual.
+
+It allows you to select a robot and:
+
+* Connect Choregraphe to it,
+* Display its Web page or
+* Test its LEDs.
+
+How to display the Connection widget
+------------------------------------
+
+To display the **Connection** widget:
+
+* Choose  **Connection** > **Connect to** or 
+* Click the |connect-button| **Connect to**  button.
+
+.. image:: /medias/desktop/choregraphe/chore_connect_to.png
+   :width: 600 px
+   :height: 400 px
+
+List of robots
+---------------
+   
+The table below describes the columns of the list of robots.
+
+==============    ====================================================   =========================================================
+ Name             Description                                              For further details, see ...
+==============    ====================================================   =========================================================
+ _                 Enables you to add a robot to **favorites**.           :ref:`connection-widget-favorite` 
+                 
+ **Type**          Displays the **type** and **state** of the robot.      :ref:`connection-widget-type` 
+                 
+ **Name**          The robot's **name**.                                  :ref:`NAO Web Page Settings<opennao-web-page-settings>`
+                 
+ **Port**          The **port** used to.
+==============    ====================================================   =========================================================
+
+.. _connection-widget-favorite:
+
+Favorite
++++++++++
+
+To add/remove a robot to **favorites**, click the star.
+
+.. list-table::
+   :widths: 10 100
+   :header-rows: 1
+
+   * - Icon
+     - Means ...
+   * - .. image:: /medias/desktop/choregraphe/connection_star_blue.png
+     - The robot is a **favorite** robot.
+
+       The next time you open Connection widget, the favorite robots will appear at the top of the list.
+   * - .. image:: /medias/desktop/choregraphe/connection_star_grey.png
+     - The robot is **not** a favorite robot.
+
+.. _connection-widget-type:
+
+Type and state
++++++++++++++++
+     
+.. list-table::
+   :widths: 25 40 80
+   :header-rows: 1
+
+   * - Icon
+     - Type/State
+     - Description
+   * - .. image:: /medias/desktop/choregraphe/chore_robot_off.png
+     - A real robot.
+
+       **NAOqi is not running**.
+
+     - The robot is in a state in which it should be **impossible to establish a connection**.
+       NAOqi has been shutdown or has crashed or is in a state that doesn't allow the connection.
+
+       .. note::
+          You can force the connection to this robot by enabling the option **Use fixed port** and then click on **Connect to**.
+          It will try to solve the connection using this port (9559 by default).
+   * - .. image:: /medias/desktop/choregraphe/chore_robot_on.png
+
+       or :ref:`your custom buddy icon<opennao-web-page-settings>`.
+     - A real robot.
+
+       **NAOqi is running**.
+
+     - You can connect Choregraphe to this robot.
+
+       The contextual menu offers also the following options:
+
+       * **View web page**: Displays the webpage of the robot, where you can configure it (WiFi, name, NAOqi, ...).
+         For further details about the webpage, see the section: :ref:`NAO web page <opennao-web-page>`.
+       * **Test LEDs**: Starts a little animation on the eyes of the robot.
+         This enables you to confirm that this robot is yours.
+   * - .. image:: /medias/desktop/choregraphe/chore_computer.png
+     - A :ref:`simulated robot <choregraphe-reference-simulated-robot>`:
+
+       **NAOqi is running on a computer**.
+
+     - You can connect to this kind of robot.
+
+       But you cannot view its webpage nor test its LEDs.
+
+       .. note::
+
+          The connection to Choregraphe's local NAOqi
+          is automatically done when you execute Choregraphe. This local NAOqi
+          does not appear in the robot list, as the connection is not a network
+          connection. However, a reconnection to this NAOqi can be done through the
+          menu **Connection** > **Connect to a local NAOqi**.
+
+
+Connecting to a robot
+----------------------
+
+To connect to a robot, you can either:
+
+* Double-click on the robot in the list, or 
+* Select it in the list and click the **Connect to** button.
+
+Result: 
+
+* the title bar displays the name of the connected robot.
+* :ref:`Robot view panel <3d-nao-panel>` displays the 3D 
+  representation of the connected robot.
+
+
+Troubleshooting
+----------------
+
+My NAO doesn't appear in the list
+++++++++++++++++++++++++++++++++++
+
+Make sure your NAO is:
+
+* turned on. For further details, see :ref:`nao-turn-on`.
+* is connected to your network. For further details, see :ref:`nao-connecting`.
+
+I cannot connect to NAO
+++++++++++++++++++++++++
+
+If you cannot manage to connect to your robot using the list,
+you can connect directly to its IP address and its port:
+
+1. Select the checkbox **Use fixed port**, then fill in the field with its port 
+   (9559 by default).
+
+2. Select the checkbox **Use fixed IP/hostname**, then fill in the field  with the IP 
+   Address (that you can get by pressing once on the torso button of your robot).
+   
+3. Click the **Connect to** button.
+

@@ -1,0 +1,42 @@
+.. _upgrading-opennao:
+
+Upgrading your robot
+======================
+
+Why upgrading your robot
+------------------------
+
+Several situation may require an upgrade of **OpenNAO**, the NAO embedded Operating System:
+
+* you have lost your password and cannot anymore connect to NAO Web page,
+
+* you want to reset NAO to a known state,
+
+* a new release is available,
+
+* something goes wrong and NAO does not boot normally anymore.
+
+
+How to upgrade your robot
+--------------------------
+
+There are two ways of upgrading **OpenNAO**, one keeps all settings,
+the other reset all settings to the factory ones.
+
+To update NAO system, choose carefully between these two methods:
+
++--------------------------------------------+------------------------------------+
+| If your robot ...                          |  Then choose a ...                 |               
++============================================+====================================+
+|is booting normally                         | * :ref:`simple-update`             |
+|                                            |                                    |
+|and you need to:                            |   or                               |
+|                                            |                                    |
+|* restore the current release or            | * use :ref:`software-update`       |
+|* upgrade it                                |   **without** Factory Reset.       |
++--------------------------------------------+------------------------------------+
+|is not booting normally                     | * Complete update in a rescue mode,|
+|                                            |   using :ref:`software-update`     |
+|or you would like to downgrade              |   **with** Factory Reset.          |
+|the current release                         |                                    |
++--------------------------------------------+------------------------------------+
