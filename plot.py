@@ -48,6 +48,11 @@ for key, value in data.iteritems():
 	axes.text(value[0][0], value[1][0], value[2][0], key)
 	visited.append(value)
 
+# set and label the axes
+axes.set_xlim([-20, 500])
+axes.set_ylim([-20, 500])
+axes.set_zlim([-20, 500])
+
 axes.set_xlabel('X')
 axes.set_ylabel('Y')
 axes.set_zlabel('Z')
