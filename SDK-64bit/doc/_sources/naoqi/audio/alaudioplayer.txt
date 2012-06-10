@@ -1,0 +1,49 @@
+.. _alaudioplayer:
+
+ALAudioPlayer
+==============
+
+.. toctree::
+   :hidden:
+   :maxdepth: 1
+
+   alaudioplayer-api
+
+:ref:`naoqi-audio` || Overview | :ref:`API <alaudioplayer-api>`
+
+------------
+
+.. seealso::
+
+   - :ref:`Loudspeakers Hardware <hardware-audio-out>`
+
+What it does
+------------
+
+**ALAudioPlayer** provides playback services for multiple audio file format and
+the associated common functionnalities (play, pause, stop, loop, etc...). The resulting
+audio stream is in all cases sent to NAO's loudspeakers.
+
+.. note::
+
+   This module is only available on the robot.
+
+How it works
+------------
+
+**ALAudioPlayer** relies on several decoding linux libraries (mainly Gstreamer and SNDFile) to efficiently
+decode and stream to audio outputs a good variety of audio file formats.
+
+Performances and Limitations
+----------------------------
+
+Efficiency has been optimized to reach the lowest time of reaction when loading / starting a
+file but depending on the audio file format, that time can vary. For applications
+that requires very low loading / starting times, uncompressed WAV files should be prefered
+to any other compressed file format.
+
+
+Getting started
+---------------
+
+The most straightforward way to start using **ALAudioPlayer** is to use the **Play Sound** box in Choregraphe (Audio boxes section).

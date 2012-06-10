@@ -1,0 +1,165 @@
+.. _nao-v4-upgrade:
+
+NAOFlasher for NAO V4
+======================
+
+Before starting
+----------------
+
+* Make sure your NAO is a **V4**, if it is not the case, see :ref:`nao-v3-upgrade`.
+
+
+* Be aware that the **rescue** procedure is not the standard way to update the
+  software version of NAO.
+  
+  To make sure it is what you need, read: :ref:`rescue-mode`.
+
+  
+How to update your NAO V4 with NAOFlasher
+-------------------------------------------
+
+=====  ==========================================================================================================
+Step    Action
+=====  ==========================================================================================================
+1.      Get an unformatted USB stick.
+
+        * Its size must be larger or equal to 512MB.
+
+        * On windows, if you already formatted your drive or if you have a file system on it (if you took one
+          of your own USB sticks it is probably the case), try :ref:`Cleaning up your drive<usb-cleanup>`.
+
+        .. warning::
+
+            This process erases the whole USB stick.
+
+            Any data on the USB stick will be irreparably lost.
+
+2.      Get the NAO system image to flash on the DVD in **Software** > **NAO OS**.
+        
+        | You can also find it on the Aldebaran Robotics' User or Developer site.
+        | In that case, make sure to select the image that suits to your NAO:
+       
+        * ``opennao-atom-system-image-1.12.[x].opn`` is for NAO V4,
+        * while ``opennao-geode-system-image-1.12[x].gz`` is for NAO V3.x.
+
+3.      Write the image on the USB stick.
+
+        For further details, see :ref:`nao-v4-upgrade-create-rescue-usbstick`.
+
+4.      Upgrade the NAO's system and run the new software version
+
+        For further details, see :ref:`nao-v4-upgrade-reboot`.
+=====  ==========================================================================================================
+ 
+.. _nao-v4-upgrade-create-rescue-usbstick:
+
+Writing the image on the USB stick
+----------------------------------
+
+=====  ==========================================================================================================
+Step    Action
+=====  ==========================================================================================================
+1.      Insert your USB stick in your computer.
+
+        .. note::
+    
+            On Windows and Mac OS X, you might encounter a prompt telling you that the USB
+            drive you inserted is not readable, and that you should format it.
+    
+            This happens because they do not recognize what is on the USB stick. This is perfectly normal.
+    
+            Please ignore this and click on the **Cancel** button or similar.
+    
+            On Windows, if you already formatted your drive or if you have a file system on it 
+            (if you took one of your own USB sticks it is probably the case),
+            try :ref:`Cleaning up your drive<usb-cleanup>`.
+    
+2.      Launch the **flasher** executable.
+    
+        It should look roughly like this:
+    
+        .. image:: /medias/opennao/nao-flasher01.png
+            :width: 542 px
+            :height: 271 px
+
+    
+3.      Click the **Browse** button (or press Ctrl+O) to select the image you want to flash in your
+        local file system. You can also copy/paste the file's address directly in the text box.
+    
+        .. image:: /medias/opennao/nao-flasher02.png
+            :width: 542 px
+            :height: 271 px
+    
+4.      Select your USB stick from the list.
+
+        If your USB stick  doesn't appear in the list,
+        try the **Refresh** button after inserting it in your computer).
+    
+        .. image:: /medias/opennao/nao-flasher03.png
+            :width: 542 px
+            :height: 271 px
+    
+5.      Check the **Factory Reset** box in order to install a brand new system in a :ref:`rescue-mode`.
+
+        If not checked, **NAO Flasher** will do a simple update, like the command available in Choregraphe.
+        For further details about why you should or should not choose a **Factory reset**,
+        read :ref:`rescue-mode`.
+    
+        .. warning::
+    
+            **Factory Reset** will remove all the data from your robot, please backup your data
+            before running the program.
+    
+        .. image:: /medias/opennao/nao-flasher07.png
+            :width: 528 px
+            :height: 264 px
+    
+6.      Click the **Write** button to start the process:
+        
+        .. image:: /medias/opennao/nao-flasher04.png
+            :width: 542 px
+            :height: 271 px
+     
+7.      If you get an error message telling:
+        
+        * the USB stick contains a file system,
+          try: :ref:`Cleaning up your drive<usb-cleanup>`.
+        
+        * you don't have administrator privileges,
+          try: :ref:`flasher-admin-rights`.
+       
+        
+8.      When the process is completed, it should look like this:
+        
+        .. image:: /medias/opennao/nao-flasher06.png
+            :width: 542 px
+            :height: 271 px
+=====  ==========================================================================================================
+
+.. _nao-v4-upgrade-reboot:
+
+Upgrading the NAO's system and running the new software version
+---------------------------------------------------------------
+
+=====  ==========================================================================================================
+Step    Action
+=====  ==========================================================================================================
+1.      Make sure that  the robot is plugged to its charger all along the system update process.
+
+2.      Shutdown the robot.
+
+3.      Plug the USB stick you previously flashed into the USB connector at the back of NAO's head.
+
+4.      Press and hold his chest button for 5 seconds, hold the button until it is blinking blue.
+
+        NAO's system will be upgraded during the boot. The new software version will be automatically started.
+
+        If you enabled the **Factory reset** option, this may take a very long time to complete.
+       
+        You can follow the progress observing NAO's ears. To understand the ears lighting during:
+
+        * the boot, see :ref:`ears lightning on boot <nao-manual-ears-on-boot>`.
+    
+        * the upgrade process, see :ref:`ears lightning on upgrade <nao-manual-ears-on-upgrade>`.
+=====  ==========================================================================================================
+

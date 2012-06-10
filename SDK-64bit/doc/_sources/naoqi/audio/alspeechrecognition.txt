@@ -1,0 +1,79 @@
+.. _alspeechrecognition:
+
+ALSpeechRecognition
+====================
+
+.. toctree::
+   :hidden:
+   :maxdepth: 1
+
+   alspeechrecognition-api
+
+:ref:`naoqi-audio` || Overview | :ref:`API <alspeechrecognition-api>`
+
+------------
+
+.. seealso::
+
+   - :ref:`Microphones Hardware <hardware-audio-in>`
+
+What it does
+------------
+
+The **ALSpeechRecognition** module gives to the robot the ability to recognize
+predefined words or phrases in several languages (english is the default language).
+
+.. note::
+
+   This module is only available on the robot.
+
+How it works
+------------
+
+Technology
+++++++++++
+
+**ALSpeechRecognition** relies on sophisticated speech recognition technologies provided
+by:
+
+* ACAPELA GROUP for NAO Version 3.x and 
+
+* NUANCE for NAO Version 4.
+
+Operating principle
++++++++++++++++++++++
+
+* Before starting, **ALSpeechRecognition** needs to be fed by the list of phrases that
+  should be recognized.
+
+* Once started, **ALSpeechRecognition** places in the key ``SpeechDetected``,
+  a boolean that specifies if a speaker is currently heard or not.
+
+* If a speaker is heard, the element of the list that best match what is heard by NAO is
+  placed in the key ``WordRecognized``.
+
+The ``WordRecognized`` key is organised as follows:
+
+.. code-block:: guess
+
+     [phrase_1, confidence_1, phrase_2, confidence_2, phrase_3, confidence_3, ..., phrase_n, confidence_n]
+
+where:
+
+*  **phrase_i** is one of the predefined phrases and 
+
+* **confidence_i** an estimate of the probability that this phrase is indeed what
+  has been pronounced by NAO's interlocutor.
+
+Note that the different hypothesis contained in that key are ordered so that the
+most likely phrases comes first.
+
+
+
+
+Getting started
+---------------
+
+The easiest way to get started with **ALSpeechRecognition** is to use the
+**Speech Reco** Choregraphe box.
+

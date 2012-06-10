@@ -1,0 +1,60 @@
+
+.. _choregraphe-overview-project-content:
+
+Project content panel
+======================
+
+What is Project control panel
+------------------------------
+
+The **Project content** panel:
+
+* displays the files attached to your behavior.
+
+* allows you to attach files to your behavior. You can then use these files
+  during the behavior execution (a music for a dance for example).
+
+.. image:: /medias/desktop/choregraphe/chore_project-content.png
+   :width: 288 px
+   :height: 171 px
+
+The greyed file **behavior.xar** contains the behavior, you cannot delete or modify it.
+
+The attached files can be any type of file. You can also organize them with **folders**.
+
+.. image:: /medias/desktop/choregraphe/chore_project-content2.png
+   :width: 288 px
+   :height: 171 px
+
+
+.. _choregraphe-detailed-interface-project-content:
+
+Project Content panel functionalities
+---------------------------------------
+
+Here are the actions you can made using the toolbar of the Project Content panel:
+
+.. list-table::
+   :widths: 10 100
+   :header-rows: 1
+
+   * - Button
+     - Function
+   * - .. image:: /medias/desktop/choregraphe/chore_project_content_import.png
+     - **Import** a file from your computer to the project.
+       It will then be attached to your behavior.
+
+       See also the  :ref:`tutorial to attach a file to a specific box <choregraphe-tuto-attach-file-to-box>`.
+   * - .. image:: /medias/desktop/choregraphe/chore_project_content_export.png
+     - **Export** a file from the project to your computer.
+   * - .. image:: /medias/desktop/choregraphe/chore_project_content_remove.png
+     - **Remove** a file from the attached files of the project.
+   * - .. image:: /medias/desktop/choregraphe/chore_project_content_create_folder.png
+     - **Create a folder** to structure attached files more easily.
+
+.. note::
+	 
+   You may need the path of the temporary file attached to your behavior.
+   To do so, right-click on the file in the **Project Content** panel and select **Copy Temporary Full Path to Clipboard**.
+   Then you can paste it onto your address bar or your shell to get to it.
+

@@ -1,0 +1,92 @@
+.. _alredballdetection:
+
+ALRedBallDetection
+===================
+
+.. toctree::
+    :hidden:
+    :maxdepth: 1
+
+    alredballdetection-api
+
+:ref:`naoqi-vision` || Overview | :ref:`API <alredballdetection-api>`
+
+-----------------
+
+.. seealso::
+
+   - :ref:`Video camera Hardware<hardware-video>`
+
+
+What it does
+------------
+
+**ALRedBallDetection** is a module that provides a fast vision based red ball detector.
+
+
+How it works
+------------
+
+**ALRedBallDetection** is based on a fast search of a set of pixel that meet two requirements:
+
+- the set of pixels defines a circular shape,
+
+- the set of pixels can all be considered as red.
+
+When a set of pixels is found on the current image, the ALMemory key **redBallDetected** is updated.
+
+This key is organized as follows:
+
+.. code-block:: guess
+
+   [
+     TimeStamp,
+     BallInfo,
+     CameraInfo
+   ]
+
+**TimeStamp**: this field is the time stamp of the image that was used to perform the detection.
+
+.. code-block:: guess
+
+  TimeStamp [
+    TimeStamp_Seconds,
+    Timestamp_Microseconds
+  ]
+
+**BallInfo**
+
+.. code-block:: guess
+
+   BallInfo [
+     centerX,
+     centerY,
+     sizeX,
+     sizeY
+   ]
+
+- **centerX** and **centerY** are the angular coordinates of the center of the ball in angles (radians).
+
+- **sizeX** and **sizeY** are the ball "horizontal and vertical radius" in angles (radians).
+
+The origin of the angles is the middle of the image. **centerX**
+corresponds to the direct (counter-clockwise) rotation along the Z axis,
+and **centerY** corresponds to the direct rotation along the Y axis, as in the
+image below:
+
+.. image:: /medias/dev/modules/vision/vision_cameraangles.png
+   :height: 283 px
+   :width: 476 px
+
+**CameraInfo**: describes the :term:`Position6D` of the camera at the time the image was taken, in :term:`SPACE_NAO`.
+
+Performances and Limitations
+----------------------------
+
+The detection is limited to objects that are approximatively red and circular.
+Balls of other colors cannot be detected.
+
+Getting started
+---------------
+
+The easiest way to get started with ALRedBallDetection is to use the Walk Tracker Choregraphe Box and to set the type of object to be tracked as "Red ball".

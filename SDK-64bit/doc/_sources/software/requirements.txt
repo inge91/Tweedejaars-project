@@ -1,0 +1,59 @@
+.. _desktop-index:
+
+Software Requirements
+=====================
+
+.. _desktop-minimum:
+
+Hardware
+---------
+
+A computer connected to a WiFi access point, with:
+
+- 1.5 GHz CPU
+
+- 512 MB RAM
+
+- a certified OpenGL graphics card
+
+Supported Operating Systems
+----------------------------
+
+=========  ===================================================================   =============================================
+OS          Version                                                                 Architecture
+=========  ===================================================================   =============================================
+Linux       Ubuntu 10.04 LTS (Lucid) to 11.04 (Natty)                               * 32-bit (fully tested) 
+                                                                 
+            .. note::                                                               * 64-bit (under validation)
+                Ubuntu Karmic is no longer officially supported. 
+                                                                    
+Windows     Microsoft Windows XP Service Pack 3,                                    * 32-bits 
+
+            Microsoft Windows 7                                     
+                                                                    
+Mac         Mac OS X version 10.6.4 Snow Leopard,                                   * 32-bit (fully tested) 
+                                                                                    
+            Mac OS X version 10.7.1 Lion                                            * 64-bit (under validation)
+=========  ===================================================================   =============================================
+
+
+Not supported
++++++++++++++++
+
+Two tools are not available for all operating systems:
+
+* NAOsim
+
+* The C++ cross-compiler.
+
+So you may have to use a virtual machine in order to use all functionalities on a single computer.
+
++-------------------------------------------------+---------------+-------------------------+
+|Operating System                                 | **NAOsim**    | **C++ cross-compiler**  |
++=================================================+===============+=========================+
+| Linux Ubuntu 32-bit & 64-bit                    |*Not available*|  **OK**                 |
++-------------------------------------------------+---------------+-------------------------+
+| Mac OS X 10.6 (Snow Leopard) & 10.7 (Lion)      |  **OK**       | *Not available*         |
++-------------------------------------------------+---------------+-------------------------+
+| Windows XP 32 bits                              |  **OK**       | *Not available*         |
++-------------------------------------------------+---------------+-------------------------+

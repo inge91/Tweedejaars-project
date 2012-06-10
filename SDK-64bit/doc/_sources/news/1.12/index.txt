@@ -1,0 +1,33 @@
+.. _news-index-1.12:
+
+Release notes 1.12
+===================
+
+Overview of main changes:
+
+.. toctree::
+   :maxdepth: 2
+
+   whatsnew
+
+
+Detailed technical changes:
+
+.. toctree::
+   :maxdepth: 1
+
+   naoqi
+   audio
+   vision
+   almotion
+   opennao
+   cpp
+   python
+   cmake
+
+Full change log:
+
+.. toctree::
+   :maxdepth: 1
+
+   changelog

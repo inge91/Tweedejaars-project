@@ -1,0 +1,68 @@
+.. _urbi:
+
+Urbi
+====
+:ref:`Overview <sdk-index>` | :ref:`C++<cpp-introduction>` | :ref:`Python <python-introduction>`
+| :ref:`.Net <naoqi-dot-net>`  | :ref:`Java <java>` | :ref:`Matlab <matlab>` | Urbi
+
+Introduction
+------------
+
+The Urbi API for NAO allows you to use any NAOqi module method.
+
+Please make sure to have read the :ref:`naoqi-overview` section first.
+
+
+Getting started
+----------------
+
+NAO comes with an installed version of Urbi.
+
+On some versions of NAO, Urbi is not automatically started upon start-up. If this is the case, you must take the following steps to activate Urbi:
+
+
+1. Log in to your NAO using ssh: ssh ``nao@myNao``
+2. Edit /home/nao/naoqi/preferences/autoload.ini to have:
+
+.. code-block:: ini
+
+   [user]
+
+    /usr/lib/naoqi/liburbistarter.so
+
+3. Restart your NAO.
+
+
+You should be able to connect to your Nao on the port 54000 and send it urbiscript:
+
+.. code-block:: urbi
+
+ tts.say("Hello, I am Nao."),
+ // Activate right arm.
+ armR.load = 1;
+ // Wave the arm: put it in position
+ shoulderRollR.val = -0.3 time: 0.5s |
+ shoulderPitchR.val = -1 speed: 0.9 |
+ // Wave it
+ timeout(6s) shoulderRollR.val = -0.4 sin:2s ampli:0.4;
+ // And put it back down, using the uncompressed name this time
+ robot.body.arm[right].shoulder.pitch.val = 2 speed:0.9;
+ // Activate all motors.
+ motors.on;
+ // Stand
+ motion.walkTo(0.1,0,0);
+ // Start walking...
+ tag: robot.walk(1),
+ // ... and interrupt the movement
+ sleep(2s) | tag.stop;
+ // Get the list of all devices and the interfaces they implement:
+ robot.dump;
+
+Finding more documentation
+---------------------------
+
+Urbi full documentation is available on GOSTAI site:
+`URBI documentation  <http://www.gostai.com/downloads/urbi-sdk-2.0/doc/urbi-sdk.htmldir/index.html>`_.
+
+A chapter is more specifically dedicated to NAO:
+`NAO in URBI documentation  <http://www.gostai.com/downloads/urbi-sdk-2.0/doc/urbi-sdk.htmldir/nao.html>`_.

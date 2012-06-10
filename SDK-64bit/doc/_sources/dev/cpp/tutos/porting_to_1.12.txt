@@ -1,0 +1,201 @@
+.. _cpp-tutos-porting-1.12:
+
+Porting code to 1.12
+====================
+
+
+
+Here are the changes you should make:
+
+Fixing CMake files
+------------------
+
+* Get rid of the ``bootstrap.cmake`` file
+
+* Get the ``qibuild.cmake`` file for ``qibuild``
+
+* Add a ``qibuild.manifest`` file at the root of the project
+
+
+To do some part of the job for you, you can run:
+
+.. code-block:: console
+
+   $ qibuild convert
+
+
+At the end, your main ``CMakeLists.txt`` should look like:
+
+.. code-block:: cmake
+
+
+  cmake_minimum_required(VERSION 2.8)
+  project(foo)
+  include(qibuild.cmake)
+
+
+
+Fixing configure_src_module and create_module
+---------------------------------------------
+
+
+Of course, most of your CMake code will not work after this.
+
+You should start by getting rid of ``create_module`` and
+``configure_src_module`` functions.
+
+Those functions did a lot of stuff for you, probably too much, such as:
+
+* call ``project``  (This is really a bad idea ...)
+* calling ``option`` to define a ``FOO_IS_REMOTE`` CMake option
+* call ``add_executable`` or ``add_library`` depending on the ``FOO_IS_REMOTE``
+* setting **two** defines ``FOO_IS_REMOTE_ON`` and ``FOO_IS_REMOTE_OFF``
+
+
+This is how you can do it:
+
+*old*
+
+.. code-block:: cmake
+
+  # Note: no call to project() ...
+  include(${CMAKE_CURRENT_SOURCE_DIR}/bootstrap.cmake)
+  use(NAOQI-PLUGINS-TOOLS)
+
+  create_module(foo)
+
+  configure_src_module(foo foomain.cpp foo.cpp foo.h)
+
+  include(${CMAKE_CURRENT_SOURCE_DIR}/bootstrap.cmake)
+  use(NAOQI-PLUGINS-TOOLS)
+
+  create_module(foo)
+
+  configure_src_module(foo foomain.cpp foo.cpp foo.h)
+
+
+*new*
+
+.. code-block:: cmake
+
+   include(qibuild.cmake)
+   project(foo)
+
+   option(FOO_IS_REMOTE
+    "is foo remote?"
+    OFF
+  )
+
+  set(_srcs
+    foomain.cpp
+    foo.cpp
+    foo.h
+  )
+
+
+  if(FOO_IS_REMOTE)
+    add_definitions(" -DFOO_IS_REMOTE ")
+    qi_create_bin(foo ${_srcs})
+  else()
+    qi_create_lib(foo ${_srcs} SHARED SUBFOLDER naoqi)
+  endif()
+
+
+Of course, if you do not need to have the same code being both a library or
+an executable, you can simply get rid of half the code :)
+
+
+Fixing C++
+----------
+
+Fixing IS_REMOTE C++ flag
++++++++++++++++++++++++++
+
+
+So here, we only have the ``FOO_IS_REMOTE`` option, and not both ``FOO_IS_REMOTE_ON``
+and ``FOO_IS_REMOTE_OFF``
+
+So you can fix it using this:
+
+
+*old*
+
+.. code-block:: cpp
+
+  #ifdef FOO_IS_REMOTE_ON
+  #ifdef FOO_IS_REMOTE_OFF
+
+
+*new*
+
+.. code-block:: cpp
+
+  #ifdef FOO_IS_REMOTE
+
+  #ifndef FOO_IS_REMOTE
+
+
+
+Note that if you want an executable and want to get rid of the strange
+``ALTools::mainFunction`` call, you can follow the example in the
+:ref:`cpp-tutos-custom-main` section.
+
+
+Fixing use_lib
+++++++++++++++
+
+The replacement for ``use_lib`` is ``qi_use_lib``
+(Just the name has changed).
+
+You should only use the ``ALCOMMON`` library.
+
+*old*
+
+.. code-block:: cmake
+
+   use_lib(foo ALVALUE TOOLS ... ALCOMMON)
+
+*new*
+
+.. code-block:: cmake
+
+   qi_use_lib(foo ALCOMMON)
+
+
+Lots of ``ALCOMMON`` dependencies have been hidden, and are not needed anymore.
+
+Using ``ALCOMMON`` may not be enough in a few cases. You may still need
+``ALVISION``, ``ALAUDIO``, ``ALMEMORYFASTACCESS`` or ``ALEXTRACTOR``.
+
+
+Remove use of AL::ALPtr
++++++++++++++++++++++++
+
+
+``AL::ALPtr`` is just a wrapping of ``boost::shared_ptr`` and is defined in a
+deprecated header, so you can just replace ``AL::ALPtr`` calls to ``boost::shared_ptr``.
+
+
+
+*old*::
+
+  #include <alcore/alptr.h>
+  AL::Ptr<AL::Proxy> proxy;
+
+*new*::
+
+  #include <boost/shared_ptr.hpp>
+  boost::shared_ptr<AL::ALProxy> proxy;
+
+
+
+Going further
+-------------
+
+
+Those are just the main changes you should be making (again, these are totally optional,
+we have a nice backward compatibilty layer for you).
+
+
+The complete list of ``C++`` and ``CMake`` changes can be found in the
+:ref:`news-cpp` and :ref:`news-cmake` sections.

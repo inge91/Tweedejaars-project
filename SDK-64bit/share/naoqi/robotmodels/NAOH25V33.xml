@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<MotionValues>
+
+<MotionValue name="DEFAULT_LEGS_VERSION"  description=" 1:Nao has legs, -1:Nao has no legs" value="1" type="string" />
+<MotionValue name="DEFAULT_ARMS_VERSION"  description=" 1:Nao has V3.2 Arms, -1:Nao has no Arms, 2:Nao has V3.3 Arms, 3:Nao has V4.0 Arms" value="2" type="string" />
+<MotionValue name="DEFAULT_HANDS_VERSION" description=" 0:Nao has No hands, 1:Nao has hands" value="1" type="string" />
+<MotionValue name="DEFAULT_BODY_VERSION"  description=" V3.2 or V3.3 or V4.0 (main difference is mass)" value="V3.3" type="string" />
+<MotionValue name="DEFAULT_HEAD_VERSION"  description=" V3.2 or V3.3 or V4.0 (main difference is mass)" value="V3.3" type="string" />
+<MotionValue name="DEFAULT_LASER_VERSION" description=" 1:Nao has laser head, 0:Nao has not laser head" value="0" type="string" />
+
+</MotionValues>

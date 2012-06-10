@@ -1,0 +1,141 @@
+.. |no-virtual| image:: /medias/desktop/no_virtual.png
+   :class: img-inline
+
+.. |parameter-button| image:: /medias/desktop/choregraphe/parameter_button.png
+   :class: img-inline
+
+.. |play-button| image:: /medias/desktop/beginning_play_button.png
+   :class: img-inline
+
+.. |add-current-behavior-button| image:: /medias/desktop/choregraphe/behavior_manager_add_current.png
+   :class: img-inline
+
+
+
+.. _choregraphe-tuto-enrich-nao-behavior-list:
+
+Enrich NAO's behavior list
+=============================
+
+This tutorial will show you how to enrich your robot's possibilities by
+uploaded behaviors.
+
+In this section you will learn how to:
+
+* Add a Behavior to your robot using the **Behavior manager**, and then
+* Call it inside a script box.
+
+Add a behavior to your NAO using the Behavior manager
+------------------------------------------------------
+
+Let's create a simple Behavior that we will add to the robot:
+
+=====  =================================================================================    ==================================================
+Step       Action                                                                           Further help
+=====  =================================================================================    ==================================================
+1.      Drag and drop the **Motion** > **Stand Up** and the **Motion** > **Sit Down**
+        boxes into your Flow diagram.
+
+2.      Link those two boxes to make it look like this:
+
+        .. image:: /medias/desktop/choregraphe/behavior_manager_behavior_to_call.png
+           :width: 423 px
+           :height: 339 px
+
+3.      Save the Behavior.
+
+4.      Display the **Behavior manager**.                                                   :ref:`choregraphe-howto-display-hide-panels`
+
+5.      Click on the |add-current-behavior-button| **Add current behavior** button
+        to add the Behavior on your robot.
+
+6.      Set the name of the Behavior.
+
+7.      Click on **Ok**.
+
+        You can see that the behavior is added in the list of behaviors that are
+        on the robot.
+
+        .. image:: /medias/desktop/choregraphe/behavior_to_call_added.png
+           :width: 278 px
+           :height: 293 px
+
+        You have added your first behavior on your robot.
+
+8.      In the Behavior list of the **Behavior manager**, click the **Play** button
+        to start the Behavior.
+
+        Your robot executes the behavior.
+=====  =================================================================================    ==================================================
+
+:download:`tutorial_behavior_manager_behavior_to_call.crg </examples/choregraphe/tutorial_behavior_manager_behavior_to_call.crg>`
+
+
+
+Call a behavior from a box script
+----------------------------------
+
+| In this part we will see how to call a Behavior directly from a box script using the **Behavior Manager** API.
+| For more information about the Behavior Manager module, see :ref:`albehaviormanager` section.
+|
+
+=====  ========================================================================================    =============================================
+Step       Action                                                                                   Further help
+=====  ========================================================================================    =============================================
+1.      Create a new project.
+
+2.      In the **Flow diagram**, create a **Script** box.                                           :ref:`choregraphe-howto-create-script-box`
+
+3.      Double click the box to display the **Script editor**.
+
+        You can see that the structure of the code was automatically generated.
+
+4.      In the **onLoad** method, creates a proxy to the ALBehaviorManager module.
+
+5.      In the **onStart** method, call the method **runBehavior** with the name of
+        the Behavior previously added to the **Behavior manager**.
+
+6.      In the **onUnload** method, call the method **stopBehavior** with the name
+        of the Behavior previously added to the **Behavior manager**.
+
+        The code of the box should look like that:
+
+        .. code-block:: python
+
+            class MyClass(GeneratedClass):
+                def __init__(self):
+                GeneratedClass.__init__(self)
+
+                def onLoad(self):
+                    self.behaviorManagerProxy = ALProxy("ALBehaviorManager")
+
+                def onUnload(self):
+                    self.behaviorManagerProxy.stopBehavior("Put here the name of the behavior")
+                    pass
+
+                def onInput_onStart(self):
+                    self.behaviorManagerProxy.runBehavior("Put here the name of the behavior")
+                    pass
+
+                def onInput_onStop(self):
+                    self.onUnload()
+                    #~ it is recommended to call onUnload of this box in a onStop method,
+                       as the code written in onUnload is used to stop the box as well
+                    pass
+
+7.      Link the input of the box to the beginning of the root behavior.
+
+8.      Start the behavior using the |play-button| **Play** button.
+
+        Your robot executes the behavior called in the script.
+
+        .. note::
+        
+            If you look at the Behavior manager during the execution, you can see that the 
+            Behavior called is running and that you can stop it by clicking on the stop button.
+=====  ========================================================================================    =============================================
+
+:download:`tutorial_behavior_manager_behavior_that_calls.crg </examples/choregraphe/tutorial_behavior_manager_behavior_that_calls.crg>`
+
+
+

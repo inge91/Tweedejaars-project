@@ -1,0 +1,63 @@
+
+.. _behavior:
+
+Behavior
+=============
+
+.. _choregraphe-reference-behavior:
+
+What is a Behavior
+-------------------
+
+| A **Behavior** is a set of instructions that can be sent or installed on the robot.
+| It can then be executed in order to make NAO talk, walk, dance, play a sound, etc.
+
+The set of instructions is represented by :ref:`boxes <choregraphe-reference-box>` which
+are sequentially or simultaneously executed.
+
+How to manage Behaviors
+-----------------------
+
+=========================================  ===========================================================
+ To ...                                    See the section ...
+=========================================  ===========================================================
+Create a Behavior                          :ref:`choregraphe-howto-create-a-behavior`, 
+                                           for a quick start and 
+                                           
+                                           the :ref:`choregraphe-overview-flow-diagram-panel`
+                                           for further details.
+                                       
+Play or stop a Behavior                    :ref:`choregraphe-howto-play-a-behavior`, 
+                                           for a quick start and 
+                                           
+                                           the :ref:`choregraphe-overview-behavior-manager-panel`
+                                           for further details.
+                                           
+Save a Behavior on your computer           Save it in a :ref:`choregraphe-reference-project` file.
+                               
+Manage Behaviors installed on the robot    :ref:`choregraphe-overview-behavior-manager-panel`.
+=========================================  ===========================================================
+
+
+Are behavior and box the same thing
+------------------------------------
+
+Somehow a behavior can even be considered as a :ref:`box <choregraphe-reference-box>` which:
+
+* is named **root**.
+* is a :ref:`choregraphe-reference-box-type-flow-diagram`, so is basically built-up with boxes linked to each other.
+* is **launchable** since it has an **onStart** :ref:`input <choregraphe-reference-box-input>`
+  (at the top left of the Flow diagram) which is called when you :ref:`play <choregraphe-reference-loading-unloading>` the behavior.
+* is **stoppable**.
+* has an **onStopped** :ref:`output <choregraphe-reference-box-output>` by default
+  (at the top right of the Flow diagram) which **unloads the behavior** when it is called.
+* has no :ref:`Parameter <choregraphe-reference-box-parameter>`.
+
+| The main difference rests with the fact that most editable elements of a box are not editable for a behavior.
+| You can only modify:
+
+* its :ref:`Flow diagram <choregraphe-reference-box-flow-diagram>`.
+* its :ref:`inputs <choregraphe-reference-box-input>` from ALMemory.
+* its :ref:`outputs <choregraphe-reference-box-output>`.
+
+

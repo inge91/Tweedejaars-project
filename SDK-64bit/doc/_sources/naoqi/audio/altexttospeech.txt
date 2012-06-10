@@ -1,0 +1,59 @@
+.. _altexttospeech:
+
+ALTextToSpeech
+===============
+
+.. toctree::
+   :hidden:
+   :maxdepth: 1
+
+   altexttospeech-api
+   altexttospeech-tuto
+
+:ref:`naoqi-audio` || Overview | :ref:`API <altexttospeech-api>` | :ref:`Tutorial <altexttospeech-tuto>`
+
+------------
+
+.. seealso::
+
+   - :ref:`Loudspeakers Hardware <hardware-audio-out>`
+
+What it does
+------------
+
+The **ALTextToSpeech** module allows the robot to speak. It sends commands to a
+text-to-speech engine, and authorizes also voice customization.
+The result of the synthesis is sent to NAO's loudspeakers.
+
+
+How it works
+------------
+
+**ALTextToSpeech** is based on a speech synthesizer provided by:
+
+* **ACAPELA** for European languages, Chinese & Korean, and 
+* **HTS Engine** for Japanese.
+
+Depending on the engine, effects voice customization are possible.
+
+For **ACAPELA** engine, voice can be customized through "tags" included within the
+string command sent to the engine.
+Further informations can be found here: :download:`Acapela Mobility Text TAGS Documentation</medias/dev/modules/audio/audio_system_acapelamobilitytexttags.pdf>`
+
+The output audio stream of both engine can also be modified by using one of these effects:
+
+- **pitch shifting** effect modifies the initial pitch of the voice,
+- **double voice** effect produces a "delay/echo" effect on the main voice.
+
+Further information can be found here : :cpp:func:`ALTextToSpeechProxy::setParameter`
+
+
+.. note::
+
+   **ACAPELA** and **HTS** engines are only available on the robot.
+
+
+Getting Started
+---------------
+
+The easiest way to get started with *ALTextToSpeech* is to use the **Say** Choregraphe box.

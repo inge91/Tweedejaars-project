@@ -1,0 +1,25 @@
+.. _nao:
+
+NAO
+======
+
+This chapter introduces NAO the robot.
+
+In this chapter:
+
+Beginners will find the first information to master:
+
+.. toctree::
+   :maxdepth: 1
+
+   first_steps
+   taking-care
+   configuring
+
+
+Experimented users will have access to the technical specifications of NAO hardware:
+
+.. toctree::
+   :maxdepth: 1
+
+   hardware/index

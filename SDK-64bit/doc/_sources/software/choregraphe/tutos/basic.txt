@@ -1,0 +1,59 @@
+
+.. |no-virtual| image:: /medias/desktop/no_virtual.png
+   :class: img-inline
+
+.. |parameter-button| image:: /medias/desktop/choregraphe/parameter_button.png
+   :class: img-inline
+
+.. |browse-button| image:: /medias/desktop/choregraphe/chore_browse_button.png
+   :class: img-inline
+
+.. |import-button| image:: /medias/desktop/choregraphe/chore_content-mgr-import.png
+   :class: img-inline
+
+.. |play-button| image:: /medias/desktop/beginning_play_button.png
+   :class: img-inline
+
+
+
+.. _playing-music-tuto:
+
+Playing music
+==============
+
+|no-virtual| *Cannot be tested on a simulated robot*.
+
+=====  ============================================================================
+Step       Action                          
+=====  ============================================================================
+1.      Drag and drop the **Audio** > **Sound** > **Play Sound** box onto the 
+        **Flow Diagram** panel.
+
+        .. image:: /medias/dev/tutos/choregraphe/chore_music_box.png
+           :width: 122 px
+           :height: 112 px
+
+2.      Double-click on it.
+
+        The two boxes enclosed in the **Play Sound** box appear.
+
+        .. image:: /medias/dev/tutos/choregraphe/chore_music_box_struct.png
+           :width: 600 px
+           :height: 154 px
+
+3.      Click the |parameter-button| **parameter** button of the **Get File Path**
+        box.
+
+4.      Click the |browse-button| **Browse** button then click |import-button|
+        **Import file** button to import an audio file then select it.
+
+5.      Click **OK** button twice.
+
+        The file is stored. You will not have to upload it again.
+
+6.      Click the |play-button| **Play** button to launch your behavior.
+
+        The music file you have selected is played on NAO.
+=====  ============================================================================
+
+

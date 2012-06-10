@@ -1,0 +1,135 @@
+.. _altexttospeech-tuto:
+
+ALTextToSpeech Tutorial
+=======================
+
+:ref:`naoqi-audio` || :ref:`Overview <altexttospeech>` | :ref:`API <altexttospeech-api>` | Tutorial
+
+------------
+
+.. seealso::
+
+   - :ref:`Loudspeakers Hardware <hardware-audio-out>`
+
+   
+This tutorial explains how to say a sentence, change the voice effects, or
+change the language and the voice of the synthesis engine.
+
+.. note::
+
+   All the examples provided are written in Python.
+
+Creating a proxy on the module
+------------------------------
+
+Before using the TTS commands, you need to create a proxy on the TTS
+module.
+
+.. code-block:: guess
+
+  # Creates a proxy on the text-to-speech module
+  from naoqi import ALProxy
+
+  IP = "<IP ADDRESS>"
+  tts = ALProxy("ALTextToSpeech", IP, 9559)
+
+Saying a text string
+--------------------
+
+You can say a sentence using the say function.
+
+.. code-block:: guess
+
+  # Example: Sends a string to the text-to-speech module
+  tts.say("Hello World!")
+
+Modifying pitch
+---------------
+
+The API allows some modifications of the voice's pitch. Example:
+
+.. code-block:: guess
+
+  tts.setParameter("pitchShift", 1.1)
+
+This command raises the pitch of the main voice. 1.1 is the ratio between the
+fundamental frequency of the transformed voice and the original one.
+
+Modifying double voice parameters
+---------------------------------
+
+The double voice rendering can be modified using 3 parameters:
+
+- doubleVoice: the ratio between the fundamental frequency of the
+  transformed voice and the original one.
+
+- doubleVoiceLevel: the ratio between the volume of the second voice and the
+  first one.
+
+- doubleVoiceTimeShift: the time shift between the second voice and the
+  first one.
+
+For example, a "robotic sounding" voice can be generated using these commands:
+
+.. code-block:: python
+
+  tts.setParameter("doubleVoice", 1)
+  tts.setParameter("doubleVoiceLevel", 0.5)
+  tts.setParameter("doubleVoiceTimeShift", 0.1)
+  tts.setParameter("pitchShift", 1.1)
+
+Changing the language of the synthesis engine
+---------------------------------------------
+
+The language of the synthesis engine can be changed using the setLanguage function.
+The list of the available languages can be obtained with the getAvailableLanguages function.
+
+.. code-block:: python
+
+  # Example: set the language of the synthesis engine to English:
+  tts.setLanguage("English")
+
+Changing the voice of the synthesis engine
+------------------------------------------
+
+You can also change the voice of the synthesis engine with the setVoice function.
+The list of the available voices can be obtained with the getAvailableVoices function.
+When you change the voice, the current language is automatically changed by the language
+corresponding to this voice.
+
+.. code-block:: python
+
+  # Example: use the voice of Kenny:
+  tts.setVoice("Kenny22Enhanced")
+
+
+Saving and loading voice preferences
+------------------------------------
+
+The voice preferences are the set of synthesis and FX parameters that allows to
+customize voices. If you want to keep a set of synthesis and FX parameters, you can save it in a ".xml"
+preference file in the "/home/nao/naoqi/preferences" folder and load it with the
+loadVoicePreference method.
+
+The preference file must be formatted as described below:
+
+.. code-block:: xml
+
+  <ModulePreference schemaLocation="ModulePreference.xsd" name="aldebaran-robotics.com@ALTextToSpeech_Voice_defaultEnglish">
+    <Preference value="Kenny22Enhanced" type="string" name="sourceVoice" description="Synthesis source voice"/>
+    <Preference value="0.0" type="float" name="doubleVoice" description="Ratio of pitch shifting applied to the doubling voice"/>
+    <Preference value="0.0" type="float" name="doubleVoiceLevel" description="Level of the doubling voice"/>
+    <Preference value="0.0" type="float" name="pitchShift" description="Ratio of the pitch shifting applied to the main voice"/>
+    <Preference value="0.125" type="float" name="doubleVoiceTimeShift" description="Delay (ms) between the double voice and the main voice"/>
+  </ModulePreference>
+
+The name of the ".xml" file must begin by **ALTextToSpeech_Voice_** and finish by
+the name of the voice you want to load with the loadVoicePreference method.
+
+For example, the following piece of code loads the set of voices parameters
+contained in the "ALTextToSpeech_Voice_NaoOfficialVoiceEnglish.xml" file of the
+preference folder.
+
+.. code-block:: python
+
+  tts.loadVoicePreference("NaoOfficialVoiceEnglish")

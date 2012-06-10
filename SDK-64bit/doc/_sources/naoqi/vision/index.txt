@@ -1,0 +1,33 @@
+.. _naoqi-vision:
+
+NAOqi Vision
+=============
+
+.. toctree::
+   :hidden:
+   :maxdepth: 1
+
+   alfacedetection
+   allandmarkdetection
+   alredballdetection
+   alvideodevice
+   alvisionrecognition
+   alvisiontoolbox
+
+
+This section describes the vision components
+of your robot.
+
+NAOqi currently contains the following vision modules:
+
+- :ref:`ALVideoDevice <alvideodevice>`: manages video inputs.
+
+- :ref:`ALVisionToolbox <alvisiontoolbox>`: provides tools to record / analyse camera images.
+
+- :ref:`ALVisionRecognition <alvisionrecognition>`: provides learning and recognition capabilities of visual patterns.
+
+- :ref:`ALLandmarkDetection <allandmarkdetection>`: gives NAO the ability to detect specific visual landmarks.
+
+- :ref:`ALFaceDetection <alfacedetection>`: gives NAO the ability to detect and recognize human faces.
+
+- :ref:`ALRedBallDetection <alredballdetection>`: gives NAO the ability to detect red and circular objects.

@@ -1,0 +1,90 @@
+.. _alvisionrecognition-api:
+
+ALVisionRecognition API
+=======================
+
+:ref:`naoqi-vision` || :ref:`Overview <alvisionrecognition>` | API | :ref:`Tutorial<alvisionrecognition-tuto>`
+
+------------
+
+Namespace : **AL**
+
+.. code-block:: cpp
+
+  #include <alproxies/alvisionrecognitionproxy.h>
+
+Method list
+-----------
+
+As any module, this module inherits methods from :ref:`almodule-api`.
+It also has the following specific methods:
+
+
+.. cpp:class:: ALVisionRecognitionProxy
+
+* :cpp:func:`ALVisionRecognitionProxy::changeDatabase`
+* :cpp:func:`ALVisionRecognitionProxy::setParam`
+* :cpp:func:`ALVisionRecognitionProxy::subscribe`
+* :cpp:func:`ALVisionRecognitionProxy::unsubscribe`
+
+
+Event list
+----------
+
+* :naoqi:event:`PictureDetected`
+
+
+Methods
+-------
+
+
+.. cpp:function:: int ALVisionRecognitionProxy::changeDatabase(const std::string& databasePath, const std::string& databaseName)
+
+  By default the database is composed of several files with the same name "database" and different extensions. It is located on the robot in "/home/nao/naoqi/share/naoqi/vision/visionrecognition/current/" folder (1.10 SDK and below) or "/home/nao/.local/share/naoqi/vision/visionrecognition/current/" folder (1.12 SDK and higher).
+  This method allows to choose another database by providing its name and folder (:ref:`how to create a database <choregraphe-tuto-learn-object>`).
+
+  :param databasePath: Absolute path of the database on the robot, or "" to set default path.
+
+  :param databaseName: Name of the database (without extension), or "" to set default database name.
+
+  :return: True if success.
+
+
+
+.. cpp:function:: void ALVisionRecognitionProxy::setParam(const std::string& paramName, const ALValue& paramValue)
+
+  For advanced users: set vision recognition parameters.
+
+  :param paramName: Name of the parameter to be changed among "resolution" (default is QVGA), "scoreThreshold" (default is 0.04).
+
+  :param paramValue: Value of the parameter to be changed.
+
+
+
+.. cpp:function:: void ALVisionRecognitionProxy::subscribe(const std::string& name)
+
+    Subscribes to *ALVisionRecognition*.
+    This causes the module to start writing information to **ALMemory** in *"PictureDetected"*.
+    This can be accessed in *ALMemory* using :cpp:func:`ALMemoryProxy::getData`.
+
+    :param name: Name to identify the subscriber
+
+
+
+
+.. cpp:function:: void ALVisionRecognitionProxy::unsubscribe(const std::string& name)
+
+    Unsubscribes from *ALVisionRecognition*.
+    This causes the module to stop writing information to **ALMemory** in *"PictureDetected"*.
+
+    :param name: Name to identify the subscriber (as used in :cpp:func:`ALVisionRecognitionProxy::subscribe`).
+
+
+Events
+------
+
+.. naoqi:event:: PictureDetected(AL::ALValue value)
+
+  Raised when a visual pattern previously learned is recognized.
+
+  :param value: Informations related to the detected picture. Please refer to :ref:`alvisionrecognition` for details.

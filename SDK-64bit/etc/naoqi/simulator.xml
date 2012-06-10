@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<SimulatorPreference name="aldebaran-robotics.com@DCM" xmlns="http://www.aldebaran-robotics.com/ns/SimulatorPreference" schemaLocation="SimulatorPreference.xsd">
+    <Robot name="red goal keeper" description="goalkeeper" remote="off" ip ="0.0.0.0" port="9560" team="team 1" />
+    <Robot name="red player 1" description="defensor" remote="off"  ip ="0.0.0.0" port="9561" team="team 1" />
+    <Robot name="red player 2" description="defensor" remote="off" ip ="0.0.0.0" port="9562" team="team 1" />
+    <Robot name="red player 3" description="attaker" remote="off" ip ="0.0.0.0" port="9563" team="team 1" />
+
+    <Robot name="blue goal keeper" description="goalkeeper" remote="off" ip ="0.0.0.0" port="9570" team="team 2" />
+    <Robot name="blue player 1" description="defensor" remote="off" ip ="0.0.0.0" port="9571" team="team 2" />
+    <Robot name="blue player 2" description="defensor" remote="off" ip ="0.0.0.0" port="9572" team="team 2" />
+    <Robot name="blue player 3" description="attaker" remote="off" ip ="0.0.0.0" port="9573" team="team 2" />
+
+    <!-- To use with webots: -->
+
+    <Robot name="webots1" description="" remote="off" ip="0.0.0.0" port="9559" />
+    <Robot name="webots2" description="" remote="off" ip="0.0.0.0" port="9560" />
+    <Robot name="webots3" description="" remote="off" ip="0.0.0.0" port="9561" />
+    <Robot name="webots4" description="" remote="off" ip="0.0.0.0" port="9562" />
+    <Robot name="webots5" description="" remote="off" ip="0.0.0.0" port="9563" />
+
+    <!-- To use with robotSim: -->
+    <Robot name="NaoSim1" description="defensor" remote="off"  ip ="0.0.0.0" port="9559" team="team 1" />
+
+
+    <!-- To use with MSRS: -->
+
+    <Robot name=".NetClient" description="" remote="off" ip="0.0.0.0" port="9559" />
+
+</SimulatorPreference>

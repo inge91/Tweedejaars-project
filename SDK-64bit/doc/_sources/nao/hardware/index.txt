@@ -1,0 +1,81 @@
+.. _nao-hardware:
+
+NAO Hardware
+============
+
+NAO Hardware | :ref:`hardware-product-range` | :ref:`hardware-kinematics` |
+:ref:`hardware-sensors` | :ref:`hardware-optional-device`
+
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+
+   product-range
+   sensors
+   kinematics
+   laser
+
+   
+--------------------------
+
+The characteristics of NAO Version 4.0 are described in the following datasheet:
+
+- `NAO H25 <http://aldebaran-robotics.com/en/Discover-NAO/nao-datasheet-h25.html>`_
+- `NAO H21 <http://aldebaran-robotics.com/en/Discover-NAO/nao-datasheet-h21.html>`_
+- `NAO T14 <http://aldebaran-robotics.com/en/Discover-NAO/nao-datasheets-t14.html>`_
+- `NAO T2 <http://aldebaran-robotics.com/en/Discover-NAO/nao-datasheets-t2.html>`_.
+
+Further information are provided here:
+
+* :ref:`hardware-product-range`
+* :ref:`hardware-kinematics`
+* :ref:`hardware-sensors`
+* :ref:`hardware-optional-device`
+
+Read below the dimensions and motherboard according to NAO version.
+
+-----------------------------
+
+
+Dimensions
+----------
+
+NAO V. 3.3 and V. 4.0
+++++++++++++++++++++++++
+
+Dimensions are specified in millimeters.
+
+.. image:: /medias/nao/hardware/hardware_overview3_3.png
+   :height: 486 px
+   :width: 600 px
+
+NAO V. 3.2
++++++++++++
+
+Dimensions are specified in millimeters.
+
+.. image:: /medias/nao/hardware/hardware_overview.png
+   :height: 486 px
+   :width: 600 px
+
+
+Motherboard
+-----------
+
+NAO V. 4.0
++++++++++++++
+
+- ATOM Z530 1.6GHz CPU
+
+- 1 GB RAM / 2 GB flash memory / 4 to 8 GB flash memory dedicated to user purposes
+
+NAO V. 3.x
++++++++++++++
+
+- x86 AMD GEODE 500MHz CPU
+
+- 256 MB SDRAM / 2 GB flash memory
+
+
+

@@ -1,0 +1,33 @@
+.. _albonjour-api:
+
+ALBonjour API
+=============
+
+:ref:`naoqi-core` || :ref:`Overview <albonjour>` | API
+
+-----------------
+
+
+Namespace : **AL**
+
+.. code-block:: cpp
+
+  #include <alproxies/albonjourproxy.h>
+
+Method list
+-----------
+
+As any module, this module inherits methods from :ref:`almodule-api`.
+It also has the following specific methods:
+
+.. cpp:class:: ALBonjourProxy
+
+* :cpp:func:`ALBonjourProxy::declare`
+
+
+Methods
+-------
+
+.. cpp:function:: void ALBonjourProxy::declare()
+
+  Declares the NAOqi service on the local network using the bonjour protocol.

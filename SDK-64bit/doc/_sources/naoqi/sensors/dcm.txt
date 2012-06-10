@@ -1,0 +1,46 @@
+.. _dcm:
+
+DCM
+===
+
+.. toctree::
+   :hidden:
+   :maxdepth: 1
+
+   dcm-api
+   dcm-tuto
+
+Overview | :ref:`API <dcm-api>` | :ref:`Tutorial <dcm-tuto>`
+
+--------
+
+
+New architecture
+----------------
+
+Since release 1.12, the DCM (Device Communication Manager) has been rewritten.
+
+It is now separated in two part:
+
+* the HAL (Hardware Abstract Layer) daemon, handles the hardware,
+* the DCM NAOqi module, connects the HAL and NAOqi.
+
+The API for the DCM HAL is the same as the API for the DCM.
+
+
+To learn more about DCM
+--------------------------
+
+.. toctree::
+   :maxdepth: 1
+
+   dcm/introduction
+   dcm/upper_level_architecture
+   dcm/low_level_architecture
+   dcm/pref_file_architecture
+   dcm/pref_subpref_files
+   dcm/dcm_architecture
+   dcm/dcm_synchro_methods
+
+
+

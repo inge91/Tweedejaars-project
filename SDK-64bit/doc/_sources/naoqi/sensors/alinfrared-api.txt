@@ -1,0 +1,76 @@
+.. _alinfrared-api:
+
+ALInfrared API
+==============
+
+:ref:`naoqi-sensors` || :ref:`Overview <alinfrared>` | API | :ref:`Tutorial <alinfrared-tuto>`
+
+------------
+
+.. seealso::
+
+   - :ref:`IR (Infra-Red) Hardware <hardware-infrared>`
+   - :ref:`alinfrared-remote-control`
+
+Method list
+-----------
+
+As any module, this module inherits methods from :ref:`almodule-api`.
+It also has the following specific methods:
+
+.. cpp:class:: ALInfraredProxy
+
+* :cpp:func:`ALInfraredProxy::initReception`
+* :cpp:func:`ALInfraredProxy::send32`
+* :cpp:func:`ALInfraredProxy::send8`
+* :cpp:func:`ALInfraredProxy::sendIpAddress`
+* :cpp:func:`ALInfraredProxy::sendRemoteKey`
+
+
+Methods
+-------
+
+.. cpp:function:: void ALInfraredProxy::initReception(const int& RepeatThreshold)
+
+  Init IR reception (connect as a client to the LIRC daemon).
+
+  :param RepeatThreshold: keep-pressing threshold after which the repetition
+                          of a key is taken into consideration.
+
+.. cpp:function:: void ALInfraredProxy::send32(const std::string& Data_IR)
+
+  Send 4 octets by IR.
+
+  :param Data_IR: 32 bits number to send through IR, as a string.
+
+.. cpp:function:: void ALInfraredProxy::send32( const int& Octet1, const int& Octet2, const int& Octet3, const int& Octet4 )
+
+  Send 4 octets by IR.
+
+  :param Octet1: Octet 1 to send through IR.
+
+  :param Octet2: Octet 2 to send through IR.
+
+  :param Octet3: Octet 3 to send through IR.
+
+  :param Octet4: Octet 4 to send through IR.
+
+.. cpp:function:: void ALInfraredProxy::send8(const int& Octet)
+
+  Send 1 octet by IR.
+
+  :param Octet: octet to send through IR.
+
+.. cpp:function:: void ALInfraredProxy::sendIpAddress(const std::string& IP)
+
+  Send an IP address by IR.
+
+  :param IP: IP address to send through IR.
+
+.. cpp:function:: void ALInfraredProxy::sendRemoteKey( const std::string& Remote, const std::string& Key )
+
+  Simulate a remote control (NAO as a remote control).
+
+  :param Remote: IR remote control name.
+
+  :param Key: IR remote control key name.

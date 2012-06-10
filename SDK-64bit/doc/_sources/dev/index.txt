@@ -1,0 +1,45 @@
+.. _dev-index:
+
+Programming Guide
+=================
+
+.. toctree::
+   :hidden:
+
+   SDK <sdk>
+   example-index
+   tools/index
+   NAOqi <naoqi/index>
+
+Writing code for NAO
+--------------------
+
+The NAOqi API is currently available in at least 8 languages. Apart from some minor
+language-specific differences, the API is mostly the same across all languages,
+allowing you to bring knowledge from one language to another.
+
+You can only write NAOqi's module in C++ and Python, but you have access
+to the full client API in all languages.
+Only C++ and Python are supported on the robot, other languages are only supported
+on computer to remotely access NAO.
+
+Jump to the :ref:`sdk-index` homepage.
+
+Language supported on the robot:
+
+- :ref:`C++<cpp-introduction>`  (to be used with `qiBuild <../qibuild/index.html>`_)
+- :ref:`Python <python-introduction>`
+
+Others supported languages:
+
+- :ref:`.Net <naoqi-dot-net>`
+- :ref:`Java <java>`
+- :ref:`Matlab <matlab>`
+- :ref:`Urbi <urbi>`
+
+Examples
+--------
+
+- :ref:`cpp-examples`
+- :ref:`python-examples`
+

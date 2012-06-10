@@ -1,0 +1,18 @@
+.. _nao-kinematics-40:
+
+Kinematics 4.0
+==============
+
+:ref:`nao-hardware` | :ref:`hardware-product-range` | Motors & Kinematics |
+:ref:`hardware-sensors` | :ref:`hardware-optional-device`
+
+:ref:`hardware-kinematics` | :ref:`motors` | *Kinematics 4.0* | :ref:`nao-kinematics-33` | :ref:`nao-kinematics-32` 
+
+----------------------------
+
+.. toctree::
+   :maxdepth: 1
+
+   nao-links-40
+   nao-joints-40
+   nao-masses-40

@@ -1,0 +1,74 @@
+.. _dcm-introduction:
+
+Introduction
+============
+
+:ref:`Overview <dcm>` | :ref:`API <dcm-api>`  | :ref:`Tutorial <dcm-tuto>`
+
+.. _what-is-dcm:
+
+What is the DCM
+----------------
+
+DCM stands for "Device Communication Manager".
+
+The DCM is the NAO software module, part of the NAOqi system, that
+is in charge of the communication with all electronic devices in the
+robot (boards, sensors, actuators...) except the sound (in or out) 
+and the camera. It manages the main communication line: 
+the USB link with the ChestBoard. But there is also an I2C link
+with devices in the robot head. Thus, the DCM is the link between the
+"upper level" software (others modules) and the "lower level" software
+(soft in electronic boards). Modules like "Motion" and "LEDs" directly
+send commands to actuators using the DCM, while extractors and other
+modules use sensor results returned by the DCM in ALMemory.
+
+.. warning::
+
+   Although the DCM itself and electronic boards have many
+   securities, it is possible to damage the robot with bad configuration
+   parameters or inappropriate series of actuator commands. Using
+   directly the DCM means that you know what you are doing. First of all,
+   read this documentation carefully.
+
+Architecture overview
+---------------------
+
+As the DCM is a link between the high and low level, understanding
+both high level architecture (NAOqi) and low level (devices/electronic
+board) is useful to understand the DCM.
+
+Like other modules, the DCM is part of the NAOqi environment. It is linked as a library.
+
+Installation
+------------
+
+The DCM installation is done with the NAOqi installation. The DCM
+is a library of the NAOqi core program.
+
+At first, the DCM reads two preference files: the device.xml (with
+all data about devices and subDevices) and the dcm.xml (with DCM
+specific information).
+
+.. warning::
+
+   Even if it's possible to run the DCM as a remote object with
+   Soap communication, it'll be very CPU consuming to do that, as the
+   link between ALMemory and the DCM is highly used.
+
+How the DCM handles various NAO models and versions
+---------------------------------------------------
+
+The DCM deals with many different NAO versions (V3+, V3.2, V3.3, V4) and models (T2, T14, H21, H25)
+
+In the DCM, all the options managed are present by default (hands, arms, legs ...).
+When a robot do not have some parts:
+
+- DCM sends back 0 for the missing sensors,
+
+- actuator changes do not have effect,
+
+- eletronics boards won't answered to request.
+
+To determine the body type and version of your robot, see the section :ref:`hardware-product-range`.
+

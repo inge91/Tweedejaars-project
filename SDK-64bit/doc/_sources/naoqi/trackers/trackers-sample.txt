@@ -1,0 +1,34 @@
+.. _trackers-sample:
+
+Trackers Sample
+===============
+
+:ref:`Overview<naoqi-trackers>` | :ref:`alredballtracker-api` | :ref:`alfacetracker-api` | Trackers Sample
+
+----------------
+
+.. _trackers-sample-redball:
+
+Red Ball Tracker Sample
+-----------------------
+
+**Python example**
+
+:download:`alredballtracker_start.py </samples/python/alredballtracker/alredballtracker_start.py>`
+
+.. literalinclude:: /samples/python/alredballtracker/alredballtracker_start.py
+   :language: py
+
+
+.. _trackers-sample-face:
+
+Face Tracker Sample
+-------------------
+
+**Python example**
+
+:download:`alfacetracker_start.py </samples/python/alfacetracker/alfacetracker_start.py>`
+
+.. literalinclude:: /samples/python/alfacetracker/alfacetracker_start.py
+   :language: py
+

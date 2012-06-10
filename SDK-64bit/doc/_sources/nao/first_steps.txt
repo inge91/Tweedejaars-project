@@ -1,0 +1,32 @@
+.. _first-steps:
+
+First Steps
+===========
+
+Welcome
+---------
+
+Congratulations and welcome to NAO's world. 
+
+We hope your experience with this humanoid robot will be fulfilling both from a
+technical perspective and from an emotional point of view.
+
+If this is your first time handling NAO, please read first the **Quick Start Guide**.
+
+Here again the first steps summarized:
+
+.. toctree::
+   :maxdepth: 1
+
+   battery-charging
+   nao-turn-on
+   nao-connecting
+
+Experimented User
+------------------
+
+More experienced users may wish to jump directly to:
+
+* :ref:`Release Notes <news-index>` to see what has changed.
+* :ref:`Choregraphe <choregraphe>` to start editing behaviors.
+* :ref:`dev-index` to start coding.

@@ -1,0 +1,120 @@
+.. _alsounddetection-api:
+
+ALSoundDetection API
+====================
+
+:ref:`naoqi-audio` || :ref:`Overview <alsounddetection>` | API
+
+-----------------
+
+.. seealso::
+
+   - :ref:`Microphones Hardware <hardware-audio-in>`
+
+
+Namespace : **AL**
+
+.. code-block:: cpp
+
+  #include <alproxies/alsounddetectionproxy.h>
+
+
+
+Method list
+-----------
+
+As any module, this module inherits methods from :ref:`almodule-api`.
+It also has the following specific methods:
+
+.. cpp:class:: ALSoundDetectionProxy
+
+* :cpp:func:`ALSoundDetection::getDescription`
+* :cpp:func:`ALSoundDetection::getEvents`
+* :cpp:func:`ALSoundDetection::setParameter`
+* :cpp:func:`ALSoundDetection::subscribe`
+* :cpp:func:`ALSoundDetection::unsubscribe`
+
+
+Event list
+----------
+
+* :naoqi:event:`SoundDetected`
+
+
+Methods
+-------
+
+
+.. cpp:function:: AL::ALValue ALSoundDetection::getDescription(const std::string& type, const std::string& nameDesc)
+
+ .. deprecated:: 1.12
+     use the *ALMemory* key *"SoundDetected"* instead to collect the result of the detection.
+
+  :param type: Name of detector
+  :param nameDesc: Name of the description
+  :return: Description
+
+
+.. cpp:function:: AL::ALValue ALSoundDetection::getEvents(const std::string& type)
+
+ .. deprecated:: 1.12
+    use the *ALMemory* key *"SoundDetected"* instead to collect the result of the detection.
+
+  :param type: Name of detector
+  :return: Event
+
+
+
+
+.. cpp:function:: void ALSoundDetection::setParameter(const std::string& parameter, const float& value)
+
+  The sensitivity of the detection can be set by calling this function as follows:
+
+
+  :param parameter: Name of the parameter
+  :param value: Value of the parameter
+
+
+  .. literalinclude:: /samples/python/alsounddetection/alsounddetection_setparameter.py
+    :language: py
+
+
+
+
+.. cpp:function:: void ALSoundDetection::setParameter( const std::string& type, const std::string& parameter, const float& value)
+
+ .. deprecated:: 1.12
+     use :cpp:func:`ALSoundDetection::setParameter` instead.
+
+ :param type: Name of detector
+ :param parameter: Name of the parameter
+ :param value: Value of the parameter
+
+
+
+.. cpp:function:: void ALSoundDetection::subscribe(const std::string& name)
+
+  Subscribes to *ALSoundDetection*.
+  This causes the module to start writing information to *ALMemory* in *"SoundDetected"*.
+  This can be accessed in *ALMemory* using :cpp:func:`ALMemoryProxy::getData`.
+
+  :param name: Name to identify the subscriber
+
+
+
+.. cpp:function:: void ALSoundDetection::unsubscribe(const std::string& name)
+
+  Unsubscribes to *ALSoundDetection*.
+  This causes the module to stop writing information to *ALMemory* in *"SoundDetected"*.
+
+  :param name: Name to identify the subscriber (as used in :cpp:func:`ALSoundDetection::subscribe`).
+
+
+Events
+------
+
+.. naoqi:event:: SoundDetected(AL::ALValue value)
+
+  Raised when a significant sound has been detected.
+
+  :param value: Detected sound informations. Please refer to :ref:`alsounddetection` for details.

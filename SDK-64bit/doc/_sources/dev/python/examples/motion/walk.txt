@@ -1,0 +1,85 @@
+.. _python-example-motion-walk:
+
+Walk
+====
+
+:ref:`\<\< return to examples index <example-index>`
+
+This section contains several python example on walk, both for standard walk and
+for customized walk.
+
+Simple walk
+-----------
+
+These examples show how to use Aldebaran normal walk.
+
+Walk
+++++
+
+Make NAO walk backwards, forwards, and turn.
+
+:download:`motion_walk.py </examples/python/motion/motion_walk.py>`
+
+.. literalinclude:: /examples/python/motion/motion_walk.py
+   :language: py
+
+Walk to
++++++++
+
+Make NAO walk to an objective.
+
+:download:`motion_walkTo.py </examples/python/motion/motion_walkTo.py>`
+
+.. literalinclude:: /examples/python/motion/motion_walkTo.py
+   :language: py
+
+Walk faster
++++++++++++
+
+Make NAO walk with greater step length.
+
+:download:`motion_walkFaster.py </examples/python/motion/motion_walkFaster.py>`
+
+.. literalinclude:: /examples/python/motion/motion_walkFaster.py
+   :language: py
+
+Customized walk
+---------------
+
+Walk customization
+++++++++++++++++++
+
+Make NAO do a custom walk: NAO is limping and then walking correctly, just like Keyser Sose in *The Usual Suspects*.
+
+:download:`motion_walkCustomization.py </examples/python/motion/motion_walkCustomization.py>`
+
+.. literalinclude:: /examples/python/motion/motion_walkCustomization.py
+   :language: py
+
+Walk to customization
++++++++++++++++++++++
+
+Make NAO walk to an objective with custom feet gait config.
+
+:download:`motion_walkToCustomization.py </examples/python/motion/motion_walkToCustomization.py>`
+
+.. literalinclude:: /examples/python/motion/motion_walkToCustomization.py
+   :language: py
+
+Dubins curve
+++++++++++++
+
+Make NAO walk along a dubins curve.
+
+:download:`motion_walkToDubinsCurve.py </examples/python/motion/motion_walkToDubinsCurve.py>`
+
+.. literalinclude:: /examples/python/motion/motion_walkToDubinsCurve.py
+   :language: py
+
+Move head while walking
++++++++++++++++++++++++
+
+:download:`motion_walkWithJerkyHead.py </examples/python/motion/motion_walkWithJerkyHead.py>`
+
+.. literalinclude:: /examples/python/motion/motion_walkWithJerkyHead.py
+   :language: py

@@ -1,0 +1,192 @@
+.. _software-update:
+
+NAOFlasher
+==========
+
+.. toctree::
+   :hidden:
+
+   rescue_nao_v3
+   rescue_nao_v4
+
+What is NAOFlasher
+-------------------
+
+**NAOFlasher** is a tool allowing you to update your NAO Operating system (OpenNAO).
+
+An option, **Factory reset**, allows updates in a :ref:`rescue-mode`.
+**NAOFlasher** also allows you to perform a simple update, without Factory reset, but a much simpler way exist, using Choregraphe: :ref:`simple-update`
+
+Where I find NAOFlasher
+++++++++++++++++++++++++
+
+| Since release 1.12.1, **NAOFlasher** is on the DVD in **Software** > **NAO OS**.
+| You can also find the latest release on the Aldebaran Robotics' User or Developer site.
+
+Choose the **NAOFlasher** according to your Operating System:
+
+* ``nao-flasher-x.x-win32-vs2008.zip``
+* ``nao-flasher-x.x-linux32.tar.gz``
+* ``nao-flasher-x.x-linux64.tar.gz``
+* ``nao-flasher-x.x-mac32.tar.gz``
+* ``nao-flasher-x.x-mac64.tar.gz``
+   
+
+Requirements
+++++++++++++
+
+The **NAOFlasher** has been tested on:
+
+* **Linux**, 
+* **Mac OS X** and 
+* **Windows 7**.
+
+It has not been tested on **Windows Vista** but should work as expected.
+
+.. warning::
+
+  The **NAOFlasher** currently does not work on **Windows XP**.
+
+
+.. _rescue-mode:
+ 
+Rescue mode
++++++++++++++
+
+What is a rescue software update
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The **rescue software update**:
+
+* Upgrades the NAO's software with the given OpenNAO software release and
+* Resets the whole system in a similar state as if the robot was just out of the factory.
+
+  | Therefore, any data put on the robot will be erased during the rescue software update process, 
+  | and any settings will be reset to their default values too.
+
+
+.. warning::
+
+    After a **rescue software update**:
+
+    * all user's data put on the robot will be irreparably lost;
+
+    * all settings will be reset to their default values
+
+When should I do a rescue software update
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Rescue software update should be used:
+
+* when something goes wrong and NAO does not boot normally anymore;
+
+* when you want to completely reset NAO to a known state;
+
+* (rare) if you want to downgrade to a *former* OpenNAO software release.
+
+
+Alternative method
+^^^^^^^^^^^^^^^^^^
+
+| If:
+
+* NAO boots normally,
+* you do not want to use a release older than the current one, and
+* you want to keep all user's data and settings,
+
+| Then you may prefer a :ref:`simple-update`.
+
+.. _software-update-steps:
+
+  
+How to update your NAO with NAOFlasher
+---------------------------------------
+
+Make sure you know which version of NAO you have.
+If you hesitate, see :ref:`hardware-product-range::nao-version`.
+
+=================  =================================================================
+For a NAO ...       See ...
+=================  =================================================================
+**V4**             :ref:`nao-v4-upgrade`
+
+**V3.X**           :ref:`nao-v3-upgrade`
+=================  =================================================================
+
+Troubleshooting
+---------------
+
+.. _flasher_downgrade:
+
+My new USB stick doesn't work!
+++++++++++++++++++++++++++++++
+
+If the USB stick you just flashed doesn't work, it is may be due to the old files in
+your home directory. Try flashing your key again with the **Factory Reset** option enabled.
+
+
+.. _usb-cleanup:
+
+Cleaning up your USB stick
+++++++++++++++++++++++++++
+
+.. warning::
+
+  DISKPART is a very dangerous tool if you don't know how to use it.
+  It can potentially erase all your data without warning.
+  Please be careful and don't use it if in doubt.
+
+Launch DISKPART
+^^^^^^^^^^^^^^^
+
+Go to the windows search box and type diskpart.
+Then type *ENTER* or click on the diskpart icon to launch the program.
+
+.. note::
+
+  DISKPART might fail to operate on the drive if the flasher is running.
+  Exit the flasher before running DISKPART.
+
+.. image:: /medias/opennao/cleanup-1.png
+    :width: 370 px
+    :height: 468 px
+
+Clean The Drive
+^^^^^^^^^^^^^^^
+
+.. image:: /medias/opennao/cleanup-2.png
+    :width: 600 px
+    :height: 303 px
+
+| 
+
+=====  ==========================================================================================================
+Step    Action
+=====  ==========================================================================================================
+1.      **list volume**: this will list all the volumes present on your computer.
+        
+        Find the line that correspond to your USB stick and remember the corresponding letter (**Ltr** column).
+
+2.      **select volume X**: replace X with your drive letter.
+
+        This will enable you to do actions on the drive.
+
+3.      **clean**: erase all data and partitions on the drive. You can't undo this!
+
+4.      **exit**: exits DISKPART. You may now try the flasher again.
+=====  ==========================================================================================================
+
+
+.. _flasher-admin-rights:
+
+Launching NAOFlasher with administrator privileges
+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+To Launch **NAOFlasher** with administrator privileges:
+
+1. Find and select the NAOFlasher executable:
+
+   ``[Choregraphe path]\bin\flasher.exe``
+
+2. Right-click it and choose **Run as administrator**.
+

@@ -1,0 +1,81 @@
+.. _allauncher-api:
+
+ALLauncher API
+==============
+
+:ref:`naoqi-core` || :ref:`Overview <allauncher>` | API
+
+-----------------
+
+
+Namespace : **AL**
+
+.. code-block:: cpp
+
+  #include <alproxies/allauncherproxy.h>
+
+Method list
+-----------
+
+As any module, this module inherits methods from :ref:`almodule-api`.
+It also has the following specific methods:
+
+.. cpp:class:: ALLauncherProxy
+
+* :cpp:func:`ALLauncherProxy::getGlobalModuleList`
+* :cpp:func:`ALLauncherProxy::isModulePresent`
+* :cpp:func:`ALLauncherProxy::launchExecutable`
+* :cpp:func:`ALLauncherProxy::launchLocal`
+* :cpp:func:`ALLauncherProxy::launchPythonModule`
+* :cpp:func:`ALLauncherProxy::launchScript`
+
+
+Methods
+-------
+
+
+.. cpp:function:: std::vector<std::string> ALLauncherProxy::getGlobalModuleList()
+
+  Get the list of modules loaded on the robot and connected on the robot
+
+  :return: An array of present modules.
+
+
+.. cpp:function:: bool ALLauncherProxy::isModulePresent(const std::string &moduleName)
+
+  Tests the existence of an active module in the global system (in same executable or in another executable of the distributed system).
+
+  :param moduleName: The name of the module
+  :return: True if the module is present, false otherwise.
+
+
+.. cpp:function:: bool ALLauncherProxy::launchExecutable(const std::string &name)
+
+  Run an executable and connect it to current broker.
+
+  :param name: The full path to the exectuable or just the name of the exectuable if it is into the standard sdk path (using qi::path::findBin).
+  :return: True if the exectuable started, false otherwise.
+
+
+.. cpp:function:: std::vector<std::string> ALLauncherProxy::launchLocal(const std::string &moduleName)
+
+  Loads dynamicaly a module.
+
+  :param moduleName: The full path to the module or just the name of the module if it is into the standard sdk path (using qi::path::findLib).
+  :return: List of modules that wasn't already load.
+
+
+.. cpp:function:: bool ALLauncherProxy::launchPythonModule(const std::string &pythonModule)
+
+  Import a python module into NAOqi.
+
+  :param pythonModule: The name of the module to import.
+  :return: True if the module loaded fine, false otherwise.
+
+
+.. cpp:function:: bool ALLauncherProxy::launchScript(const std::string &scriptPath)
+
+  Run an executable and connect it to current broker.
+
+  :param scriptPath: The full path to the script or just the name of the script if it is into the standard sdk path (using qi::path::findBin).
+  :return: True if the exectuable started, false otherwise.

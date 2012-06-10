@@ -1,0 +1,14 @@
+.. _python-example-motion-footstepdance:
+
+Footsteps control
+=================
+
+:ref:`\<\< return to examples index <example-index>`
+
+This example shows how to control NAO's footsteps precisely. NAO executes a
+small dance.
+
+:download:`motion_setFootStepDance.py </examples/python/motion/motion_setFootStepDance.py>`
+
+.. literalinclude:: /examples/python/motion/motion_setFootStepDance.py
+   :language: py

@@ -1,0 +1,117 @@
+
+.. |search-previous| image:: /medias/desktop/choregraphe/search_previous.png
+   :class: img-inline
+
+
+.. _choregraphe-overview-script-editor-panel:
+
+Script editor panel
+====================
+
+What is the Script editor panel
+-------------------------------
+
+The Script Editor panel enables to edit box **scripts**.
+
+.. image:: /medias/desktop/choregraphe/chore_script_editor.png
+   :width: 600 px
+   :height: 388 px
+
+This editor integrates **syntax highlighting** to ease the edition.
+
+At the bottom of the panel you can see the **number of the selected line** on the left and a field to **search** a specific keyword in the script.
+
+How to open the script of a specific box
+---------------------------------------- 
+
+In the flow diagram, to open the script of any :ref:`box <choregraphe-reference-box>`,
+right-click on it and select **Edit box script**.
+
+The script is displayed in the **Script editor** panel.
+
+.. note:: For a :ref:`script box <choregraphe-reference-box-type-script>` you can also double-click on it.
+
+
+
+.. _choregraphe-detailed-interface-script-editor-panel:
+
+Script editor panel functionalities
+--------------------------------------
+
+Script editor functions
+++++++++++++++++++++++++
+
+If you **right-click** in the panel, the following menu is displayed:
+
+.. image:: /medias/desktop/choregraphe/script-editor-context-menu.png
+   :width: 307 px
+   :height: 261 px
+
+
+This **context menu** provides fast access to some classic functions for a script editor:
+
+* **Undo**: to revert last script modification.
+
+* **Redo**: to apply previously reverted modification.
+
+* **Cut**, **Copy**, **Paste** or **Delete**: to cut, copy, delete selected text block or paste text at the current location of editing cursor.
+
+* **Select All**: to select the complete script.
+
+* **Block comment or uncomment**: to toggle the current line or the selected text block commented or uncommented.
+
+It also enables you to make some other advanced actions:
+
+* **Insert Unicode control character**: to insert various characters.
+  This menu is not always available depending on the OS. But anyway:
+
+  .. warning::
+     **It is strongly advised to not use this menu** as it inserts characters that are not visible in the script editor and that may lead to errors during the execution of the behavior.
+
+* **Insert Function**: to insert a :ref:`built-in function <choregraphe-reference-box-script-built-in-functions>` only available from a box script.
+
+
+Search functions
+++++++++++++++++
+
+You have useful functions at the bottom of the panel:
+
+* **Search text field** to find a specific keyword in the current script:
+
+  .. image:: /medias/desktop/choregraphe/chore_script_editor_find.png
+     :width: 163 px
+     :height: 30 px
+
+
+  It is highlighted in red if the keyword is not found in the script:
+
+  .. image:: /medias/desktop/choregraphe/chore_script_editor_find_red.png
+     :width: 164 px
+     :height: 26 px
+
+  .. warning::
+     The searching function **does not** permit to **loop**.
+     The search text field will highlight in red if string specified isn't found after the current location of the editing cursor.
+     In this case, keep in mind you can use the button |search-previous| to **search before** the location of the cursor.
+
+* **Navigation buttons** to move to the previous or the next matching string:
+
+  .. image:: /medias/desktop/choregraphe/chore_script_editor_find_prevnext.png
+     :width: 76 px
+     :height: 30 px
+
+
+* **Setting button** to specify **Match case** and/or **Match whole word** search options.
+
+  .. image:: /medias/desktop/choregraphe/chore_script_editor_find_settings.png
+     :width: 46 px
+     :height: 27 px
+
+
+
+Personalizing Script editor panel
+----------------------------------
+  
+.. note::
+   You can change the font of the **Script editor** panel for a monospaced one
+   in the :ref:`Choregraphe's preferences <choregraphe-detailed-interface-preferences>`.

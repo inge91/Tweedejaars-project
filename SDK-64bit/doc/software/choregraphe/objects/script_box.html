@@ -1,0 +1,581 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Script box &mdash; NAO Software 1.12.3 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.12.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="NAO Software 1.12.3 documentation" href="../../../index.html" />
+    <link rel="up" title="Mastering the main objects" href="../main_objects.html" />
+    <link rel="next" title="Flow diagram box" href="flow_diagram_box.html" />
+    <link rel="prev" title="Box - Optional components" href="box_optional_components.html" />
+
+ 
+
+<script  type="text/javascript">
+   var _gaq = _gaq || [];
+   _gaq.push(['_setAccount', 'UA-19487749-1']);
+   _gaq.push(['_trackPageview']);
+   (function() {
+     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+   })();
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t3">
+    <div id="hd">
+      <h1><a href="../../../index.html">NAO Software 1.12.3 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../../index.html">Home</a>
+        
+         |
+        <a title="Site map" href="../../../contents.html">Site map</a>
+        
+         |
+        <a title="Search" href="../../../search.html">Search</a>
+         |
+        <a title="Index" href="../../../genindex.html">Index</a>
+        
+        
+      </div>
+      <div class="nav">
+    &laquo; <a href="box_optional_components.html" title="Box - Optional components">previous</a>
+     |
+    <a href="../main_objects.html" title="Mastering the main objects" accesskey="U">up</a>
+   |
+    <a href="flow_diagram_box.html" title="Flow diagram box">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="software-choregraphe-objects-script_box">
+            
+  <div class="section" id="script-box">
+<span id="choregraphe-reference-box-type-script"></span><h1>Script box<a class="headerlink" href="#script-box" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="what-is-a-script-box">
+<h2>What is a Script box<a class="headerlink" href="#what-is-a-script-box" title="Permalink to this headline">¶</a></h2>
+<p>A <strong>Script</strong> box is a <a class="reference internal" href="box.html#choregraphe-reference-box"><em>box</em></a> which only includes
+a <a class="reference internal" href="#choregraphe-reference-box-script"><em>script</em></a>.</p>
+<img alt="../../../_images/chore_ref_script_box.png" src="../../../_images/chore_ref_script_box.png" style="width: 600px; height: 421px;" />
+<p>It has <strong>no offspring</strong>:
+neither <a class="reference internal" href="../panels/flow_diagram_panel.html#choregraphe-reference-box-flow-diagram"><em>Flow diagram</em></a>,
+nor <a class="reference internal" href="timeline_box.html#choregraphe-reference-box-timeline"><em>Timeline</em></a>.</p>
+</div>
+<div class="section" id="how-to-create-a-script-box">
+<span id="choregraphe-howto-create-script-box"></span><h2>How to create a Script box<a class="headerlink" href="#how-to-create-a-script-box" title="Permalink to this headline">¶</a></h2>
+<p>To create a <strong>Script</strong> box:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="6%" />
+<col width="94%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Step</th>
+<th class="head">Action</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><ol class="first last arabic simple">
+<li></li>
+</ol>
+</td>
+<td><p class="first">Right click your <strong>Flow diagram</strong> wherever you want to create the box
+and choose <strong>Add a new Box</strong> in the context menu.</p>
+<p>The <strong>Create a new box</strong> window is displayed.</p>
+<img alt="../../../_images/chore_create_new_box.jpg" class="last" src="../../../_images/chore_create_new_box.jpg" style="width: 317px; height: 600px;" />
+</td>
+</tr>
+<tr class="row-odd"><td><ol class="first last arabic simple" start="2">
+<li></li>
+</ol>
+</td>
+<td>Define a <strong>Name</strong> and a <strong>Tooltip</strong> for your box.</td>
+</tr>
+<tr class="row-even"><td><ol class="first last arabic simple" start="3">
+<li></li>
+</ol>
+</td>
+<td><strong>Optional</strong>: set the picture to recognize it among other boxes in your
+diagram.</td>
+</tr>
+<tr class="row-odd"><td><ol class="first last arabic simple" start="4">
+<li></li>
+</ol>
+</td>
+<td><p class="first"><strong>Optional</strong>: set parameters, inputs and outputs that can be manipulated
+by the box.</p>
+<p class="last">For further details about parameters, see <a class="reference internal" href="box_optional_components.html#choregraphe-howto-add-remove-box-in-out-param"><em>How to add/remove inputs,
+outputs, parameters in a box</em></a> section.</p>
+</td>
+</tr>
+<tr class="row-even"><td><ol class="first last arabic simple" start="5">
+<li></li>
+</ol>
+</td>
+<td>In the box type part, select <strong>Script</strong>.</td>
+</tr>
+<tr class="row-odd"><td><ol class="first last arabic simple" start="6">
+<li></li>
+</ol>
+</td>
+<td><p class="first">Click the <strong>OK</strong> button.</p>
+<p class="last">The created <strong>Script</strong> box is displayed on the diagram.</p>
+</td>
+</tr>
+<tr class="row-even"><td><ol class="first last arabic simple" start="7">
+<li></li>
+</ol>
+</td>
+<td><p class="first">Double click on your box.</p>
+<p>The <strong>Script editor</strong> is opened and displays the script of the box.</p>
+<p>The structure of the script is automatically generated and should look
+like that:</p>
+<img alt="../../../_images/create_script_box.png" class="last" src="../../../_images/create_script_box.png" style="width: 379px; height: 468px;" />
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="script-of-a-box">
+<span id="choregraphe-reference-box-script"></span><h2>Script of a box<a class="headerlink" href="#script-of-a-box" title="Permalink to this headline">¶</a></h2>
+<p>Each box has a corresponding script.</p>
+<p>This script is in <strong>Python</strong>.
+And as in any usual Python script, you can import any Python module and use any Python function.</p>
+<p>To know how to do so, see the section: <a class="reference internal" href="#choregraphe-howto-import-python-module"><em>How to import python module in a script box</em></a>.</p>
+<p>For further details about Python, see the official website: <a class="reference external" href="http://www.python.org">http://www.python.org</a>.</p>
+<p>By default, when you create a box its script looks as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MyClass</span><span class="p">(</span><span class="n">GeneratedClass</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">GeneratedClass</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">onLoad</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c">#~ puts code for box initialization here</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">onUnload</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c">#~ puts code for box cleanup here</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">onInput_onStart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c">#~ self.onStopped() #~ activate output of the box</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">onInput_onStop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">onUnload</span><span class="p">()</span> <span class="c">#~ it is recommended to call onUnload of this box in a onStop method, as the code written in onUnload is used to stop the box as well</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+<p>You can see above that a box script defines a class named <tt class="docutils literal"><span class="pre">MyClass</span></tt>.
+This class inherits from <tt class="docutils literal"><span class="pre">GeneratedClass</span></tt>.
+And <tt class="docutils literal"><span class="pre">MyClass</span></tt> has already some methods defined by default.</p>
+<p>In fact <tt class="docutils literal"><span class="pre">MyClass</span></tt> is the class representing the box.</p>
+<p><tt class="docutils literal"><span class="pre">GeneratedClass</span></tt> is a class which is automatically generated at the execution of the behavior.
+It includes all the needed information concerning the box (<a class="reference internal" href="box_input_output.html#choregraphe-reference-box-input"><em>inputs</em></a>, <a class="reference internal" href="box_input_output.html#choregraphe-reference-box-output"><em>outputs</em></a>, <a class="reference internal" href="box_optional_components.html#choregraphe-reference-box-parameter"><em>parameters</em></a>, etc).
+It also defines all the additional <a class="reference internal" href="#choregraphe-reference-box-script-built-in-functions"><em>built-in functions of the box script</em></a> which could be useful for you to use in the script.</p>
+<p>The fact that <tt class="docutils literal"><span class="pre">MyClass</span></tt> inherits from <tt class="docutils literal"><span class="pre">GeneratedClass</span></tt> makes possible for you to use all these <a class="reference internal" href="#choregraphe-reference-box-script-built-in-functions"><em>built-in functions</em></a> in the script.</p>
+<p>Moreover, as you can edit <tt class="docutils literal"><span class="pre">MyClass</span></tt>, you can add your own functions.</p>
+</div>
+<div class="section" id="built-in-functions-in-the-script-of-a-box">
+<span id="choregraphe-reference-box-script-built-in-functions"></span><h2>Built-in functions in the script of a box<a class="headerlink" href="#built-in-functions-in-the-script-of-a-box" title="Permalink to this headline">¶</a></h2>
+<p>In the script of a box, there are many available methods:</p>
+<ul>
+<li><p class="first">Those corresponding to the <a class="reference internal" href="box_input_output.html#choregraphe-reference-box-input"><em>inputs</em></a> of the box.
+They need to be defined in the script with the following syntax: <tt class="docutils literal"><span class="pre">onInput_&lt;input-name&gt;</span></tt>.</p>
+<p>Each time an input is stimulated, this method will be called.</p>
+<p>For example, if an input is named <tt class="docutils literal"><span class="pre">myInput</span></tt> and is a <tt class="docutils literal"><span class="pre">Bang</span></tt>, the following lines are to define its corresponding method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">onInput_myInput</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c"># The code of my method</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>If <tt class="docutils literal"><span class="pre">myInput</span></tt> is a <tt class="docutils literal"><span class="pre">Number</span></tt>, the following lines are to define its corresponding method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">onInput_myInput</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
+    <span class="c"># The code of my method</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>Then the argument <tt class="docutils literal"><span class="pre">number</span></tt> is the value of the signal sent on the input.</p>
+<p>If <tt class="docutils literal"><span class="pre">myInput</span></tt> is a <tt class="docutils literal"><span class="pre">Dynamic</span></tt> and it can be stimulated with a <tt class="docutils literal"><span class="pre">Number</span></tt> or just a <tt class="docutils literal"><span class="pre">Bang</span></tt>, you can use the following lines:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">onInput_myInput</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+    <span class="c"># The code of my method</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>Then the argument <tt class="docutils literal"><span class="pre">number</span></tt> is the value of the signal sent on the input and is equal to <tt class="docutils literal"><span class="pre">None</span></tt> if it is stimulated with a <tt class="docutils literal"><span class="pre">Bang</span></tt>.</p>
+</li>
+<li><p class="first">Those corresponding to the <a class="reference internal" href="box_input_output.html#choregraphe-reference-box-output"><em>outputs</em></a> of the box.
+They are not present in the script but are already defined with the following syntax: <tt class="docutils literal"><span class="pre">&lt;output-name&gt;</span></tt>.</p>
+<p>Each time a method corresponding to an output is called, the output is stimulated.</p>
+<p>For example, if an output is named <tt class="docutils literal"><span class="pre">myOutput</span></tt> and is a <tt class="docutils literal"><span class="pre">Bang</span></tt>, the following line enables you to stimulate the output:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">myOutput</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>If <tt class="docutils literal"><span class="pre">myOutput</span></tt> is a <tt class="docutils literal"><span class="pre">Number</span></tt>, the following lines enables you to stimulate the output with the value of <tt class="docutils literal"><span class="pre">myNumber</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">myNumber</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">myOutput</span><span class="p">(</span><span class="n">myNumber</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>Get parameter</strong> function which enables you to get the value of any parameter of the box.</p>
+<p>For example, if the box has a parameter named <tt class="docutils literal"><span class="pre">My</span> <span class="pre">parameter</span></tt>, the command to get the value of this parameter will be:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s">&quot;My parameter&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This function will throw an exception if no such parameter exists.</p>
+</li>
+<li><p class="first">Those which enables you to affect the <a class="reference internal" href="timeline_box.html#choregraphe-reference-box-timeline"><em>timeline</em></a> or the <cite>flow diagram &lt;choregraphe-reference-box-flow-diagram&gt;</cite> of the box from its script.
+They are called <strong>Frame Manager</strong> functions and are gathered in the following table:</p>
+<table border="1" class="docutils">
+<caption>Frame Manager functions</caption>
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><p class="first last">Function</p>
+</th>
+<th class="head"><p class="first last">Description</p>
+</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><p class="first last"><tt class="docutils literal"><span class="pre">self.playTimeline()</span></tt></p>
+</td>
+<td><p class="first"><strong>Play</strong> the timeline of <strong>the box</strong> (if any) from the current frame.</p>
+<p class="last">If the timeline is not loaded yet (so there is no current frame), it is played from the <a class="reference internal" href="timeline_box.html#choregraphe-reference-box-frame-start"><em>start frame</em></a> of the timeline.</p>
+</td>
+</tr>
+<tr class="row-odd"><td><p class="first last"><tt class="docutils literal"><span class="pre">self.stopTimeline()</span></tt></p>
+</td>
+<td><p class="first"><strong>Pause</strong> the timeline of <strong>the box</strong> (if any) at the current frame.</p>
+<p class="last">If the timeline is not loaded yet, it does not do anything.</p>
+</td>
+</tr>
+<tr class="row-even"><td><p class="first last"><tt class="docutils literal"><span class="pre">self.gotoAndPlay(p)</span></tt></p>
+</td>
+<td><p class="first last"><strong>Go</strong> to the frame <tt class="docutils literal"><span class="pre">p</span></tt>, and <strong>play</strong> the timeline of <strong>the box</strong> (if any) from this frame.</p>
+</td>
+</tr>
+<tr class="row-odd"><td><p class="first last"><tt class="docutils literal"><span class="pre">self.gotoAndStop(p)</span></tt></p>
+</td>
+<td><p class="first last"><strong>Go</strong> to the frame <tt class="docutils literal"><span class="pre">p</span></tt>, and <strong>pause</strong> the timeline of <strong>the box</strong> (if any) at this frame.</p>
+</td>
+</tr>
+<tr class="row-even"><td><p class="first last"><tt class="docutils literal"><span class="pre">self.playTimelineParent()</span></tt></p>
+</td>
+<td><p class="first"><strong>Play</strong> the timeline of <strong>the parent box</strong> (if any) from the current frame.</p>
+<p class="last">If the timeline is not loaded yet (so there is no current frame), it is played from the <a class="reference internal" href="timeline_box.html#choregraphe-reference-box-frame-start"><em>start frame</em></a>.</p>
+</td>
+</tr>
+<tr class="row-odd"><td><p class="first last"><tt class="docutils literal"><span class="pre">self.stopTimelineParent()</span></tt></p>
+</td>
+<td><p class="first"><strong>Pause</strong> the timeline of <strong>the parent box</strong> (if any) at the current frame.</p>
+<p class="last">If the timeline is not loaded yet, it does not do anything.</p>
+</td>
+</tr>
+<tr class="row-even"><td><p class="first last"><tt class="docutils literal"><span class="pre">self.gotoAndPlayParent(p)</span></tt></p>
+</td>
+<td><p class="first last"><strong>Go</strong> to the frame <tt class="docutils literal"><span class="pre">p</span></tt>, and <strong>play</strong> the timeline of <strong>the parent box</strong> (if any) from this frame.</p>
+</td>
+</tr>
+<tr class="row-odd"><td><p class="first last"><tt class="docutils literal"><span class="pre">self.gotoAndStopParent(p)</span></tt></p>
+</td>
+<td><p class="first last"><strong>Go</strong> to the frame <tt class="docutils literal"><span class="pre">p</span></tt>, and <strong>pause</strong> the timeline of <strong>the parent box</strong> (if any) at this frame.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Here the argument <tt class="docutils literal"><span class="pre">p</span></tt> can be an <strong>int</strong> and then corresponds to the <strong>number of the frame</strong>.</p>
+<p><tt class="docutils literal"><span class="pre">p</span></tt> can also be a <strong>string</strong> and then corresponds to the <strong>name of the behavior keyframe</strong> the timeline is going to go to.
+If there is no keyframe with this name, it goes to the <a class="reference internal" href="timeline_box.html#choregraphe-reference-box-frame-start"><em>start frame</em></a> of the timeline.</p>
+<p class="last">If <tt class="docutils literal"><span class="pre">p</span></tt> is something else (a float for example), the concerned function does not do anything.</p>
+</div>
+</li>
+<li><p class="first">Those which are automatically called when the box is <a class="reference internal" href="../reference.html#choregraphe-reference-loading-unloading"><em>loaded or unloaded</em></a>.</p>
+<p><tt class="docutils literal"><span class="pre">onLoad</span></tt> is called when the box is <strong>loaded</strong>.
+It is defined as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">onLoad</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c"># The code of my method</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">onUnload</span></tt> is called when it is <strong>unloaded</strong>.
+It is defined as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">onUnload</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c"># The code of my method</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>It is advised to call <tt class="docutils literal"><span class="pre">onUnload</span></tt> in the code of the methods corresponding to the onStop <a class="reference internal" href="box_input_output.html#choregraphe-reference-box-input"><em>inputs</em></a> so that the box is reinitialized when it is stopped.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">onResource</span></tt> which is called when the <a class="reference internal" href="box_optional_components.html#choregraphe-reference-box-resource"><em>resources</em></a> of the box are set to <strong>Callback on demand</strong> and the resources are asked by another box.</p>
+<p>You need to define this function for it to be called.
+The following lines enable you to define it:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">onResource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
+    <span class="c"># The code of my method</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>The argument <tt class="docutils literal"><span class="pre">resource</span></tt> corresponds to the name of the resource asked.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">onResourceError</span></tt> which is called if the <a class="reference internal" href="box_optional_components.html#choregraphe-reference-box-resource"><em>resources</em></a> are not available when you start the box.</p>
+<p>You need to define this function for it to be called.
+The following lines enable you to define it:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">onResourceError</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c"># The code of my method</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">onResourceLost</span></tt> which is called when the <a class="reference internal" href="box_optional_components.html#choregraphe-reference-box-resource"><em>resources</em></a> of the box are set to <strong>Stop on demand</strong> and if the resources are asked by another box.</p>
+<p>You need to define this function for it to be called.
+The following lines enable you to define it:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">onResourceLost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c"># The code of my method</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">ALProxy</span></tt> which enables you to create a proxy on a NAOqi module and then use easily any method of this module.</p>
+<p>For example, if you want to create a proxy on <tt class="docutils literal"><span class="pre">ALLeds</span></tt> and use the <tt class="docutils literal"><span class="pre">rasta</span></tt> method, then you can use the following lines in your function:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">leds</span> <span class="o">=</span> <span class="n">ALProxy</span><span class="p">(</span><span class="s">&quot;ALLeds&quot;</span><span class="p">)</span>
+<span class="n">leds</span><span class="o">.</span><span class="n">rasta</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Those which enables you to print messages in the <a class="reference internal" href="../panels/debug_window.html#choregraphe-overview-debug-panel"><em>Debug window</em></a>.</p>
+<p>Indeed you may have noticed that you cannot print anything in the Debug window using the classic <tt class="docutils literal"><span class="pre">print</span></tt> statement in a box script.
+To do so, you need to use specific commands detailed below instead:</p>
+<table border="1" class="docutils">
+<caption>Log functions</caption>
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><p class="first last">Function</p>
+</th>
+<th class="head"><p class="first last">Description</p>
+</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><p class="first last"><tt class="docutils literal"><span class="pre">self.log(&quot;my</span> <span class="pre">message&quot;)</span></tt></p>
+</td>
+<td><p class="first last">Message with an <strong>info</strong> level of severity.</p>
+</td>
+</tr>
+<tr class="row-odd"><td><p class="first last"><tt class="docutils literal"><span class="pre">self.logger.fatal(&quot;my</span> <span class="pre">message&quot;)</span></tt></p>
+</td>
+<td><p class="first last">Message with a <strong>fatal</strong> level of severity.</p>
+</td>
+</tr>
+<tr class="row-even"><td><p class="first last"><tt class="docutils literal"><span class="pre">self.logger.error(&quot;my</span> <span class="pre">message&quot;)</span></tt></p>
+</td>
+<td><p class="first last">Message with an <strong>error</strong> level of severity.</p>
+</td>
+</tr>
+<tr class="row-odd"><td><p class="first last"><tt class="docutils literal"><span class="pre">self.logger.warning(&quot;my</span> <span class="pre">message&quot;)</span></tt></p>
+</td>
+<td><p class="first last">Message with a <strong>warning</strong> level of severity.</p>
+</td>
+</tr>
+<tr class="row-even"><td><p class="first last"><tt class="docutils literal"><span class="pre">self.logger.info(&quot;my</span> <span class="pre">message&quot;)</span></tt></p>
+</td>
+<td><p class="first last">Message with an <strong>info</strong> level of severity.</p>
+</td>
+</tr>
+<tr class="row-odd"><td><p class="first last"><tt class="docutils literal"><span class="pre">self.logger.debug(&quot;my</span> <span class="pre">message&quot;)</span></tt></p>
+</td>
+<td><p class="first last">Message with a <strong>debug</strong> level of severity.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>For example, something like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">onInput_onStart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&quot;This is an info message&quot;</span><span class="p">)</span>
+
+   <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="s">&quot;This is a fatal message&quot;</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;This is an error message&quot;</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;This is a warning message&quot;</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;This is an other info message&quot;</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;This is a debug message&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>displays in the Debug window:</p>
+<img alt="../../../_images/debug_panel_example.png" src="../../../_images/debug_panel_example.png" />
+</li>
+</ul>
+</div>
+<div class="section" id="how-to-import-python-module-in-a-script-box">
+<span id="choregraphe-howto-import-python-module"></span><h2>How to import python module in a script box<a class="headerlink" href="#how-to-import-python-module-in-a-script-box" title="Permalink to this headline">¶</a></h2>
+<p>If you want to do special treatments on data you will need to import some python modules such as math or string.</p>
+<p>This is done by the import instruction on top of the script code.</p>
+<p>Here is a code sample that shows how to import math module:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">math</span> <span class="c">#Import the math module</span>
+
+<span class="k">class</span> <span class="nc">MyClass</span><span class="p">(</span><span class="n">GeneratedClass</span><span class="p">):</span>
+   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="n">GeneratedClass</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+   <span class="k">def</span> <span class="nf">onLoad</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="c">#~ puts code for box initialization here</span>
+      <span class="k">pass</span>
+
+   <span class="k">def</span> <span class="nf">onUnload</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="c">#~ puts code for box cleanup here</span>
+      <span class="k">pass</span>
+
+   <span class="k">def</span> <span class="nf">onInput_onStart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">tan</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">onStopped</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tan</span><span class="p">)</span>
+      <span class="k">pass</span>
+
+   <span class="k">def</span> <span class="nf">onInput_onStop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">onUnload</span><span class="p">()</span> <span class="c">#~ it is recommended to call onUnload of this box in a onStop method, as the code written in onUnload is used to stop the box as well</span>
+      <span class="k">pass</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <div class="footernav">
+    &laquo; <a href="box_optional_components.html" title="Box - Optional components">Box - Optional components</a>
+     |
+    <a href="../main_objects.html" title="Mastering the main objects" accesskey="U">Mastering the main objects</a>
+   |
+    <a href="flow_diagram_box.html" title="Flow diagram box">Flow diagram box</a> &raquo;</div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+    <ul class="this-page-menu">
+      <li><a href="../../../_sources/software/choregraphe/objects/script_box.txt"
+             rel="nofollow">Show Source</a></li>
+    </ul>
+
+
+  <h3>Table Of Contents</h3>
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../contents.html">Site map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../news/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nao/index.html">NAO</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Software</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../requirements.html">Software Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installing.html">Software Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../choregraphe_overview.html">Choregraphe overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../monitor/index.html">Monitor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../naosim/index.html">NAOsim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../naoflasher/index.html">NAOFlasher</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Choregraphe User Guide</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../starting_discovery.html">Getting started</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../main_objects.html">Mastering the main objects</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="choregraphe_project.html">Project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="behavior.html">Behavior</a></li>
+<li class="toctree-l4"><a class="reference internal" href="box.html">Box</a></li>
+<li class="toctree-l4"><a class="reference internal" href="box_input_output.html">Box - Inputs/outputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="box_optional_components.html">Box - Optional components</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="">Script box</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="flow_diagram_box.html">Flow diagram box</a></li>
+<li class="toctree-l4"><a class="reference internal" href="timeline_box.html">Timeline box</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../advanced_panels.html">Advanced panels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../miscel.html">How to ...</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../customizing.html">Customizing Choregraphe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../debugging.html">Debugging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutos/index.html">Choregraphe Tutorials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutos/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/index.html">Programming Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ref/index.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../legal/notice.html">Legal notices</a></li>
+</ul>
+
+    <h3><a href="../../../index.html">On this page</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Script box</a><ul>
+<li><a class="reference internal" href="#what-is-a-script-box">What is a Script box</a></li>
+<li><a class="reference internal" href="#how-to-create-a-script-box">How to create a Script box</a></li>
+<li><a class="reference internal" href="#script-of-a-box">Script of a box</a></li>
+<li><a class="reference internal" href="#built-in-functions-in-the-script-of-a-box">Built-in functions in the script of a box</a></li>
+<li><a class="reference internal" href="#how-to-import-python-module-in-a-script-box">How to import python module in a script box</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="box_optional_components.html" title="Box - Optional components">previous</a>
+     |
+    <a href="../main_objects.html" title="Mastering the main objects" accesskey="U">up</a>
+   |
+    <a href="flow_diagram_box.html" title="Flow diagram box">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

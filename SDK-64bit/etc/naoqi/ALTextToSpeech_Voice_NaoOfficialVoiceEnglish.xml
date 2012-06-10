@@ -1,0 +1,9 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<ModulePreference xmlns="http://www.aldebaran-robotics.com/ns/ALPreference" schemaLocation="ModulePreference.xsd" name="aldebaran-robotics.com@ALTextToSpeech_Voice_defaultEnglish" >
+  <Preference xmlns="http://www.aldebaran-robotics.com/ns/ALPreference" value="Kenny22Enhanced" type="string" name="sourceVoice" description="Synthesis source voice" />
+  <Preference xmlns="http://www.aldebaran-robotics.com/ns/ALPreference" value="0.0" type="float" name="doubleVoice" description="Ratio of pitch shifting applied to the doubling voice" />
+  <Preference xmlns="http://www.aldebaran-robotics.com/ns/ALPreference" value="0.0" type="float" name="doubleVoiceLevel" description="Level of the doubling voice" />
+  <Preference xmlns="http://www.aldebaran-robotics.com/ns/ALPreference" value="0.0" type="float" name="pitchShift" description="Ratio of the pitch shifting applied to the main voice" />
+  <Preference xmlns="http://www.aldebaran-robotics.com/ns/ALPreference" value="0.125" type="float" name="doubleVoiceTimeShift" description="Delay (ms) between the double voice and the main voice" />
+  <Preference xmlns="http://www.aldebaran-robotics.com/ns/ALPreference" value="40" type="int" name="presel" description="Synthesis speed-up option" />
+</ModulePreference>

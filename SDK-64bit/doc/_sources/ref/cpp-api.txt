@@ -1,0 +1,82 @@
+.. Warning: if you change the location of this file, you
+   have to fix the links!
+   Better would be to use a custom template for this page using pathto
+
+
+.. _naoqi-cpp-api:
+
+C++ library APIs
+================
+
+libqi
+-----
+Standard portable functions. These include utilities for managinging
+
+* application path access (data, conf, ..)
+* logging
+* os abstraction
+
+.. _libqi-doc:
+
+`libqi API reference <./libqi/index.html>`_
+
+libalerror
+----------
+Small library containing :libalerror:`AL::ALError` and :libalerror:`AL::ALNetworkError` which are the base exception for alcommon. These derive from std::exception
+
+.. _libalerror-doc:
+
+`libalerror API reference <./libalerror/index.html>`_
+
+libalvalue
+----------
+Small library containing :libalvalue:`AL::ALValue` which is a generic container that can contain most POD (Plain Old Data) types and lists.
+
+.. _libalvalue-doc:
+
+`libalvalue API reference <./libalvalue/index.html>`_
+
+libalcommon
+-----------
+ALCommon is a library that enables you to create NAOqi modules and communicate between them.
+It contains the foundation classes that form the NAOqi architecture.
+
+.. _libalcommon-doc:
+
+`libalcommon API reference <./libalcommon/index.html>`_
+
+libalextractor
+--------------
+
+.. _libalextractor-doc:
+
+`libalextractor API reference <./libalextractor/index.html>`_
+
+libalmemoryfastaccess
+---------------------
+
+.. _libalmemoryfastaccess-doc:
+
+`libalmemoryfastaccess API reference <./libalmemoryfastaccess/index.html>`_
+
+libalmath
+---------
+
+.. _libalmath-doc:
+
+`libalmath API reference <./libalmath/index.html>`_
+
+libalaudio
+----------
+
+.. _libalaudio-doc:
+
+`libalaudio API reference <./libalaudio/index.html>`_
+
+libalvision
+-----------
+
+.. _libalvision-doc:
+
+`libalvision API reference <./libalvision/index.html>`_
+

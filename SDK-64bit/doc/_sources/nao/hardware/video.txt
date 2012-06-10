@@ -1,0 +1,95 @@
+
+.. _hardware-video:
+
+Video camera
+------------
+
+:ref:`nao-hardware` | :ref:`hardware-product-range` | :ref:`hardware-kinematics`
+| Components & Sensors | :ref:`hardware-optional-device`
+
+:ref:`hardware-sensors` | :ref:`hardware-battery` | :ref:`hardware-infrared` | :ref:`hardware-led`
+| :ref:`hardware-audio-out` | :ref:`hardware-audio-in` | *Video camera*
+
+--------------------
+
+.. seealso::
+
+   - :ref:`alfacedetection`, :ref:`allandmarkdetection`, :ref:`alredballdetection`
+   - :ref:`alvideodevice`, :ref:`alvisionrecognition`, :ref:`alvisiontoolbox`
+
+
+Two identical video cameras are located in the forehead. They provide a 640x480
+resolution at 30 frames per second. They can be used to identify objects in the
+visual field such as goals and balls, and bottom camera can ease NAO's dribbles.
+
++---------------+------------------------------------+--------------------------------------+
+| NAO Model     | v3.x                               | v4.0                                 |
++===============+====================================+======================================+
+| Sensor Model  | OV7670                             | MT9M114                              |
++---------------+------------------------------------+--------------------------------------+
+| Camera output | ``VGA@30fps`` (YUV422 color space) | ``960p@30fps`` (YUV422 color space)  |
++---------------+------------------------------------+--------------------------------------+
+| Field of view | 58°DFOV (47.8°HFOV, 36.8°VFOV)     | 72.6°DFOV (60.9°HFOV, 47.6VFOV)      |
++---------------+------------------------------------+--------------------------------------+
+| Focus range   | 30cm ~ infinity                    | 30cm ~ infinity                      |
++---------------+------------------------------------+--------------------------------------+
+| Focus type    | Fixed focus                        | Fixed focus                          |
++---------------+------------------------------------+--------------------------------------+
+
+
+The picture underneath is a RGB conversion of the YUV422 file sent by the camera.
+
+.. image:: /medias/nao/hardware/hardware_frame.jpg
+   :height: 225 px
+   :width: 300 px
+
+Camera Position 
++++++++++++++++++
+
+Head 4.0
+^^^^^^^^^
+
++-----------------------------------------------------------------+
+| .. image:: /medias/nao/hardware/hardware_camera_lateral_4.0.png |
+|    :height: 372 px                                              |
+|    :width: 546 px                                               |
++-----------------------------------------------------------------+
+| .. image:: /medias/nao/hardware/hardware_camera_top_4.0.png     |
+|    :height: 375 px                                              |
+|    :width: 463 px                                               |
++-----------------------------------------------------------------+
+
+Head 3.3
+^^^^^^^^^
+
+.. warning::
+
+   The conception of the head 3.3 does not warrant the angle between the 2 cameras.
+
+.. image:: /medias/nao/hardware/hardware_cameraposition_3.3.png
+   :height: 409 px 
+   :width: 600 px 
+   
+Head 3.2
+^^^^^^^^^
+
+.. image:: /medias/nao/hardware/hardware_cameraposition.png
+   :height: 440 px 
+   :width: 600 px 
+
+
++--------------+--------+------+---------+--------------+----------------+--------------+
+| Camera name  | X(m)   | Y(m) | Z(m)    | WX(rd)[deg]* | WY(rd)[deg]*   | WZ(rd)[deg]* |
++==============+========+======+=========+==============+================+==============+
+| CameraTop    | 0.0539 | 0.0  | 0.0679  | 0.0          | 0.0            | 0.0          |
++--------------+--------+------+---------+--------------+----------------+--------------+
+| CameraBottom | 0.0488 | 0.0  | 0.02381 | 0.0          | 0.6981 \[40.0] | 0.0          |
++--------------+--------+------+---------+--------------+----------------+--------------+
+
+.. note::
+
+   We adopt the roll, pitch and yaw notation for angle representation. So, to
+   construct an homogeneous transform with rotation (Wx,Wy,Wz) use T=rotZ(Wz)*rotY(Wy)*rotX(Wx).
+
+
+.. _sensors-transmitters-leds:

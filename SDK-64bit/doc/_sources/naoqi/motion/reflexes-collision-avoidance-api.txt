@@ -1,0 +1,63 @@
+.. _reflexes-collision-avoidance-api:
+
+Self-collision avoidance API
+++++++++++++++++++++++++++++
+
+
+:ref:`naoqi-motion` || :ref:`Overview <reflexes-collision-avoidance>` | API
+
+------------
+
+
+
+Method list
+-----------
+
+.. cpp:class:: ALMotionProxy
+
+* :cpp:func:`ALMotionProxy::setCollisionProtectionEnabled`
+* :cpp:func:`ALMotionProxy::getCollisionProtectionEnabled`
+* :cpp:func:`ALMotionProxy::isCollision`
+
+
+.. cpp:function:: bool ALMotionProxy::setCollisionProtectionEnabled( const std::string& pChainName, const bool& pEnable )
+
+  Enable Anticollision protection of the arms of the robot. Use api isCollision to know if a chain is in collision and can be inactivated.
+
+  :param pChainName: The chain name {"Arms", "LArm" or "RArm"}.
+
+  :param pEnable: Activate or deactivate the anticollision of the desired Chain.
+
+  :return: A bool which notice if the desired activation/disactivation is applyed successfully. Activation always success. Disactivation success only if the current state of the chain is not in collision. If we want to disactivate collision of the both arms ("Arms"), the two arms must be without collision.
+
+  :download:`almotion_setcollisionprotectionenabled.py </samples/python/almotion/almotion_setcollisionprotectionenabled.py>`
+
+  .. literalinclude:: /samples/python/almotion/almotion_setcollisionprotectionenabled.py
+     :language: py
+
+
+.. cpp:function:: bool ALMotionProxy::getCollisionProtectionEnabled(const std::string& pChainName)
+
+  Allow to know if the collision protection is activated on the given chain.
+
+  :param pChainName: The chain name {"LArm" or "RArm"}.
+
+  :return: Return true is the collision protection of the given Arm is activated.
+
+.. cpp:function:: std::string ALMotionProxy::isCollision(const std::string& pChainName)
+
+  Give the collision state of a chain. If a chain has a collision state "none" or "near", it could be desactivated.
+
+  :param pChainName: The chain name {"Arms", "LArm" or "RArm"}.
+
+  :return: A string which notice the collision state: "none" there are no collision, "near" the collision is taking in account in the anti-collision algorithm, "collision" the chain is in contact with an other body. If the chain asked is "Arms" the most unfavorable result is given.
+
+  :download:`almotion_iscollision.cpp </samples/cpp/almotion/almotion_iscollision.cpp>`
+
+  .. literalinclude:: /samples/cpp/almotion/almotion_iscollision.cpp
+    :language: cpp
+
+  :download:`almotion_iscollision.py </samples/python/almotion/almotion_iscollision.py>`
+
+  .. literalinclude:: /samples/python/almotion/almotion_iscollision.py
+    :language: py

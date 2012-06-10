@@ -1,0 +1,69 @@
+.. _alredballdetection-api:
+
+ALRedBallDetection API
+======================
+
+:ref:`naoqi-vision` || :ref:`Overview <alredballdetection>` | API
+
+------------
+
+.. seealso::
+
+   - :ref:`Video camera Hardware<hardware-video>`
+
+
+
+Namespace : **AL**
+
+.. code-block:: cpp
+
+  #include <alproxies/alredballdetectionproxy.h>
+
+
+Method list
+-----------
+
+As any module, this module inherits methods from :ref:`almodule-api`.
+It also has the following specific methods:
+
+
+.. cpp:class:: ALRedBallDetectionProxy
+
+* :cpp:func:`ALRedBallDetectionProxy::subscribe`
+* :cpp:func:`ALRedBallDetectionProxy::unsubscribe`
+
+
+Event list
+----------
+
+* :naoqi:event:`redBallDetected`
+
+Methods
+-------
+
+.. cpp:function:: void ALRedBallDetectionProxy::subscribe(const std::string& name)
+
+    Subscribes to **ALRedBallDetection**.
+    This causes the module to start writing information to **ALMemory** in *"redBallDetected"*.
+    This can be accessed in *ALMemory* using :cpp:func:`ALMemoryProxy::getData`.
+
+    :param name: Name to identify the subscriber
+
+
+
+.. cpp:function:: void ALRedBallDetectionProxy::unsubscribe(const std::string& name)
+
+    Unsubscribes to **ALRedBallDetection**.
+    This causes the module to stop writing information to **ALMemory** in *"redBallDetected"*.
+
+    :param name: Name to identify the subscriber (as used in :cpp:func:`ALRedBallDetectionProxy::subscribe`).
+
+
+Events
+------
+
+.. naoqi:event:: redBallDetected(AL::ALValue value)
+
+  Raised when a red ball is detected.
+
+  :param value: Informations related to the detected red ball. Please refer to :ref:`alredballdetection` for details.

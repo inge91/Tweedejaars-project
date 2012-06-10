@@ -1,0 +1,35 @@
+.. _alsensors:
+
+ALSensors
+=========
+
+.. toctree::
+    :hidden:
+    :maxdepth: 1
+
+    alsensors-api
+
+
+:ref:`naoqi-sensors` || Overview | :ref:`API <alsensors-api>`
+
+------------
+
+.. seealso::
+
+   - :ref:`Contact Sensors Hardware <hardware-contact-sensors>`
+
+
+What it does
+------------
+
+The **ALSensor** module is responsible for raising events corresponding to NAO's
+bumper, tactile head, taclile hands and chest button hardware.
+
+For further details, see section: :ref:`ALSensors - List of events <alsensors-events>`.
+
+How it works
+------------
+
+ALSensor module retrives sensors data in ALMemory, processes it and raises
+events accordind to the situation.
+

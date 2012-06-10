@@ -1,0 +1,24 @@
+.. _taking-care:
+
+Taking care of NAO
+====================
+
+
+Here are gathered key points to understand NAO's messages:
+
+
+.. toctree::
+   :maxdepth: 1
+
+   led_messages
+
+And be able to perform the essential tasks of maintenance:
+
+
+.. toctree::
+   :maxdepth: 1
+
+   replacing-battery
+   upgrade
+   practices
+

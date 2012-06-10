@@ -1,0 +1,98 @@
+.. _hardware-product-range:
+
+Product range
+=================
+
+:ref:`nao-hardware` | Product range | :ref:`hardware-kinematics` |
+:ref:`hardware-sensors` | :ref:`hardware-optional-device`
+
+------------------------------
+
+
+.. _hardware-product-range::nao-body-type:
+
+NAO Body type
+--------------
+
+NAO H21/H25
++++++++++++
+
+For full overview, see the datasheet of `NAO H25 <http://aldebaran-robotics.com/en/Discover-NAO/nao-datasheet-h25.html>`_
+and `NAO H21 <http://aldebaran-robotics.com/en/Discover-NAO/nao-datasheet-h21.html>`_.
+NAO H25 is a NAO H21 with wrist joints actuated, prehensile hands and tactile sensors hands.
+
+.. image:: /medias/nao/nao_h25_schema.png
+   :height: 536 px
+   :width: 550 px
+
+---------------------
+
+NAO T14
++++++++++++
+
+For full overview, see the datasheet of `NAO T14 <http://aldebaran-robotics.com/en/Discover-NAO/nao-datasheets-t14.html>`_.
+
+.. image:: /medias/nao/nao_t14_schema.png
+   :height: 346 px
+   :width: 488 px
+
+---------------------
+   
+NAO T2
++++++++++++
+
+For full overview, see the datasheet of `NAO T2 <http://aldebaran-robotics.com/en/Discover-NAO/nao-datasheets-t2.html>`_.
+
+.. image:: /medias/nao/nao_t2_schema.png
+   :height: 348 px
+   :width: 496 px
+
+---------------------
+
+.. _hardware-product-range::nao-version:
+
+NAO Version
+----------------
+
+Many upgrade of NAO body type exist. 
+They can be differentiated with the head's back design.
+
+NAO V4
++++++++++++
+
+.. image:: /medias/nao/hardware/head_back_large_zoom_v40.png
+   :height: 335 px
+   :width: 504 px
+
+--------------------------
+
+NAO V3.3
++++++++++++
+
+.. image:: /medias/nao/hardware/head_back_large_zoom_v33.png
+   :height: 341 px
+   :width: 506 px
+
+--------------------------
+
+NAO V3+, V3.2
++++++++++++++++
+
+.. image:: /medias/nao/hardware/head_back_large_zoom_v32.png
+   :height: 365 px
+   :width: 535 px
+
+
+--------------------------
+
+
+Programmatic access to model information
+-----------------------------------------------
+
+You can call :ref:`almotion-api` :cpp:func:`ALMotionProxy::getRobotConfig` to know you NAO's body type and version.
+
+:download:`almotion_getrobotconfig.py </samples/python/almotion/almotion_getrobotconfig.py>`
+
+.. literalinclude:: /samples/python/almotion/almotion_getrobotconfig.py
+   :language: py
+

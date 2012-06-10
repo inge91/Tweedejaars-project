@@ -1,0 +1,133 @@
+
+.. |play-button| image:: /medias/desktop/beginning_play_button.png
+   :class: img-inline
+
+
+
+
+.. _choregraphe-overview-behavior-manager-panel:
+
+Behavior manager panel
+======================
+
+What is the Behavior manager panel
+-----------------------------------
+
+The **Behavior manager** panel enables you to install, uninstall, play and stop
+:ref:`behaviors<choregraphe-reference-behavior>` on the robot you are connected to.
+
+.. image:: /medias/desktop/choregraphe/behavior_manager.png
+     :width: 384 px
+     :height: 256 px
+
+
+The table below describes the main parts of the **Behavior manager panel**:
+
+=====  =================   ================================================================================
+Part    Name                Allows you to ...                          
+=====  =================   ================================================================================
+**A**   **Toolbar**         Manage the list of the Behaviors installed on the robot.
+
+**B**   **Behaviors**       Know which behaviors are currently installed on the robot.
+
+**C**   **Execution**       Control the execution of each installed Behavior.
+
+**D**   **Default**         Select the behaviors to play automatically at NAO startup.
+=====  =================   ================================================================================
+
+
+
+.. note::
+  1. You may have noticed that a behavior named **animation mode** is already
+     installed on real robots which software version is equal to or higher than 1.12.
+     It is a **read-only** behavior that you cannot delete or replace as it is a
+     functionality needed by Choregraphe.
+     
+     For further information about this behavior, see :ref:`choregraphe-howto-use-animation-mode`.
+     
+  2. When you play a behavior (or a project) with the |play-button| **Play** button
+     of Choregraphe, it is **temporary** installed and immediately executed.
+     It does not appear in the list of installed behaviors.
+
+
+.. _choregraphe-detailed-interface-behavior-manager-panel:
+
+Behavior Manager panel functionalities
+---------------------------------------
+
+Toolbar
+++++++++
+
+.. list-table::
+   :widths: 10 100
+   :header-rows: 1
+
+   * - Button
+     - Function
+   * - .. image:: /medias/desktop/choregraphe/behavior_manager_add_current.png
+     - **Install** the current opened behavior on your robot.
+   * - .. image:: /medias/desktop/choregraphe/behavior_manager_add_from_file.png
+     - **Install** a behavior from your computer on your robot.
+   * - .. image:: /medias/desktop/choregraphe/behavior_manager_open.png
+     - **Open** the behavior selected in the list of installed behaviors in Choregraphe.
+   * - .. image:: /medias/desktop/choregraphe/behavior_manager_save.png
+     - **Export** the behavior selected in the list of installed behaviors from your robot to your computer.
+   * - .. image:: /medias/desktop/choregraphe/behavior_manager_delete.png
+     - **Uninstall** the behavior selected in the list of installed behaviors.
+   * - .. image:: /medias/desktop/choregraphe/behavior_manager_stop_all.png
+     - **Stop all behaviors** that are currently running on the robot.
+       It is useful if you have executed a behavior at startup for example and you do not have control over it.
+
+Execution status
++++++++++++++++++
+   
+.. list-table::
+   :widths: 10 50 50
+   :header-rows: 1
+
+   * - Button
+     - Means that the behavior is ...
+     - Click on this button to ...
+   * - .. image:: /medias/desktop/choregraphe/behavior_manager_play_one.png
+     - not running 
+     - **Play** the behavior
+   * - .. image:: /medias/desktop/choregraphe/behavior_manager_loading.png
+     - loading
+     -
+   * - .. image:: /medias/desktop/choregraphe/behavior_manager_stop_one.png
+     - running 
+     - **Stop** the behavior
+   * - .. image:: /medias/desktop/choregraphe/behavior_manager_unloading.png
+     - unloading
+     -
+
+	 
+Setting default behaviors
+++++++++++++++++++++++++++
+
+A default behavior is a behavior which is automatically played at NAO startup.
+
+The checkbox column enables you to set a behavior as default.
+
+.. list-table::
+   :widths: 10 100
+   :header-rows: 1
+
+   * - Button
+     - Function
+
+   * - .. image:: /medias/desktop/choregraphe/behavior_manager_default_not_checked.png
+     - Not checked: the behavior is not set as default.
+   * - .. image:: /medias/desktop/choregraphe/behavior_manager_default_checked.png
+     - Checked: the behavior is set as default.
+       It will then be automatically executed at NAO startup.
+
+.. note::
+  You can also name a behavior **.default** to set it automatically as default behavior.
+
+.. warning::
+  You can play and set as default several behaviors simultaneously.
+  But the behaviors needs to be compatible.
+  For example a behavior making NAO sit down and another making him walk are not compatible.
+  Please set the :ref:`resources <choregraphe-reference-box-resource>` of your boxes to avoid conflicts between simultaneous behaviors (see :ref:`How to set resources of a box <choregraphe-howto-set-resources-for-box>`).
+
