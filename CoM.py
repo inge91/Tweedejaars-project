@@ -1,11 +1,12 @@
 import sys
+from cStringIO import StringIO
 
 # adding the Naoqi Python SDK to the path
 sys.path.append("SDK")
 
 from numpy import matrix
 from naoqi import ALProxy
-from math import cos, sin
+from math import cos, sin, pi
 from copy import deepcopy
 
 class CenterOfMass():
@@ -122,7 +123,7 @@ class CenterOfMass():
 
             # FIXME: debug
             print current + ":"
-            print T * matrix([0, 0, 0, 1]).transpose()
+            print T * matrix([0, 0, 0, 1]).transpose(), ","
 
             # multiply the transformed centroid with its weight and update the
             # total CoM and mass
@@ -170,7 +171,7 @@ class CenterOfMass():
 
             # FIXME: debug
             print current + ":"
-            print T * matrix([0, 0, 0, 1]).transpose()
+            print T * matrix([0, 0, 0, 1]).transpose(), ","
 
             # multiply the transformed centroid with its weight and update the
             # total CoM and mass
@@ -214,9 +215,14 @@ class CenterOfMass():
                                       [0, 1, 0],
                                       [sin(h_angle), 0, cos(h_angle)]])
 
+            # 45 degree (1/4 pi) component
+            roll_component = matrix([[1, 0, 0],
+                                     [0, cos(0.25*pi), -sin(0.25*pi)],
+                                     [0, sin(0.25*pi), cos(0.25*pi)]])
+
             # convert it back to a list representation for the next part of the
             # function
-            rotation = (yaw_component * pitch_component).tolist()
+            rotation = (yaw_component * pitch_component * roll_component).tolist()
 
         elif "Roll" in previous:
             rotation = [[1, 0, 0],
@@ -243,6 +249,36 @@ class CenterOfMass():
         rotation.append([0, 0, 0, 1]) # homogenous stuff
 
         return matrix(rotation)
+
+# a debug wrapper for the CenterOfMass class
+# prints a dictionary of joint locations to the file "debug_com.txt"
+#
+# TODO: get rid of the comma in the last dictionary element (currently requires
+# manual removal)
+class DebugCoM(CenterOfMass):
+    def __init__(self, ip_address, port):
+        CenterOfMass.__init__(self, ip_address, port)
+
+    def get_CoM(self, leg):
+        # backup the old stdout and set the new one to a StringIO
+        old_stdout = sys.stdout
+        sys.stdout = stringout = StringIO()
+
+        # call the regular function, with the output surrounded by braces to
+        # make it the output a proper dictionary
+        print "{"
+        com = CenterOfMass.get_CoM(self, leg)
+        print "}"
+
+        # restore the regular stdout
+        sys.stdout = old_stdout
+
+        # write the captured output to a file
+        with open("debug_com.txt", 'w') as f:
+            f.write( stringout.getvalue() )
+
+        # return the regular value
+        return com
 
 if __name__ == '__main__':
     com = CenterOfMass("10.0.0.38", 9559)
