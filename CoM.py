@@ -223,9 +223,9 @@ class CenterOfMass():
                                     [sin(h_angle), cos(h_angle), 0],
                                     [0, 0, 1]])
 
-            pitch_component = matrix([[cos(h_angle), 0, -sin(h_angle)],
+            pitch_component = matrix([[cos(h_angle), 0, sin(h_angle)],
                                       [0, 1, 0],
-                                      [sin(h_angle), 0, cos(h_angle)]])
+                                      [-sin(h_angle), 0, cos(h_angle)]])
 
             # 45 degree (1/4 pi) component
             roll_component = matrix([[1, 0, 0],
@@ -234,16 +234,16 @@ class CenterOfMass():
 
             # convert it back to a list representation for the next part of the
             # function
-            rotation = (yaw_component * pitch_component * roll_component).tolist()
+            rotation = (yaw_component * pitch_component).tolist()
 
         elif "Roll" in previous:
             rotation = [[1, 0, 0],
                         [0, cos(angle), -sin(angle)],
                         [0, sin(angle), cos(angle)]]
         elif "Pitch" in previous:
-            rotation = [[cos(angle), 0, -sin(angle)],
+            rotation = [[cos(angle), 0, sin(angle)],
                         [0, 1, 0],
-                        [sin(angle), 0, cos(angle)]]
+                        [-sin(angle), 0, cos(angle)]]
         elif "Yaw" in previous:
             rotation = [[cos(angle), -sin(angle), 0],
                         [sin(angle), cos(angle), 0],
