@@ -49,56 +49,56 @@ class CenterOfMass():
                 ######### Misschien niet de juiste versie################
                 "HeadPitch"       : ( [1.20,  -0.84,   53.53],  0.52065)}
      
-
+    # (x, y, z),  is towards torso (1) or not(-1)
     jointOffsets = {
-            ("Torso", "HeadYaw")                : [0.0, 0.0, 126.50 ],
-            ("HeadYaw", "Torso")                : [0.0, 0.0, -126.50 ],
-            ("HeadYaw","HeadPitch")             : [0.0, 0.0, 0.0 ],
-            ("HeadPitch","HeadYaw")             : [0.0, 0.0, 0.0 ],
-            ("Torso", "LShoulderPitch")         : [0.0, 98.0, 100.00 ],
-            ("LShoulderPitch", "Torso")         : [0.0, -98.0, -100.00 ],
-            ("LShoulderPitch", "LShoulderRoll") : [0.0, 0.0, 0.0],
-            ("LShoulderRoll", "LShoulderPitch") : [0.0, 0.0, 0.0],
-            ("LShoulderRoll", "LElbowYaw" )     : [105.00, 15.00, 0.00],        
-            ("LElbowYaw", "LShoulderRoll" )     : [-105.00, -15.00, 0.00],        
-            ("LElbowYaw", "LElbowRoll")         : [0, 0, 0],
-            ("LElbowRoll", "LElbowYaw")         : [0, 0, 0],
-            ("LElbowRoll", "LWristYaw")         : [55.95, 0, 0 ],
-            ("LWristYaw", "LElbowRoll")         : [-55.95, 0, 0 ],
-            ("Torso", "LHipYawPitch")           : [0, 50.0, -85.0],
-            ("LHipYawPitch", "Torso")           : [0, -50.0, 85.0],
-            ("LHipYawPitch", "LHipRoll")        : [0.0 , 0.0, 0.0],
-            ("LHipRoll", "LHipYawPitch")        : [0.0 , 0.0, 0.0],
-            ("LHipRoll", "LHipPitch")           : [0.0, 0.0, 0.0],
-            ("LHipPitch", "LHipRoll")           : [0.0, 0.0, 0.0],
-            ("LHipPitch", "LKneePitch")         : [0.0, 0.0, -100.0],
-            ("LKneePitch", "LHipPitch")         : [0.0, 0.0, 100.0],
-            ("LKneePitch","LAnklePitch")        : [0.0, 0.0, -102.9],
-            ("LAnklePitch","LKneePitch")        : [0.0, 0.0, 102.9],
-            ("LAnklePitch", "LAnkleRoll")       : [0.0, 0.0, 0.0],
-            ("LAnkleRoll", "LAnklePitch")       : [0.0, 0.0, 0.0],
-            ("Torso", "RShoulderPitch")         : [0.0, -98.0, 100.00 ],
-            ("RShoulderPitch", "Torso")         : [0.0, 98.0, -100.00 ],
-            ("RShoulderPitch", "RShoulderRoll") : [0.0, 0.0, 0.0],
-            ("RShoulderRoll", "RShoulderPitch") : [0.0, 0.0, 0.0],
-            ("RShoulderRoll", "RElbowYaw" )     : [105.00, -15.00, 0.00],        
-            ("RElbowYaw", "RShoulderRoll" )     : [-105.00, 15.00, 0.00],        
-            ("RElbowYaw", "RElbowRoll")         : [0, 0, 0],
-            ("RElbowRoll", "RElbowYaw")         : [0, 0, 0],
-            ("RElbowRoll", "RWristYaw")         : [55.95, 0, 0 ],
-            ("RWristYaw", "RElbowRoll")         : [-55.95, 0, 0 ],
-            ("Torso", "RHipYawPitch")           : [0, -50.0, -85.0],
-            ("RHipYawPitch", "Torso")           : [0, 50.0, 85.0],
-            ("RHipYawPitch", "RHipRoll")        : [0.0 , 0.0, 0.0],
-            ("RHipRoll", "RHipYawPitch")        : [0.0 , 0.0, 0.0],
-            ("RHipRoll", "RHipPitch")           : [0.0, 0.0, 0.0],
-            ("RHipPitch", "RHipRoll")           : [0.0, 0.0, 0.0],
-            ("RHipPitch", "RKneePitch")         : [0.0, 0.0, -100.0],
-            ("RKneePitch", "RHipPitch")         : [0.0, 0.0, 100.0],
-            ("RKneePitch","RAnklePitch")        : [0.0, 0.0, -102.9],
-            ("RAnklePitch","RKneePitch")        : [0.0, 0.0, 102.9],
-            ("RAnklePitch", "RAnkleRoll")       : [0.0, 0.0, 0.0],
-            ("RAnkleRoll", "RAnklePitch")       : [0.0, 0.0, 0.0]
+            ("Torso", "HeadYaw")                : ([0.0, 0.0, 126.50 ], -1),
+            ("HeadYaw", "Torso")                : ([0.0, 0.0, -126.50 ], 1),
+            ("HeadYaw","HeadPitch")             : ([0.0, 0.0, 0.0 ], -1),
+            ("HeadPitch","HeadYaw")             : ([0.0, 0.0, 0.0 ], 1),
+            ("Torso", "LShoulderPitch")         : ([0.0, 98.0, 100.00 ], -1),
+            ("LShoulderPitch", "Torso")         : ([0.0, -98.0, -100.00 ], 1),
+            ("LShoulderPitch", "LShoulderRoll") : ([0.0, 0.0, 0.0], -1),
+            ("LShoulderRoll", "LShoulderPitch") : ([0.0, 0.0, 0.0], 1),
+            ("LShoulderRoll", "LElbowYaw" )     : ([105.00, 15.00, 0.00], -1),
+            ("LElbowYaw", "LShoulderRoll" )     : ([-105.00, -15.00, 0.00], 1),
+            ("LElbowYaw", "LElbowRoll")         : ([0, 0, 0], -1),
+            ("LElbowRoll", "LElbowYaw")         : ([0, 0, 0], 1),
+            ("LElbowRoll", "LWristYaw")         : ([55.95, 0, 0 ], -1),
+            ("LWristYaw", "LElbowRoll")         : ([-55.95, 0, 0 ], 1),
+            ("Torso", "LHipYawPitch")           : ([0, 50.0, -85.0], -1),
+            ("LHipYawPitch", "Torso")           : ([0, -50.0, 85.0], 1),
+            ("LHipYawPitch", "LHipRoll")        : ([0.0 , 0.0, 0.0], -1),
+            ("LHipRoll", "LHipYawPitch")        : ([0.0 , 0.0, 0.0], 1),
+            ("LHipRoll", "LHipPitch")           : ([0.0, 0.0, 0.0], -1),
+            ("LHipPitch", "LHipRoll")           : ([0.0, 0.0, 0.0], 1),
+            ("LHipPitch", "LKneePitch")         : ([0.0, 0.0, -100.0], -1),
+            ("LKneePitch", "LHipPitch")         : ([0.0, 0.0, 100.0], 1),
+            ("LKneePitch","LAnklePitch")        : ([0.0, 0.0, -102.9], -1),
+            ("LAnklePitch","LKneePitch")        : ([0.0, 0.0, 102.9], 1),
+            ("LAnklePitch", "LAnkleRoll")       : ([0.0, 0.0, 0.0], -1),
+            ("LAnkleRoll", "LAnklePitch")       : ([0.0, 0.0, 0.0], 1),
+            ("Torso", "RShoulderPitch")         : ([0.0, -98.0, 100.00 ], -1),
+            ("RShoulderPitch", "Torso")         : ([0.0, 98.0, -100.00 ], 1),
+            ("RShoulderPitch", "RShoulderRoll") : ([0.0, 0.0, 0.0], -1),
+            ("RShoulderRoll", "RShoulderPitch") : ([0.0, 0.0, 0.0], 1),
+            ("RShoulderRoll", "RElbowYaw" )     : ([105.00, -15.00, 0.00],  -1),
+            ("RElbowYaw", "RShoulderRoll" )     : ([-105.00, 15.00, 0.00], 1),
+            ("RElbowYaw", "RElbowRoll")         : ([0, 0, 0], -1),
+            ("RElbowRoll", "RElbowYaw")         : ([0, 0, 0], 1),
+            ("RElbowRoll", "RWristYaw")         : ([55.95, 0, 0 ], -1),
+            ("RWristYaw", "RElbowRoll")         : ([-55.95, 0, 0 ], 1),
+            ("Torso", "RHipYawPitch")           : ([0, -50.0, -85.0], -1),
+            ("RHipYawPitch", "Torso")           : ([0, 50.0, 85.0], 1),
+            ("RHipYawPitch", "RHipRoll")        : ([0.0 , 0.0, 0.0], -1),
+            ("RHipRoll", "RHipYawPitch")        : ([0.0 , 0.0, 0.0], 1),
+            ("RHipRoll", "RHipPitch")           : ([0.0, 0.0, 0.0], -1),
+            ("RHipPitch", "RHipRoll")           : ([0.0, 0.0, 0.0], 1),
+            ("RHipPitch", "RKneePitch")         : ([0.0, 0.0, -100.0], -1),
+            ("RKneePitch", "RHipPitch")         : ([0.0, 0.0, 100.0], 1),
+            ("RKneePitch","RAnklePitch")        : ([0.0, 0.0, -102.9], -1),
+            ("RAnklePitch","RKneePitch")        : ([0.0, 0.0, 102.9], 1),
+            ("RAnklePitch", "RAnkleRoll")       : ([0.0, 0.0, 0.0], -1),
+            ("RAnkleRoll", "RAnklePitch")       : ([0.0, 0.0, 0.0], 1)
             }
 
     # constructor, initalizes the ALProxy
@@ -201,12 +201,12 @@ class CenterOfMass():
     # coordinate-system to the current one
     def transformation_matrix(self, previous, current):
         # get the x, y and z offset values
-        offsets = self.jointOffsets[(previous, current)]
+        offsets, towards_torso = self.jointOffsets[(previous, current)]
 
         # get the 3x3 rotation matrix using the angle of the previous joint
         # there's a special exception for the Torso, which isn't a joint
         if previous != "Torso":
-            angle = self.motion_proxy.getAngles(previous, False)[0]
+            angle = self.motion_proxy.getAngles(previous, False)[0] * towards_torso
         else:
             angle = 0
 
@@ -229,12 +229,12 @@ class CenterOfMass():
 
             # 45 degree (1/4 pi) component
             roll_component = matrix([[1, 0, 0],
-                                     [0, cos(0.25*pi), -sin(0.25*pi)],
-                                     [0, sin(0.25*pi), cos(0.25*pi)]])
+                                     [0, cos(0.25*pi * towards_torso), -sin(0.25*pi * towards_torso)],
+                                     [0, sin(0.25*pi * towards_torso), cos(0.25*pi * towards_tors   o)]])
 
             # convert it back to a list representation for the next part of the
             # function
-            rotation = (yaw_component * pitch_component).tolist()
+            rotation = (yaw_component * pitch_component * roll_component).tolist()
 
         elif "Roll" in previous:
             rotation = [[1, 0, 0],
