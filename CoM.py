@@ -206,7 +206,7 @@ class CenterOfMass():
         # get the 3x3 rotation matrix using the angle of the previous joint
         # there's a special exception for the Torso, which isn't a joint
         if previous != "Torso":
-            angle = self.motion_proxy.getAngles(previous, False)[0] * towards_torso
+            angle = self.motion_proxy.getAngles(previous, True)[0] * towards_torso
         else:
             angle = 0
 
@@ -234,7 +234,7 @@ class CenterOfMass():
 
             # convert it back to a list representation for the next part of the
             # function
-            rotation = (yaw_component * pitch_component * roll_component).tolist()
+            rotation = (yaw_component * pitch_component).tolist()
 
         elif "Roll" in previous:
             rotation = [[1, 0, 0],
