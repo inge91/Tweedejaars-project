@@ -1,10 +1,17 @@
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 from numpy import matrix
+import sys
 
 # initialisation
 fig = plt.figure()
 axes = fig.add_subplot(111, projection='3d')
+
+# check whether an option for the labels has been added
+if len(sys.argv) > 1:
+	add_labels = eval(sys.argv[1])
+else:
+	add_labels = True
 
 # read the data
 with open('debug_com.txt', 'r') as f:
@@ -41,12 +48,13 @@ for chain in chains:
 	axes.plot(xs, ys, zs)
 
 # plot the labels
-visited = []  # ignore already visited locations to reduce clutter
-for key, value in data.iteritems():
-	if value in visited:
-		continue
-	axes.text(value[0][0], value[1][0], value[2][0], key)
-	visited.append(value)
+if add_labels:
+	visited = []  # ignore already visited locations to reduce clutter
+	for key, value in data.iteritems():
+		if value in visited:
+			continue
+		axes.text(value[0][0], value[1][0], value[2][0], key)
+		visited.append(value)
 
 # set and label the axes
 axes.set_xlim([-20, 500])
