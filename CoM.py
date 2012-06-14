@@ -230,7 +230,7 @@ class CenterOfMass():
             # 45 degree (1/4 pi) component
             roll_component = matrix([[1, 0, 0],
                                      [0, cos(0.25*pi * towards_torso), -sin(0.25*pi * towards_torso)],
-                                     [0, sin(0.25*pi * towards_torso), cos(0.25*pi * towards_tors   o)]])
+                                     [0, sin(0.25*pi * towards_torso), cos(0.25*pi * towards_torso)]])
 
             # convert it back to a list representation for the next part of the
             # function
