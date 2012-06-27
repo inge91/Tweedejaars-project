@@ -199,11 +199,27 @@ class CenterOfMass():
 
     # constructs a transformation matrx for shifting from the previous
     # coordinate-system to the current one
-    def transformation_matrix(self, previous, current):
+    def translation_matrix(self, previous, current):
         # get the x, y and z offset values
-        offsets, towards_torso = self.jointOffsets[(previous, current)]
+        if previous == None:
+            offsets = [0, 0, 0]
+        else:
+            offsets, _ = self.jointOffsets[(previous, current)]
 
-        # get the 3x3 rotation matrix using the angle of the previous joint
+        rotation = [[1, 0, 0],
+                    [0, 1, 0],
+                    [0, 0, 1]]
+
+        # merge the rotation and translation together
+        rotation[0].append(offsets[0])
+        rotation[1].append(offsets[1])
+        rotation[2].append(offsets[2])
+        rotation.append([0, 0, 0, 1]) # homogenous stuff
+
+        return matrix(rotation)
+
+    def rotation_matrix(self, joint):
+        # get the 3x3 rotation matrix using the angle of the joint
         # there's a special exception for the Torso, which isn't a joint
         if previous != "Torso":
             angle = self.motion_proxy.getAngles(previous, True)[0] * towards_torso
@@ -255,12 +271,13 @@ class CenterOfMass():
                         [0, 0, 1]]
 
         # merge the rotation and translation together
-        rotation[0].append(offsets[0])
-        rotation[1].append(offsets[1])
-        rotation[2].append(offsets[2])
+        rotation[0].append(0)
+        rotation[1].append(0)
+        rotation[2].append(0)
         rotation.append([0, 0, 0, 1]) # homogenous stuff
 
         return matrix(rotation)
+
 
 # a debug wrapper for the CenterOfMass class
 # prints a dictionary of joint locations to the file "debug_com.txt"
