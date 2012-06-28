@@ -136,6 +136,7 @@ class CenterOfMass():
                 for i in xrange(1, len(path))):
             # update the transformation matrix to calculate the centroid location
             _, towards_torso = self.jointOffsets[previous, current]
+            towards_torso *= -1
             T = T * self.translation_matrix(previous, current)
             T = T * self.rotation_matrix(current, towards_torso)
 
@@ -186,6 +187,7 @@ class CenterOfMass():
                 for i in xrange(1, len(path))):
             # update the transformation matrix to calculate the centroid location
             _, towards_torso = self.jointOffsets[previous, current]
+            towards_torso *= -1
             T = T * self.translation_matrix(previous, current)
             T = T * self.rotation_matrix(current, towards_torso)
 
