@@ -108,8 +108,6 @@ Humboldt \cite{Muller2011}; we define two measures, one for accuracy and one for
 strength, then search for a path which maximizes a certain balance of these two
 metrics. 
 
-
-
 \section{Required materials and support} 
 To find a solution to our problem statement we need a Nao to experiment on and a
 possible simulation environment for at home. All of these materials are
@@ -125,6 +123,37 @@ document this process at the same time. Most of the problems have been covered
 in previous courses, but it still will require some insight in achieving our set
 goals.
 
+
+\section{Introducting the Nao} 
+The Nao is a 57 centimeter tall humanoid robot constructed by the company Aldebaraan
+
+\section{Implementations}
+
+\subsection{Balancing Problem}
+The balance problem requires knowledge of 2 concepts; the \emph{center of mass},
+and the \emph{support polygon}. The center of mass is the weighted average
+location of the Nao’s mass, while the support polygon is the location on the
+floor over which the center of mass must be located to achieve stability. In the
+case of a robot standing on the ground, the support polygon is the convex hull
+of the feet touching the ground. In our case, the robot will only be standing on
+one foot which should make it rather simple to calculate the support polygon. 
+
+\subsubsection{Calculating the Center of Mass}
+The center of mass is a bit more complex to calculate then the support polygon counterpart. It's defined as the sum
+of each component’s \emph{centroid} (its own center of mass) multiplied by its
+mass, divided by the total weight (equation \ref{eq:CoM}). This of course
+requires each centroid to be described in the same coordinate system.
+\begin{align}
+  \frac{\sum_i \vec{c}_i m_i} {m}        \label{eq:CoM}
+\end{align}
+In the Naos documentation, each components centroid is described relative to
+its own coordinate system, and offsets are included to convert between adjacent
+components’ coordinate systems. To handle this, a chain of
+transformations is constructed to walk through each component while calculating the center of
+mass of the entire robot. The coordinates of the center of mass are relative to the grounded leg as that is considered the 0 point. This choice of coordinate space helps to determine later if the center of mass is inside the support polygon.
+
+\subsubsection{Calculating the Support Polygon}
+To calculate the support polygon we need to find the size of the feet on which the Nao is standing. Because we chose the standing feet to be the origin of the coordinate system, the length and width of the feet have to be added to find the size. In the Nao documentation this accounts to \dots by \dots centimeter. This means that the Nao is in balance when the x value of the center of mass is between 0 and \dots and the y value is between 0 and \dots. The z value does not matter here.
 
 \bibliographystyle{plain}
 \bibliography{library}

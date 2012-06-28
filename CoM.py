@@ -114,11 +114,16 @@ class CenterOfMass():
                     "RHipRoll", "RHipYawPitch", "Torso")
                 }.get(leg)
 
+        angle = self.motion_proxy.getAngles(path[0], True)[0] * 1
+
         # initial transformation matrix
-        T = matrix([[1, 0, 0, 0],
+        T = matrix([[cos(angle), 0,
+            -sin(angle), 0],
                     [0, 1, 0, 0],
-                    [0, 0, 1, 0],
+                    [sin(angle), 0,
+                        cos(angle), 0],
                     [0, 0, 0, 1]])
+
 
         # initial weighted CoM location based on the first element of the path
         centroid, mass = self.jointCOM[path[0]]
@@ -205,8 +210,8 @@ class CenterOfMass():
 
         # get the 3x3 rotation matrix using the angle of the previous joint
         # there's a special exception for the Torso, which isn't a joint
-        if previous != "Torso":
-            angle = self.motion_proxy.getAngles(previous, True)[0] * towards_torso
+        if current != "Torso":
+            angle = self.motion_proxy.getAngles(current, True)[0] * towards_torso
         else:
             angle = 0
 
@@ -217,7 +222,7 @@ class CenterOfMass():
         #
         # FIXME: might need to do something extra to handle the 45 degree 
         # rotation
-        if "YawPitch" in previous:
+        if "YawPitch" in current:
             h_angle = angle / 2.0
             yaw_component = matrix([[cos(h_angle), -sin(h_angle), 0],
                                     [sin(h_angle), cos(h_angle), 0],
@@ -236,20 +241,20 @@ class CenterOfMass():
             # function
             rotation = (yaw_component * pitch_component).tolist()
 
-        elif "Roll" in previous:
+        elif "Roll" in current:
             rotation = [[1, 0, 0],
                         [0, cos(angle), -sin(angle)],
                         [0, sin(angle), cos(angle)]]
-        elif "Pitch" in previous:
+        elif "Pitch" in current:
             rotation = [[cos(angle), 0, sin(angle)],
                         [0, 1, 0],
                         [-sin(angle), 0, cos(angle)]]
-        elif "Yaw" in previous:
+        elif "Yaw" in current:
             rotation = [[cos(angle), -sin(angle), 0],
                         [sin(angle), cos(angle), 0],
                         [0, 0, 1]]
         # the silly Torso isn't a joint
-        elif "Torso" in previous:
+        elif "Torso" in current:
             rotation = [[1, 0, 0],
                         [0, 1, 0],
                         [0, 0, 1]]
