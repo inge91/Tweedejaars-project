@@ -275,45 +275,6 @@ class CenterOfMass():
 
         return matrix(rotation)
 
-
-# a debug wrapper for the CenterOfMass class
-# prints a dictionary of joint locations to the file "debug_com.txt"
-class DebugCoM(CenterOfMass):
-    def __init__(self, ip_address, port):
-        CenterOfMass.__init__(self, ip_address, port)
-
-    def get_CoM(self, leg):
-        # backup the old stdout and set the new one to a StringIO
-        old_stdout = sys.stdout
-        sys.stdout = stringout = StringIO()
-
-        # call the regular function, with the output surrounded by braces to
-        # make it the output a proper dictionary
-        print "{"
-        com = CenterOfMass.get_CoM(self, leg)
-        print "}"
-
-        # restore the regular stdout
-        sys.stdout = old_stdout
-
-        # write the captured output to a file
-        output = stringout.getvalue()
-
-        # adds commas to the places that need one
-        comma_regex = re.compile(r"""
-            ([^\]])         # any character that is not a ']'
-            ]               # followed by a ']'
-            ([^\]])         # any character that is not a ']'
-            """, re.VERBOSE)
-        
-        output = re.sub(comma_regex, r'\1],\2', output)
-        output = re.sub(r",\n}", '\n}', output)  # remove the last comma
-        with open("debug_com.txt", 'w') as f:
-            f.write(output)
-
-        # return the regular value
-        return com
-
 if __name__ == '__main__':
     com = CenterOfMass("0.0.0.0", 9559)
     com.get_CoM("RLeg")
