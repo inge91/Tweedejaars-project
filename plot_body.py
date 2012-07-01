@@ -14,7 +14,7 @@ ip_address = sys.argv[2]
 leg = sys.argv[3]
 
 from CoM import CenterOfMass
-com = CenterOfMass(ip_address, 9559)
+com = CenterOfMass(ip_address, 9559, True)
 data = com.get_locations_dict(leg)
 com_loc = com.get_CoM(leg)
 

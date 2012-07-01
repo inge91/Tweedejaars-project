@@ -108,8 +108,30 @@ class CenterOfMass():
             }
 
     # constructor, initalizes the ALProxy
-    def __init__(self, ip_address, port):
-        self.motion_proxy = ALProxy("ALMotion", ip_address, port)
+    def __init__(self, ip_address="0.0.0.0", port=9559, online=False,
+                 angle_dict=None):
+        """
+        Args:
+            ip_address: ip address of the running Naoqi
+            port      : the port Naoqi is listening on (9559 by default)
+            online    : whether the calculation will be done online (True) or 
+                        precomputed (False). If True, angle_dict must be 
+                        specified
+            angle_dict: a dictionary containing joint angles
+        """
+
+        # online calculation
+        if online:
+            self.motion_proxy = ALProxy("ALMotion", ip_address, port)
+            self.get_angles = lambda x: self.motion_proxy.getAngles(x, True)[0]
+
+        # offline calculation
+        else:
+            if angle_dict == None:
+                raise Exception("Must supply dictionary")
+
+            self.angle_dict = angle_dict
+            self.get_angles = lambda x: self.angle_dict[x]
 
     # returns the CoM of the robot, relative to the standing leg
     def get_CoM(self, leg):
@@ -219,7 +241,7 @@ class CenterOfMass():
         # get the 3x3 rotation matrix using the angle of the joint
         # there's a special exception for the Torso, which isn't a joint
         if joint != "Torso":
-            angle = self.motion_proxy.getAngles(joint, True)[0] * towards_torso
+            angle = self.get_angles(joint) * towards_torso
         else:
             angle = 0
 
