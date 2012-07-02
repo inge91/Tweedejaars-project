@@ -108,11 +108,53 @@ class CenterOfMass():
             }
 
     # constructor, initalizes the ALProxy
-    def __init__(self, ip_address, port):
-        self.motion_proxy = ALProxy("ALMotion", ip_address, port)
+    def __init__(self, ip_address="0.0.0.0", port=9559, online=False,
+                 angle_dict=None):
+        """
+        Args:
+            ip_address: ip address of the running Naoqi
+            port      : the port Naoqi is listening on (9559 by default)
+            online    : whether the calculation will be done online (True) or 
+                        precomputed (False). If True, angle_dict must be 
+                        specified
+            angle_dict: a dictionary containing joint angles
+        """
 
-    # returns the center of mass of a given part
+        # online calculation
+        if online:
+            self.motion_proxy = ALProxy("ALMotion", ip_address, port)
+            self.get_angles = lambda x: self.motion_proxy.getAngles(x, True)[0]
+
+        # offline calculation
+        else:
+            if angle_dict == None:
+                raise Exception("Must supply dictionary")
+
+            self.angle_dict = angle_dict
+            self.get_angles = lambda x: self.angle_dict[x]
+
+    # returns the CoM of the robot, relative to the standing leg
     def get_CoM(self, leg):
+        joint_locs = self.get_locations_dict(leg)
+
+        # calculating total mass
+        total_mass = 0
+        for _, mass in self.jointCOM.itervalues():
+            total_mass += mass
+
+        # calculating CoM
+        com = matrix([0, 0, 0, 1]).transpose()
+        for joint in joint_locs.iterkeys():
+            centroid, mass = self.jointCOM[joint]
+            joint_loc = joint_locs[joint]
+            joint_loc += matrix(centroid + [1]).transpose()
+
+            com += (mass * joint_loc) / total_mass
+
+        return com
+
+    # returns the locations of each joint relative to the standing foot
+    def get_locations_dict(self, leg):
         path = {
                 "LLeg" : (None, "LAnkleRoll", "LAnklePitch", "LKneePitch", "LHipPitch",
                     "LHipRoll", "LHipYawPitch", "Torso"),
@@ -120,15 +162,13 @@ class CenterOfMass():
                     "RHipRoll", "RHipYawPitch", "Torso")
                 }.get(leg)
 
+        joint_locs = {}
+
         # initial transformation matrix
         T = matrix([[1, 0, 0, 0],
                     [0, 1, 0, 0],
                     [0, 0, 1, 0],
                     [0, 0, 0, 1]])
-
-        # initial values
-        total_CoM = matrix([0, 0, 0, 1]).transpose()
-        total_mass = 0
 
         # loop through every element except the first, along with its
         # previous element
@@ -140,33 +180,17 @@ class CenterOfMass():
             T = T * self.translation_matrix(previous, current)
             T = T * self.rotation_matrix(current, towards_torso)
 
-            # FIXME: debug
-            print '"' + current + '"' + ":"
-            print T * matrix([0, 0, 0, 1]).transpose(), ","
-
-            # multiply the transformed centroid with its weight and update the
-            # total CoM and mass
-            centroid, mass = self.jointCOM[current]
-            centroid = matrix(centroid + [1]).transpose()
-            centroid = T * centroid
-
-            total_CoM += mass * centroid
-            total_mass += mass
+            joint_locs[current] = T * matrix([0, 0, 0, 1]).transpose()
 
         # now calculate all other branches from the torso
         branches = [("LLeg" if leg == "RLeg" else "RLeg"), "LArm", "RArm", "Head"]
         for branch in branches:
-            branch_com, branch_mass = self.com_from_torso(deepcopy(T), branch)
+            self.locs_from_torso(deepcopy(T), branch, joint_locs)
 
-            total_CoM += branch_com
-            total_mass += branch_mass
+        return joint_locs
 
-        # the final CoM is the total weighted CoM location divided by the total
-        # weight
-        return total_CoM / float(total_mass)
-
-    # returns the center of mass and total weight of a specific bodypart
-    def com_from_torso(self, T, part):
+    # add the joint locations of the given kinematics chain to the given dictionary
+    def locs_from_torso(self, T, part, joint_locs):
         path = {
                 "LLeg" : ("Torso", "LHipYawPitch", "LHipRoll", "LHipPitch", "LKneePitch",
                     "LAnklePitch", "LAnkleRoll"),
@@ -181,31 +205,16 @@ class CenterOfMass():
 
         # loop through every element except the first, along with its
         # previous element
-        total_mass = 0
-        total_CoM = T * matrix([[0], [0], [0], [1]]) # start at the torso location
         for current, previous in ((path[i], path[i-1]) 
                 for i in xrange(1, len(path))):
-            # update the transformation matrix to calculate the centroid location
+            # update the transformation matrix
             _, towards_torso = self.jointOffsets[previous, current]
             towards_torso *= -1
             T = T * self.translation_matrix(previous, current)
             T = T * self.rotation_matrix(current, towards_torso)
 
-            # FIXME: debug
-            print '"' + current + '"' + ":"
-            print T * matrix([0, 0, 0, 1]).transpose(), ","
-
-            # multiply the transformed centroid with its weight and update the
-            # total CoM and mass
-            centroid, mass = self.jointCOM[current]
-            centroid = matrix(centroid + [1]).transpose()
-            centroid = T * centroid
-
-            total_CoM += mass * centroid
-            total_mass += mass
-
-        return total_CoM, total_mass
-
+            # add joint location
+            joint_locs[current] = T * matrix([0, 0, 0, 1]).transpose()
 
     # constructs a transformation matrx for shifting from the previous
     # coordinate-system to the current one
@@ -232,7 +241,7 @@ class CenterOfMass():
         # get the 3x3 rotation matrix using the angle of the joint
         # there's a special exception for the Torso, which isn't a joint
         if joint != "Torso":
-            angle = self.motion_proxy.getAngles(joint, True)[0] * towards_torso
+            angle = self.get_angles(joint) * towards_torso
         else:
             angle = 0
 
@@ -288,45 +297,6 @@ class CenterOfMass():
 
         return matrix(rotation)
 
-
-# a debug wrapper for the CenterOfMass class
-# prints a dictionary of joint locations to the file "debug_com.txt"
-class DebugCoM(CenterOfMass):
-    def __init__(self, ip_address, port):
-        CenterOfMass.__init__(self, ip_address, port)
-
-    def get_CoM(self, leg):
-        # backup the old stdout and set the new one to a StringIO
-        old_stdout = sys.stdout
-        sys.stdout = stringout = StringIO()
-
-        # call the regular function, with the output surrounded by braces to
-        # make it the output a proper dictionary
-        print "{"
-        com = CenterOfMass.get_CoM(self, leg)
-        print "}"
-
-        # restore the regular stdout
-        sys.stdout = old_stdout
-
-        # write the captured output to a file
-        output = stringout.getvalue()
-
-        # adds commas to the places that need one
-        comma_regex = re.compile(r"""
-            ([^\]])         # any character that is not a ']'
-            ]               # followed by a ']'
-            ([^\]])         # any character that is not a ']'
-            """, re.VERBOSE)
-        
-        output = re.sub(comma_regex, r'\1],\2', output)
-        output = re.sub(r",\n}", '\n}', output)  # remove the last comma
-        with open("debug_com.txt", 'w') as f:
-            f.write(output)
-
-        # return the regular value
-        return com
-
 if __name__ == '__main__':
-    com = CenterOfMass("10.0.0.38", 9559)
+    com = CenterOfMass("0.0.0.0", 9559)
     com.get_CoM("RLeg")
