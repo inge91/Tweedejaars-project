@@ -108,34 +108,19 @@ class CenterOfMass():
             }
 
     # constructor, initalizes the ALProxy
-    def __init__(self, ip_address="0.0.0.0", port=9559, online=False,
-                 angle_dict=None):
+    def __init__(self, ip_address="0.0.0.0", port=9559):
         """
         Args:
             ip_address: ip address of the running Naoqi
             port      : the port Naoqi is listening on (9559 by default)
-            online    : whether the calculation will be done online (True) or 
-                        precomputed (False). If True, angle_dict must be 
-                        specified
-            angle_dict: a dictionary containing joint angles
         """
 
-        # online calculation
-        if online:
-            self.motion_proxy = ALProxy("ALMotion", ip_address, port)
-            self.get_angles = lambda x: self.motion_proxy.getAngles(x, True)[0]
-
-        # offline calculation
-        else:
-            if angle_dict == None:
-                raise Exception("Must supply dictionary")
-
-            self.angle_dict = angle_dict
-            self.get_angles = lambda x: self.angle_dict[x]
+        self.motion_proxy = ALProxy("ALMotion", ip_address, port)
+        self.get_angles = lambda x: self.motion_proxy.getAngles(x, True)[0]
 
     # returns the CoM of the robot, relative to the standing leg
-    def get_CoM(self, leg):
-        joint_locs = self.get_locations_dict(leg)
+    def get_CoM(self, leg, online=True, joint_dict=None):
+        joint_locs = self.get_locations_dict(leg, online, joint_dict)
 
         # calculating total mass
         total_mass = 0
@@ -154,7 +139,7 @@ class CenterOfMass():
         return com
 
     # returns the locations of each joint relative to the standing foot
-    def get_locations_dict(self, leg):
+    def get_locations_dict(self, leg, online=True, joint_dict=None):
         path = {
                 "LLeg" : (None, "LAnkleRoll", "LAnklePitch", "LKneePitch", "LHipPitch",
                     "LHipRoll", "LHipYawPitch", "Torso"),
@@ -178,7 +163,7 @@ class CenterOfMass():
             _, towards_torso = self.jointOffsets[previous, current]
             towards_torso *= -1
             T = T * self.translation_matrix(previous, current)
-            T = T * self.rotation_matrix(current, towards_torso)
+            T = T * self.rotation_matrix(current, towards_torso, online, joint_dict)
 
             joint_locs[current] = T * matrix([0, 0, 0, 1]).transpose()
 
@@ -237,11 +222,17 @@ class CenterOfMass():
 
         return matrix(rotation)
 
-    def rotation_matrix(self, joint, towards_torso):
+    def rotation_matrix(self, joint, towards_torso, online=True, joint_dict=None):
+
+        if online:
+            get_angles = self.get_angles
+        else:
+            get_angles = lambda x: joint_dict[x]
+
         # get the 3x3 rotation matrix using the angle of the joint
         # there's a special exception for the Torso, which isn't a joint
         if joint != "Torso":
-            angle = self.get_angles(joint) * towards_torso
+            angle = get_angles(joint) * towards_torso
         else:
             angle = 0
 

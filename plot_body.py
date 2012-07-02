@@ -14,7 +14,7 @@ ip_address = sys.argv[2]
 leg = sys.argv[3]
 
 from CoM import CenterOfMass
-com = CenterOfMass(ip_address, 9559, True)
+com = CenterOfMass(ip_address, 9559)
 data = com.get_locations_dict(leg)
 com_loc = com.get_CoM(leg)
 
@@ -59,11 +59,12 @@ axes.plot([com_x, com_x + 0.1], [com_y, com_y + 0.1], [com_z, com_z + 0.1])
 axes.text(com_x, com_y, com_y, "CoM")
 
 # plot the labels
-if not hide_labels:
+if hide_labels:
 	visited = []  # ignore already visited locations to reduce clutter
 	for key, value in data.iteritems():
-		if value in visited:
-			continue
+		print value
+		#if value in visited:
+			#continue
 		axes.text(value[0][0], value[1][0], value[2][0], key)
 		visited.append(value)
 
