@@ -27,7 +27,7 @@ chains = [
           ["RAnkleRoll", "RAnklePitch", "RKneePitch", "RHipPitch", "RHipRoll",
            "RHipYawPitch", "Torso"],
           # left arm
-          ["LElbowRoll", "LElbowYaw", "LShoulderRoll",
+          ["LElbowRoll", "LElbowYaw", 
            "LShoulderPitch", "Torso"],
           # right arm
           ["RElbowRoll", "RElbowYaw", "RShoulderRoll",

@@ -59,6 +59,7 @@ class CenterOfMass():
             ("LShoulderPitch", "Torso")         : ([0.0, -98.0, -100.00 ], 1),
             ("LShoulderPitch", "LShoulderRoll") : ([0.0, 0.0, 0.0], -1),
             ("LShoulderRoll", "LShoulderPitch") : ([0.0, 0.0, 0.0], 1),
+            ("LShoulderPitch", "LElbowYaw" )     : ([105.00, 15.00, 0.00], -1),
             ("LShoulderRoll", "LElbowYaw" )     : ([105.00, 15.00, 0.00], -1),
             ("LElbowYaw", "LShoulderRoll" )     : ([-105.00, -15.00, 0.00], 1),
             ("LElbowYaw", "LElbowRoll")         : ([0, 0, 0], -1),
@@ -179,7 +180,6 @@ class CenterOfMass():
             towards_torso *= -1
             T = T * self.translation_matrix(previous, current)
             T = T * self.rotation_matrix(current, towards_torso)
-
             joint_locs[current] = T * matrix([0, 0, 0, 1]).transpose()
 
         # now calculate all other branches from the torso
@@ -196,7 +196,7 @@ class CenterOfMass():
                     "LAnklePitch", "LAnkleRoll"),
                 "RLeg" : ("Torso", "RHipYawPitch", "RHipRoll", "RHipPitch", "RKneePitch",
                     "RAnklePitch", "RAnkleRoll"),
-                "LArm" : ("Torso", "LShoulderPitch", "LShoulderRoll", "LElbowYaw",
+                "LArm" : ("Torso", "LShoulderPitch",  "LElbowYaw",
                     "LElbowRoll"),
                 "RArm" : ("Torso", "RShoulderPitch", "RShoulderRoll", "RElbowYaw",
                     "RElbowRoll"),
@@ -288,6 +288,7 @@ class CenterOfMass():
             rotation = [[1, 0, 0],
                         [0, 1, 0],
                         [0, 0, 1]]
+        
 
         # merge the rotation and translation together
         rotation[0].append(0)
