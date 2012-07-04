@@ -174,12 +174,12 @@ class CenterOfMass():
         # now calculate all other branches from the torso
         branches = [("LLeg" if leg == "RLeg" else "RLeg"), "LArm", "RArm", "Head"]
         for branch in branches:
-            self.locs_from_torso(deepcopy(T), branch, joint_locs)
+            self.locs_from_torso(deepcopy(T), branch, joint_locs, online, joint_dict)
 
         return joint_locs
 
     # add the joint locations of the given kinematics chain to the given dictionary
-    def locs_from_torso(self, T, part, joint_locs):
+    def locs_from_torso(self, T, part, joint_locs, online=True, joint_dict=None):
         path = {
                 "LLeg" : ("Torso", "LHipYawPitch", "LHipRoll", "LHipPitch", "LKneePitch",
                     "LAnklePitch", "LAnkleRoll"),
@@ -200,7 +200,7 @@ class CenterOfMass():
             _, towards_torso = self.jointOffsets[previous, current]
             towards_torso *= -1
             T = T * self.translation_matrix(previous, current)
-            T = T * self.rotation_matrix(current, towards_torso)
+            T = T * self.rotation_matrix(current, towards_torso, online, joint_dict)
 
             # add joint location
             joint_locs[current] = T * matrix([0, 0, 0, 1]).transpose()
