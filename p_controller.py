@@ -25,7 +25,10 @@ class P_Controller(Thread):
         self.mp = self.com.motion_proxy
 
         # make sure the fallmanager is disabled
-        self.mp.setFallManagerEnabled(False)
+        try:
+            self.mp.setFallManagerEnabled(False)
+        except:
+            pass
         self.running = True
 
     def run(self):
@@ -50,8 +53,8 @@ class P_Controller(Thread):
             best_pangle = 0
             best_rangle = 0
             best_com_error = 999
-            for pitch_angle in (0, -0.05, 0.05):
-                for roll_angle in (0, -0.05, 0.05):
+            for pitch_angle in (0, -p_out, p_out):
+                for roll_angle in (0, -p_out, p_out):
                     joints = copy(cur_joints)
                     joints[self.leg_prefix + "HipRoll"] += roll_angle
                     joints[self.leg_prefix + "HipPitch"] += pitch_angle
@@ -70,6 +73,9 @@ class P_Controller(Thread):
             self.mp.changeAngles(self.leg_prefix + "HipRoll", best_rangle, 1)
             self.mp.changeAngles(self.leg_prefix + "HipPitch", best_pangle, 1)
 
+    def kill(self):
+        self.running = False
+
     def error(self, com_loc):
         polygon = matrix([[3], [0], [0], [1]])
         diff = polygon - com_loc
@@ -79,3 +85,13 @@ class P_Controller(Thread):
             abs_sum += abs(i[0, 0])
 
         return abs_sum
+
+if __name__ == '__main__':
+    import time
+
+    cont = P_Controller("LLeg", "0.0.0.0", 0.05)
+    cont.start()
+    time.sleep(5)
+    cont.kill()
+    cont.join()
+    del cont
