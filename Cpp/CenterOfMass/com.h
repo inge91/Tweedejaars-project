@@ -6,10 +6,13 @@
 #include <functional>
 
 #include <boost/numeric/ublas/matrix.hpp>
+#include <boost/tuple/tuple.hpp>
+
 #include <alproxies/almotionproxy.h>
 
 using namespace std;
 using boost::numeric::ublas::matrix;
+using boost::tuples::tuple;
 
 typedef map<string, matrix<double> > joint_loc_map;
 
@@ -17,6 +20,7 @@ class CenterOfMass
 {
 /* methods */
 public:
+    // constructor
     CenterOfMass(string ip_address, int port);
 
     // returns the center of mass relative to the given (standing) leg
@@ -37,6 +41,9 @@ private:
                          const map<string, double> &joint_dict=map<string, double>());
 
 /* fields */
+public:
+    static map<string, tuple<vector<double>, double> > jointCOM;
+    static map<tuple<string, string>, tuple<vector<double>, double> > jointOffsets;
 private:
     AL::ALMotionProxy m_motion_proxy;
 };
