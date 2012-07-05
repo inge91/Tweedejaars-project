@@ -15,10 +15,44 @@ using namespace std;
 using boost::numeric::ublas::matrix;
 using boost::numeric::ublas::prod;
 using boost::numeric::ublas::identity_matrix;
+using boost::numeric::ublas::trans;
 
 CenterOfMass::CenterOfMass(string ip_address, int port) :
     m_motion_proxy(ip_address, port)
 {
+}
+
+matrix<double> CenterOfMass::get_CoM(string leg,
+                             bool online,
+                             const map<string, double> &joint_dict)
+{
+    joint_loc_map joint_locs = get_locations_dict(leg, online, joint_dict);
+
+    // calculating total mass
+    double total_mass = 0;
+
+    for (auto &jcom : jointCOM) {
+        total_mass += jcom.second.second;
+    }
+
+    // calculating CoM
+    vector<vector<double> > origin = { {0}, {0}, {0}, {1} };
+    matrix<double> com = vec_to_mat(origin);
+
+    string joint;
+    matrix<double> joint_loc;
+    vector<double> centroid;
+    double mass;
+    for (auto &pair : joint_locs) {
+        joint = pair.first; joint_loc = pair.second;
+        pair<vector<double>, double> com_mass = jointCOM[joint];
+        centroid = pair.first; mass = pair.second;
+
+        joint_loc += trans(vec_to_mat(centroid));
+        com += (mass * joint_loc) / total_mass;
+    }
+
+    return com;
 }
 
 joint_loc_map CenterOfMass::get_locations_dict(string leg, bool online,
@@ -36,7 +70,7 @@ joint_loc_map CenterOfMass::get_locations_dict(string leg, bool online,
     joint_loc_map joint_locs;
 
     // initial transformation matrix
-    matrix<double> T = boost::numeric::ublas::identity_matrix<double>(4, 4);
+    matrix<double> T = identity_matrix<double>(4, 4);
 
     // loop through every element except the first,
     // along with its previous element
