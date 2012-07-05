@@ -21,6 +21,48 @@ CenterOfMass::CenterOfMass(string ip_address, int port) :
 {
 }
 
+joint_loc_map CenterOfMass::get_locations_dict(string leg, bool online,
+                                               const map<string, double> &joint_dict)
+{
+    map<string, vector<string> > paths =
+    {
+        {"LLeg", {"None", "LAnkleRoll", "LAnklePitch", "LKneePitch", "LHipPitch",
+                  "LHipRoll", "LHipYawPitch", "Torso"}},
+        {"RLeg", {"None", "RAnkleRoll", "RAnklePitch", "RKneePitch", "RHipPitch",
+                  "RHipRoll", "RHipYawPitch", "Torso"}}
+    };
+
+    vector<string> path = paths[leg];
+    joint_loc_map joint_locs;
+
+    // initial transformation matrix
+    matrix<double> T = boost::numeric::ublas::identity_matrix<double>(4, 4);
+
+    // loop through every element except the first,
+    // along with its previous element
+    string current, previous;
+    for (unsigned cur = 1, prev = 0; cur< path.size(); ++cur, ++prev) {
+
+        // update the transformation matrix to calculate the centroid location
+        int towards_torso = jointOffsets[pair<string, string>(previous, current)].second;
+        towards_torso *= -1;
+
+        T = prod(T, translation_matrix(previous, current));
+        T = prod(T, rotation_matrix(current, towards_torso, online, joint_dict));
+
+        // add joint location
+        vector<vector<double> > origin = { {0}, {0}, {0}, {1} };
+        joint_locs[current] = prod(T, vec_to_mat(origin));
+    }
+
+    // now calculate the all other branches from the torso
+    vector<string> branches = { (leg == "RLeg") ? "LLeg" : "RLeg",
+                                "LArm", "RArm", "Head" };
+
+    for (string &branch : branches)
+        locs_from_torso(T, branch, joint_locs, online, joint_dict);
+}
+
 void CenterOfMass::locs_from_torso(matrix<double> T, string part,
                                    joint_loc_map &joint_locs,
                                    bool online,
