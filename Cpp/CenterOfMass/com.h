@@ -3,16 +3,12 @@
 
 #include <string>
 #include <map>
-#include <functional>
 
 #include <boost/numeric/ublas/matrix.hpp>
-#include <boost/tuple/tuple.hpp>
-
 #include <alproxies/almotionproxy.h>
 
 using namespace std;
 using boost::numeric::ublas::matrix;
-using boost::tuples::tuple;
 
 typedef map<string, matrix<double> > joint_loc_map;
 
@@ -40,10 +36,22 @@ private:
                          bool online=true,
                          const map<string, double> &joint_dict=map<string, double>());
 
+    // returns a rotation matrix over a given joint
+    matrix<double> rotation_matrix(string joint, int towards_torso,
+                                   bool online=true,
+                                   const map<string, double> &joint_dict=map<string, double>());
+
+    // returns a translation matrix between two joints
+    matrix<double> translation_matrix(string previous, string current);
+
+    // converts a 2-dimensional vector to a matrix
+public: // debug
+    matrix<double> vec_to_mat(vector<vector<double> > vec);
+
 /* fields */
 public:
-    static map<string, tuple<vector<double>, double> > jointCOM;
-    static map<tuple<string, string>, tuple<vector<double>, double> > jointOffsets;
+    static map<string, pair<vector<double>, double> > jointCOM;
+    static map<pair<string, string>, pair<vector<double>, double> > jointOffsets;
 private:
     AL::ALMotionProxy m_motion_proxy;
 };
