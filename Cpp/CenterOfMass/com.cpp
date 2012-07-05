@@ -6,11 +6,14 @@
 #include <iostream>
 #include <boost/numeric/ublas/io.hpp>
 #include <alerror/alerror.h>
+#include <cmath>
+#include <functional>
 
 #include "com.h"
 
 using namespace std;
 using boost::numeric::ublas::matrix;
+using boost::numeric::ublas::prod;
 using boost::numeric::ublas::identity_matrix;
 
 CenterOfMass::CenterOfMass(string ip_address, int port) :
@@ -20,6 +23,7 @@ CenterOfMass::CenterOfMass(string ip_address, int port) :
 
 matrix<double> CenterOfMass::translation_matrix(string previous, string current)
 {
+    // get the x, y and z offset values
     vector<double> offsets;
 
     if (previous == "None") {
@@ -27,17 +31,121 @@ matrix<double> CenterOfMass::translation_matrix(string previous, string current)
         offsets[1] = 0;
         offsets[2] = 0;
     } else {
-        //pair<vector<double>, double> j_off = CenterOfMass::jointOffsets[pair<string, string>(previous, current)];
-        //offsets = j_off.first;
+        pair<vector<double>, double> j_off = CenterOfMass::jointOffsets[pair<string, string>(previous, current)];
+        offsets = j_off.first;
     }
 
+    // create the translation matrix
     vector<vector<double> > mat =
     {
-        {1, 2, 3},
-        {4, 5, 6}
+        {1, 0, 0, offsets[0]},
+        {0, 1, 0, offsets[1]},
+        {0, 0, 1, offsets[2]},
+        {0, 0, 0,          1}
     };
 
-    return matrix<double>(4, 4);
+    return vec_to_mat(mat);
+}
+
+matrix<double> CenterOfMass::rotation_matrix(string joint, int towards_torso,
+                                             bool online,
+                                             const map<string, double> &joint_dict)
+{
+    // create the function needed to obtain the joint angles
+    function<double(string)> get_angles;
+    if (online)
+        get_angles = [this](string x) { return m_motion_proxy.getAngles(x, true)[0]; };
+    else
+        get_angles = [&joint_dict](string x) { return joint_dict.find(x)->second; };
+
+    // get the angle, or 0 if the current "joint" is the torso (which isn't a joint)
+    double angle = 0;
+    if (joint != "Torso")
+        angle = get_angles(joint) * towards_torso;
+
+    /* special case for the HipYawPitch
+       it's split up evenly between a Yaw and a Pitch component
+     */
+    matrix<double> rot_matrix;
+    if (contains(joint, "YawPitch")) {
+        double h_angle = angle / 2.0;
+
+        vector<vector<double> > yaw_component =
+        {
+            {cos(h_angle), -sin(h_angle), 0, 0},
+            {sin(h_angle), cos(h_angle),  0, 0},
+            {0,            0,             1, 0},
+            {0,            0,             0, 1}
+        };
+
+        vector<vector<double> > pitch_component =
+        {
+            {cos(h_angle),  0, sin(h_angle), 0},
+            {0,             1, 0,            0},
+            {-sin(h_angle), 0, cos(h_angle), 0},
+            {0,             0, 0,            1}
+        };
+
+        rot_matrix = prod(vec_to_mat(yaw_component),  vec_to_mat(pitch_component));
+    }
+
+    else if (contains(joint, "Roll")) {
+        vector<vector<double> > rotation =
+        {
+            {1, 0,          0,           0},
+            {0, cos(angle), -sin(angle), 0},
+            {0, sin(angle), cos(angle),  0},
+            {0, 0,          0,           1}
+        };
+
+        rot_matrix = vec_to_mat(rotation);
+    }
+
+    else if (contains(joint, "Pitch")) {
+        vector<vector<double> > rotation =
+        {
+            {cos(angle),  0, sin(angle), 0},
+            {0,           1, 0,          0},
+            {-sin(angle), 0, cos(angle), 0},
+            {0,           0, 0,          1}
+        };
+
+        rot_matrix = vec_to_mat(rotation);
+    }
+
+    else if (contains(joint, "Yaw")) {
+        vector<vector<double> > rotation =
+        {
+            {cos(angle), -sin(angle), 0, 0},
+            {sin(angle), cos(angle),  0, 0},
+            {0,          0,           1, 0},
+            {0,          0,           0, 1}
+        };
+
+        rot_matrix = vec_to_mat(rotation);
+    }
+
+    else if (contains(joint, "Torso")) {
+        vector<vector<double> > rotation =
+        {
+            {1, 0, 0, 0},
+            {0, 1, 0, 0},
+            {0, 0, 1, 0},
+            {0, 0, 0, 1}
+        };
+
+        rot_matrix = vec_to_mat(rotation);
+    }
+
+    return rot_matrix;
+}
+
+bool CenterOfMass::contains(string str, string substr)
+{
+    if (str.find(substr) != string::npos)
+        return true;
+    else
+        return false;
 }
 
 matrix<double> CenterOfMass::vec_to_mat(vector<vector<double> > vec)
@@ -56,25 +164,13 @@ matrix<double> CenterOfMass::vec_to_mat(vector<vector<double> > vec)
 int main()
 {
     CenterOfMass com("0.0.0.0", 9559);
-    std::vector<vector<double> > vec =
-    { {1, 2, 3},
-      {4, 5, 6} };
-
-    std::cout << com.vec_to_mat(vec) << std::endl;
-
-    try {
-        std::cout << "reached try block" << std::endl;
-        AL::ALMotionProxy mp("0.0.0.0", 9559);
-        cout << mp.getAngles("RKneePitch", true) << std::endl;
-    } catch (const AL::ALError &e) {
-        std::cout << "caught error" << std::endl;
-    }
+    std::cout << com.translation_matrix("Torso", "HeadYaw") << std::endl;
 }
 
 // the data
 map<string, pair<vector<double>, double> > CenterOfMass::jointCOM =
 {
-    {"RAnkleRoll",      { {25.40, -3.32, -32.41}, 0.16175}},
+    {"RAnkleRoll",       { {25.40, -3.32, -32.41}, 0.16175}},
     {"LAnkleRoll",       { {25.40,  3.32, -32.41},  0.16175}},
     {"RAnklePitch",      { {1.42,   -0.28,  6.38},  0.13892}},
     {"LAnklePitch",      { {1.42,   0.28,  6.38},  0.13892}},
@@ -97,4 +193,62 @@ map<string, pair<vector<double>, double> > CenterOfMass::jointCOM =
     {"HeadYaw",          { {-0.02,  0.17,  -25.56},  0.05930}},
     {"Torso",            { {-4.15,  0.07,   42.58},   1.03948}},
     {"HeadPitch",        { {1.20,  -0.84,   53.53},  0.52065}}
+};
+
+map<pair<string, string>, pair<vector<double>, double> > CenterOfMass::jointOffsets =
+{
+    { {"Torso", "HeadYaw"},             { {0.0, 0.0, 126.50}, -1 } },
+    { {"HeadYaw", "Torso"}                , {{0.0, 0.0, -126.50 }, 1}},
+    { {"HeadYaw","HeadPitch"}             , {{0.0, 0.0, 0.0 }, -1}},
+    { {"HeadPitch","HeadYaw"}             , {{0.0, 0.0, 0.0 }, 1}},
+    { {"Torso", "LShoulderPitch"}         , {{0.0, 98.0, 100.00 }, -1}},
+    { {"LShoulderPitch", "Torso"}         , {{0.0, -98.0, -100.00 }, 1}},
+    { {"LShoulderPitch", "LShoulderRoll"} , {{0.0, 0.0, 0.0}, -1}},
+    { {"LShoulderRoll", "LShoulderPitch"} , {{0.0, 0.0, 0.0}, 1}},
+    { {"LShoulderRoll", "LElbowYaw" }     , {{105.00, 15.00, 0.00}, -1}},
+    { {"LElbowYaw", "LShoulderRoll" }     , {{-105.00, -15.00, 0.00}, 1}},
+    { {"LElbowYaw", "LElbowRoll"}         , {{0, 0, 0}, -1}},
+    { {"LElbowRoll", "LElbowYaw"}         , {{0, 0, 0}, 1}},
+    { {"LElbowRoll", "LWristYaw"}         , {{55.95, 0, 0 }, -1}},
+    { {"LWristYaw", "LElbowRoll"}         , {{-55.95, 0, 0 }, 1}},
+    { {"Torso", "LHipYawPitch"}           , {{0, 50.0, -85.0}, -1}},
+    { {"LHipYawPitch", "Torso"}           , {{0, -50.0, 85.0}, 1}},
+    { {"LHipYawPitch", "LHipRoll"}        , {{0.0 , 0.0, 0.0}, -1}},
+    { {"LHipRoll", "LHipYawPitch"}        , {{0.0 , 0.0, 0.0}, 1}},
+    { {"LHipRoll", "LHipPitch"}           , {{0.0, 0.0, 0.0}, -1}},
+    { {"LHipPitch", "LHipRoll"}           , {{0.0, 0.0, 0.0}, 1}},
+    { {"LHipPitch", "LKneePitch"}         , {{0.0, 0.0, -100.0}, -1}},
+    { {"LKneePitch", "LHipPitch"}         , {{0.0, 0.0, 100.0}, 1}},
+    { {"LKneePitch","LAnklePitch"}        , {{0.0, 0.0, -102.9}, -1}},
+    { {"LAnklePitch","LKneePitch"}        , {{0.0, 0.0, 102.9}, 1}},
+    { {"LAnklePitch", "LAnkleRoll"}       , {{0.0, 0.0, 0.0}, -1}},
+    { {"LAnkleRoll", "LAnklePitch"}       , {{0.0, 0.0, 0.0}, 1}},
+    { {"Torso", "RShoulderPitch"}         , {{0.0, -98.0, 100.00 }, -1}},
+    { {"RShoulderPitch", "Torso"}         , {{0.0, 98.0, -100.00 }, 1}},
+    { {"RShoulderPitch", "RShoulderRoll"} , {{0.0, 0.0, 0.0}, -1}},
+    { {"RShoulderRoll", "RShoulderPitch"} , {{0.0, 0.0, 0.0}, 1}},
+    { {"RShoulderRoll", "RElbowYaw" }     , {{105.00, -15.00, 0.00},  -1}},
+    { {"RElbowYaw", "RShoulderRoll" }     , {{-105.00, 15.00, 0.00}, 1}},
+    { {"RElbowYaw", "RElbowRoll"}         , {{0, 0, 0}, -1}},
+    { {"RElbowRoll", "RElbowYaw"}         , {{0, 0, 0}, 1}},
+    { {"RElbowRoll", "RWristYaw"}         , {{55.95, 0, 0 }, -1}},
+    { {"RWristYaw", "RElbowRoll"}         , {{-55.95, 0, 0 }, 1}},
+    { {"Torso", "RHipYawPitch"}           , {{0, -50.0, -85.0}, -1}},
+    { {"RHipYawPitch", "Torso"}           , {{0, 50.0, 85.0}, 1}},
+    { {"RHipYawPitch", "RHipRoll"}        , {{0.0 , 0.0, 0.0}, -1}},
+    { {"RHipRoll", "RHipYawPitch"}        , {{0.0 , 0.0, 0.0}, 1}},
+    { {"RHipRoll", "RHipPitch"}           , {{0.0, 0.0, 0.0}, -1}},
+    { {"RHipPitch", "RHipRoll"}           , {{0.0, 0.0, 0.0}, 1}},
+    { {"RHipPitch", "RKneePitch"}         , {{0.0, 0.0, -100.0}, -1}},
+    { {"RKneePitch", "RHipPitch"}         , {{0.0, 0.0, 100.0}, 1}},
+    { {"RKneePitch","RAnklePitch"}        , {{0.0, 0.0, -102.9}, -1}},
+    { {"RAnklePitch","RKneePitch"}        , {{0.0, 0.0, 102.9}, 1}},
+    { {"RAnklePitch", "RAnkleRoll"}       , {{0.0, 0.0, 0.0}, -1}},
+    { {"RAnkleRoll", "RAnklePitch"}       , {{0.0, 0.0, 0.0}, 1}},
+
+    // special endvalues
+    { {"None", "RAnkleRoll"}                , {{0.0, 0.0, 0.0}, 1}},
+    { {"RAnkleRoll", "None"}                , {{0.0, 0.0, 0.0}, -1}},
+    { {"None", "LAnkleRoll"}                , {{0.0, 0.0, 0.0}, 1}},
+    { {"LAnkleRoll", "None"}                , {{0.0, 0.0, 0.0}, -1}}
 };

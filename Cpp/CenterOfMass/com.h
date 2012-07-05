@@ -30,6 +30,7 @@ public:
                                      const map<string, double> &joint_dict=map<string, double>());
 
 private:
+public: //debug
     // runs from the torso to the arms and kicking leg, and adds the found joint
     // locations to the given joint_loc_map
     void locs_from_torso(matrix<double> T, joint_loc_map &joints_locs,
@@ -45,8 +46,10 @@ private:
     matrix<double> translation_matrix(string previous, string current);
 
     // converts a 2-dimensional vector to a matrix
-public: // debug
     matrix<double> vec_to_mat(vector<vector<double> > vec);
+
+    // check if a string contains a certain substring
+    bool contains(string str, string substr);
 
 /* fields */
 public:
