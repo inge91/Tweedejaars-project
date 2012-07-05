@@ -33,7 +33,8 @@ private:
 public: //debug
     // runs from the torso to the arms and kicking leg, and adds the found joint
     // locations to the given joint_loc_map
-    void locs_from_torso(matrix<double> T, joint_loc_map &joints_locs,
+    void locs_from_torso(matrix<double> T, string part,
+                         joint_loc_map &joint_locs,
                          bool online=true,
                          const map<string, double> &joint_dict=map<string, double>());
 

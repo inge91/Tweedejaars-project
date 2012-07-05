@@ -21,6 +21,46 @@ CenterOfMass::CenterOfMass(string ip_address, int port) :
 {
 }
 
+void CenterOfMass::locs_from_torso(matrix<double> T, string part,
+                                   joint_loc_map &joint_locs,
+                                   bool online,
+                                   const map<string, double> &joint_dict)
+{
+    map<string, vector<string> >paths =
+    {
+        {"LLeg", {"Torso", "LHipYawPitch", "LHipRoll", "LHipPitch", "LKneePitch",
+                  "LAnklePitch", "LAnkleRoll"}},
+        {"RLeg", {"Torso", "RHipYawPitch", "RHipRoll", "RHipPitch", "RKneePitch",
+                  "RAnklePitch", "RAnkleRoll"}},
+        {"LArm", {"Torso", "LShoulderPitch", "LShoulderRoll", "LElbowYaw",
+                  "LElbowRoll"}},
+        {"RArm", {"Torso", "RShoulderPitch", "RShoulderRoll", "RElbowYaw",
+                  "RElbowRoll"}},
+        {"Head", {"Torso", "HeadYaw", "HeadPitch"}}
+    };
+
+    vector<string> path = paths[part];
+
+    // loop through every element except the first,
+    // along with its previous element
+    string current, previous;
+    for (unsigned cur = 1, prev = 0; cur< path.size(); ++cur, ++prev) {
+        current = path[cur];
+        previous = path[prev];
+
+        // update the transformation matrix
+        int towards_torso = jointOffsets[pair<string, string>(previous, current)].second;
+        towards_torso *= -1;
+
+        T = prod(T, translation_matrix(previous, current));
+        T = prod(T, rotation_matrix(current, towards_torso, online, joint_dict));
+
+        // add joint location
+        vector<vector<double> > origin = { {0}, {0}, {0}, {1} };
+        joint_locs[current] = prod(T, vec_to_mat(origin));
+    }
+}
+
 matrix<double> CenterOfMass::translation_matrix(string previous, string current)
 {
     // get the x, y and z offset values
