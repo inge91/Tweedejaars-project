@@ -34,9 +34,9 @@ class P_Controller(Thread):
     def run(self):
         # getting the right index for the getAngles array
         roll_index = (self.joints.index("LHipRoll") if self.leg == "LLeg"
-            else joints.index("RHipRoll"))
+            else self.joints.index("RHipRoll"))
         pitch_index = (self.joints.index("LHipPitch") if self.leg == "LLeg"
-            else joints.index("RHipPitch"))
+            else self.joints.index("RHipPitch"))
 
         # main loop
         while self.running:
