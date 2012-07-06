@@ -8,5 +8,5 @@ set(CMAKE_CXX_FLAGS "-std=c++0x")
 
 # Create a executable named CenterOfMass
 # with the source file: main.cpp
-qi_create_bin(CenterOfMass com.cpp)
+qi_create_bin(CenterOfMass com.cpp p_controller.cpp)
 qi_use_lib(CenterOfMass ALCOMMON)

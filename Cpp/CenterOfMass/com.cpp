@@ -41,14 +41,19 @@ matrix<double> CenterOfMass::get_CoM(string leg,
 
     string joint;
     matrix<double> joint_loc;
-    vector<double> centroid;
+    vector<double> centroid_vec;
+    matrix<double> centroid(4, 1);
     double mass;
-    for (auto &pair : joint_locs) {
-        joint = pair.first; joint_loc = pair.second;
+    for (auto &p : joint_locs) {
+        joint = p.first;
+        joint_loc = p.second;
         pair<vector<double>, double> com_mass = jointCOM[joint];
-        centroid = pair.first; mass = pair.second;
+        centroid_vec = com_mass.first;  mass = com_mass.second;
 
-        joint_loc += trans(vec_to_mat(centroid));
+        centroid(0, 0) = centroid_vec[0]; centroid(1, 0) = centroid_vec[1];
+        centroid(2, 0) = centroid_vec[2];
+
+        joint_loc += centroid;
         com += (mass * joint_loc) / total_mass;
     }
 
@@ -76,6 +81,7 @@ joint_loc_map CenterOfMass::get_locations_dict(string leg, bool online,
     // along with its previous element
     string current, previous;
     for (unsigned cur = 1, prev = 0; cur< path.size(); ++cur, ++prev) {
+        current = path[cur]; previous = path[prev];
 
         // update the transformation matrix to calculate the centroid location
         int towards_torso = jointOffsets[pair<string, string>(previous, current)].second;
@@ -95,6 +101,8 @@ joint_loc_map CenterOfMass::get_locations_dict(string leg, bool online,
 
     for (string &branch : branches)
         locs_from_torso(T, branch, joint_locs, online, joint_dict);
+
+    return joint_locs;
 }
 
 void CenterOfMass::locs_from_torso(matrix<double> T, string part,
@@ -143,9 +151,9 @@ matrix<double> CenterOfMass::translation_matrix(string previous, string current)
     vector<double> offsets;
 
     if (previous == "None") {
-        offsets[0] = 0;
-        offsets[1] = 0;
-        offsets[2] = 0;
+        offsets.push_back(0);
+        offsets.push_back(0);
+        offsets.push_back(0);
     } else {
         pair<vector<double>, double> j_off = CenterOfMass::jointOffsets[pair<string, string>(previous, current)];
         offsets = j_off.first;
@@ -275,12 +283,6 @@ matrix<double> CenterOfMass::vec_to_mat(vector<vector<double> > vec)
     }
 
     return mat;
-}
-
-int main()
-{
-    CenterOfMass com("0.0.0.0", 9559);
-    std::cout << com.translation_matrix("Torso", "HeadYaw") << std::endl;
 }
 
 // the data

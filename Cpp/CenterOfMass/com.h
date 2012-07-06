@@ -47,7 +47,7 @@ public: //debug
     matrix<double> translation_matrix(string previous, string current);
 
     // converts a 2-dimensional vector to a matrix
-    matrix<double> vec_to_mat(vector<vector<double> > vec);
+    static matrix<double> vec_to_mat(vector<vector<double> > vec);
 
     // check if a string contains a certain substring
     bool contains(string str, string substr);
