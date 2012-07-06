@@ -70,8 +70,8 @@ class P_Controller(Thread):
             print "HipPitch: ", best_pangle
             print ""
 
-            self.mp.changeAngles(self.leg_prefix + "HipRoll", best_rangle, 1)
-            self.mp.changeAngles(self.leg_prefix + "HipPitch", best_pangle, 1)
+            self.mp.changeAngles(self.leg_prefix + "HipRoll", best_rangle, 0.3)
+            self.mp.changeAngles(self.leg_prefix + "HipPitch", best_pangle, 0.3)
 
     def kill(self):
         self.running = False
