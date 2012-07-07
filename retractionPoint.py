@@ -34,21 +34,11 @@ def find_point(ball_loc, direction, kick_positions, positions):
     direction_z = kick_z + direction[2]
     direction = np.matrix([ [direction[0]], [direction[1]], [direction[2]]])
     # no retraction when other leg is there(change these values)
-    if( pos_x < max_x or pos_x > min_x):
-        if( abs(pos_x - max_x) > abs(pos_x - min_x)):
-            min_x = pos_x
-        else:
-            max_x = pos_x 
     if( pos_y < max_y or pos_y > min_y):
         if( abs(pos_y - max_y) > abs(pos_y - min_y)):
             min_y = pos_y
         else:
             max_y = pos_y
-    if( pos_z < max_z or pos_z > min_z):
-        if( abs(pos_z - max_z) > abs(pos_z - min_z)):
-            min_z = pos_z
-        else:
-            max_z = pos_z
     best_pos = 0
     # make the minimal values compatible with xrange
     min_x_r = int(min_x*100)
@@ -80,7 +70,7 @@ def find_point(ball_loc, direction, kick_positions, positions):
 
 
 # the function that evaluates the best possible retraction point
-def retractionPoint(ball_loc, point, direction, t, delta = 10**(-3) ):
+def retractionPoint(ball_loc, point, direction, t, delta = 1 - 10**(-3) ):
     """ball_loc is the location of the ball, direction is a vector in a direction to
     kick the ball to"""
     # ball radius is given in mm
@@ -119,11 +109,13 @@ def test_retraction(ip, kicking_leg, direction):
     import sys
     sys.path.append("SDK")
     from naoqi import ALProxy
+    mp = ALProxy("ALMotion", ip, 9559)
 
     # set the other leg's name
     other_leg = "RLeg" if kicking_leg == "LLeg" else "LLeg"
 
-    mp = ALProxy("ALMotion", ip, 9559)
+    normalPose(mp, True)
+
     kick_pos = mp.getPosition(kicking_leg, 1, True)[:3]
     other_pos = mp.getPosition(other_leg, 1, True)[:3]
     point = find_point("This is irrelevant!", direction, kick_pos, other_pos)
@@ -131,3 +123,27 @@ def test_retraction(ip, kicking_leg, direction):
 
     # test the location!
     mp.setPosition(kicking_leg, 1, point, 0.3, 7)
+
+def normalPose(motProxy, force = False): 
+    anglelist = motProxy.getAngles(['RHipPitch','RKneePitch', 'RAnklePitch'],True)
+    if force or not( posProxy.getActualPoseAndTime()[0] == 'Stand' and
+                    -0.41 <= anglelist[0] <= -0.39 and
+                    0.94 <= anglelist[1] <= 0.96 and 
+                    -0.56 <= anglelist[2] <= -0.54):
+        names = list()
+        times = list()
+        angles = list()
+                
+        names.extend( ['LShoulderPitch','LShoulderRoll','LElbowYaw','LElbowRoll','RShoulderPitch','RShoulderRoll'])
+        angles.extend([[1.2],           [0.15],         [0.0],      [0.0],       [1.2],           [-0.15] ])
+        times.extend( [[1.0],           [1.0],          [1.0],      [1.0],       [1.0],           [1.0  ] ])
+ 
+        names.extend( ['RElbowYaw','RElbowRoll','LHipYawPitch','LHipRoll','LHipPitch','LKneePitch','LAnklePitch'])
+        angles.extend([[0.0],      [0.0],       [0.0],         [0.0],     [-0.4],      [0.95],     [-0.55]])
+        times.extend( [[1.0],      [1.0],       [1.0],         [1.0],     [1.0],       [1.0],      [1.0]])
+
+        names.extend( ['LAnkleRoll', 'RHipRoll', 'RHipPitch', 'RKneePitch', 'RAnklePitch', 'RAnkleRoll'] )
+        angles.extend([[0.0],        [0.0],      [-0.4],      [0.95],       [-0.55],       [0.0]] )
+        times.extend( [[1.0],        [1.0],      [1.0],       [1.0],        [1.0],         [1.0]] )
+
+        motProxy.angleInterpolation(names, angles, times, True)    
