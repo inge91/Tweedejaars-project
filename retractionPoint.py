@@ -80,7 +80,7 @@ def find_point(ball_loc, direction, kick_positions, positions):
 
 
 # the function that evaluates the best possible retraction point
-def retractionPoint(ball_loc, point, direction, t, delta = 1-10**(-3) ):
+def retractionPoint(ball_loc, point, direction, t, delta = 10**(-3) ):
     """ball_loc is the location of the ball, direction is a vector in a direction to
     kick the ball to"""
     # ball radius is given in mm
@@ -91,9 +91,9 @@ def retractionPoint(ball_loc, point, direction, t, delta = 1-10**(-3) ):
     #print "contact point:"
     #print contact_point
     (retract_distance ,output) = g(point, contact_point,  force_direction, t)
-    return 1 - delta * retract_distance + delta * (  output) 
+    return (1 - delta) * retract_distance + delta * ( 1+ output) 
 
-# a function that returns the accuracy on a scale of 1 to 0 
+# a function that returns the accuracy 
 def g(point, contact_point, force_direction,t):
     """ point is a possible retraction point. 
     contact_point the place to hit the ball(coords), force_direction which
