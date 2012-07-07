@@ -109,5 +109,25 @@ def g(point, contact_point, force_direction,t):
     final = np.vdot(np.power(contact_point - point, t), force_direction)/retract_distance
     return (retract_distance, final)
 
+# tests the retraction point
+def test_retraction(ip, kicking_leg, direction):
+    """
+    kicking_leg: LLeg or RLeg
+    direction: a direction vector as python list
+    """
+    # create a motion proxy
+    import sys
+    sys.path.append("SDK")
+    from naoqi import ALProxy
 
+    # set the other leg's name
+    other_leg = "RLeg" if kicking_leg == "LLeg" else "LLeg"
 
+    mp = ALProxy("ALMotion", ip, 9559)
+    kick_pos = mp.getPosition(kicking_leg, 1, True)[:3]
+    other_pos = mp.getPosition(other_leg, 1, True)[:3]
+    point = find_point("This is irrelevant!", direction, kick_pos, other_pos)
+    point += [0, 0, 0] # make it 6d for cartesian control api
+
+    # test the location!
+    mp.setPosition(kicking_leg, 1, point, 0.3, 7)
