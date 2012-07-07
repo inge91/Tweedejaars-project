@@ -22,59 +22,34 @@ void PController::run()
 {
     // main loop
     while (true) {
-        double error = this->error(m_com.get_CoM(m_leg));
-        cout << "Error: " << error << endl;
-
-        if (error < 5)
-            continue;
+        pair<double, double> error = this->error(m_com.get_CoM(m_leg));
+        double err_x = error.first;
+        double err_y = error.second;
 
         // output = error * proportional gain
-        double p_out = m_gain * error;
+        pair<double, double> p_out = error;
+        double p_x = m_gain * err_x;
+        double p_y = m_gain * err_y;
 
-        vector<float> angles = m_mp.getAngles("Body", true);
-        map<string, double> cur_joints;
+        // torso to the front -> positive pitch angle
+        double pitch_angle = p_y * (m_leg == "LLeg" ? -1 : 1);
+        // roll is positive to the outside direction
+        double roll_angle = p_x * -1;//(m_leg == "LLeg" ? -1 : 1);
 
-        for (unsigned i = 0; i < PController::joints.size(); ++i) {
-            cur_joints[PController::joints[i]] = angles[i];
-        }
-
-        // looking for the best course of action
-        double best_pangle = 0;
-        double best_rangle = 0;
-        double best_com_error = 999;
-        vector<double> pitch_range = {0, -p_out, p_out};
-        vector<double> roll_range = {0, -p_out, p_out};
-
-        for (double &pitch_angle : pitch_range) {
-            for (double &roll_angle : roll_range) {
-                map<string, double> js(cur_joints);
-                js[m_leg_prefix + "HipRoll"] += roll_angle;
-                js[m_leg_prefix + "HipPitch"] += pitch_angle;
-
-                double com_err = this->error(m_com.get_CoM(m_leg, false, js));
-
-                if (com_err < best_com_error) {
-                    best_com_error = com_err;
-                    best_pangle = pitch_angle;
-                    best_rangle = roll_angle;
-                }
-            }
-        }
-
-        cout << "HipRoll: " << best_rangle << endl;
-        cout << "HipPitch: " << best_pangle << endl;
+        cout << "HipPitch: " << pitch_angle << endl;
+        cout << "HipRoll: " << roll_angle << endl;
 
         // actuate!
-        m_mp.changeAngles(m_leg_prefix + "HipRoll", best_rangle, 1);
-        m_mp.changeAngles(m_leg_prefix + "HipPitch", best_pangle, 1);
+        m_mp.changeAngles(m_leg_prefix + "HipPitch", pitch_angle, 1);
+        m_mp.changeAngles(m_leg_prefix + "HipRoll", roll_angle, 1);
     }
 }
 
-double PController::error(matrix<double> com_loc)
+pair<double, double> PController::error(matrix<double> com_loc)
 {
     vector<vector<double> > polygon_v =
     {
-        {3},
+        {0},
         {0},
         {0},
         {1}
@@ -83,12 +58,7 @@ double PController::error(matrix<double> com_loc)
     matrix<double> polygon = CenterOfMass::vec_to_mat(polygon_v);
     matrix<double> diff = polygon - com_loc;
 
-    double abs_sum = 0;
-    for (unsigned i = 0; i < 2; ++i) {
-        abs_sum += abs(diff(i, 0));
-    }
-
-    return abs_sum;
+    return pair<double, double>(diff(0, 0), diff(1, 0));
 }
 
 vector<string> PController::joints =

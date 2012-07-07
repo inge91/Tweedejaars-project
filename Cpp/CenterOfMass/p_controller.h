@@ -22,7 +22,7 @@ public:
 
 private:
     // calculates the error of a position
-    double error(matrix<double> com_loc);
+    pair<double, double> error(matrix<double> com_loc);
 
 /* fields */
 public:

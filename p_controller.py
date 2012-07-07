@@ -40,38 +40,24 @@ class P_Controller(Thread):
 
         # main loop
         while self.running:
-            error = self.error(self.com.get_CoM(self.leg))
-            print "Error: ", error
+            err_x, err_y = self.error(self.com.get_CoM(self.leg))
+            print "Error: ", err_x, err_y
 
             # output = error * proportional gain
-            p_out = self.gain * error
+            p_x = self.gain * err_x
+            p_y = self.gain * err_y
 
-            angles = self.mp.getAngles("Body", True)
-            cur_joints = dict(zip(self.joints, angles))
+            # torso naar voren -> positieve hoek (Pitch)
+            pitch_angle = p_y * -1;
+            # roll is positief naar buiten toe
+            roll_angle = p_x * (-1 if self.leg == "LLeg" else 1)
 
-            # looking for the best course of action
-            best_pangle = 0
-            best_rangle = 0
-            best_com_error = 999
-            for pitch_angle in (0, -p_out, p_out):
-                for roll_angle in (0, -p_out, p_out):
-                    joints = copy(cur_joints)
-                    joints[self.leg_prefix + "HipRoll"] += roll_angle
-                    joints[self.leg_prefix + "HipPitch"] += pitch_angle
-
-                    com_err = self.error(self.com.get_CoM(self.leg, False, joints))
-
-                    if com_err < best_com_error:
-                        best_com_error = com_err
-                        best_pangle = pitch_angle
-                        best_rangle = roll_angle
-
-            print "HipRoll: ", best_rangle
-            print "HipPitch: ", best_pangle
+            print "HipPitch: ", pitch_angle
+            print "HipRoll: ", roll_angle
             print ""
 
-            self.mp.changeAngles(self.leg_prefix + "HipRoll", best_rangle, 0.3)
-            self.mp.changeAngles(self.leg_prefix + "HipPitch", best_pangle, 0.3)
+            self.mp.changeAngles(self.leg_prefix + "HipPitch", pitch_angle,  1)
+            self.mp.changeAngles(self.leg_prefix + "HipRoll", roll_angle, 1)
 
     def kill(self):
         self.running = False
@@ -80,11 +66,8 @@ class P_Controller(Thread):
         polygon = matrix([[3], [0], [0], [1]])
         diff = polygon - com_loc
 
-        abs_sum = 0
-        for i in diff[0:2]:
-            abs_sum += abs(i[0, 0])
-
-        return abs_sum
+        # return the X and Y difference
+        return (diff[0, 0], diff[1, 0])
 
 if __name__ == '__main__':
     import time
