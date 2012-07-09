@@ -12,7 +12,7 @@ def find_point(ball_loc, direction, kick_positions, positions):
     kick_x, kick_y, kick_z = kick_positions
     pos_x, pos_y, pos_z = positions 
     # ball position relative to the kicking foot
-    ball_loc = [0.3, 0, 0 ]
+    ball_loc = [0.1, 0, 0.010 ]
     # all boundaries for the kicking leg
     min_x = kick_positions[0] - 0.13641
     max_x = kick_positions[0]
@@ -73,6 +73,7 @@ def retractionPoint(ball_loc, point, direction, t, delta = 0.9 ):
     # where to kick the ball
     contact_point = ball_loc - (direction * ball_radius) 
     (retract_distance ,output) = g(point, contact_point,  force_direction, ball_loc, t)
+    
     return contact_point, (1 - delta) * retract_distance + delta * (output) 
 
 # a function that returns the accuracy 
@@ -82,15 +83,20 @@ def g(point, contact_point, force_direction, ball_loc, t):
     way to move the foot"""
     # line equation = ball_loc + t*direction
     # distance to the ooi
-    distance = ( np.linalg.norm( np.cross((contact_point[:2] - point[:2]), force_direction[:2], 0, 0) ) / 
-        np.linalg.norm(force_direction[:2]))
+    #distance = ( np.linalg.norm( np.cross((ball_loc[:2] - point[:2]), force_direction[:2], 0, 0) ) / 
+    #    np.linalg.norm(force_direction[:2]))
+    distance = np.linalg.norm(np.cross(point[:2] - contact_point[:2], point[:2] -
+        force_direction[:2], 0 , 0)) / np.linalg.norm(abs(force_direction[:2] -
+            contact_point[:2]))
+    #the smaller the distance, the bigger the number
+    distance = 0.1 / distance
 
     retract_distance_xy = math.sqrt(np.vdot(contact_point[:2] - point[:2], contact_point[:2] - point[:2]))
     retract_distance_z = abs(point[2] - contact_point[2])
 
     # the retraction distance gets favored in the x and y directions
     retract_distance = ((0.7 * retract_distance_xy) + (0.3 * retract_distance_z)) / 2
-    return (retract_distance, 1 - distance)
+    return (retract_distance, distance)
 
 # tests the retraction point
 def test_retraction(ip, kicking_leg, direction):
@@ -119,9 +125,9 @@ def test_retraction(ip, kicking_leg, direction):
     point += [0, 0, 0] # make it 6d for cartesian control api
 
     # test the location!
-    mp.setPosition(kicking_leg, 1, point, 0.3, 7)
-    time.sleep(3)
-    mp.setPosition(kicking_leg, 1, contact_point, 0.3, 7)
+    mp.setPosition(kicking_leg, 1, point, 0.5, 7)
+    time.sleep(2)
+    mp.setPosition(kicking_leg, 1, contact_point, 1, 7)
 
 
 def normalPose(motProxy, force = False): 
