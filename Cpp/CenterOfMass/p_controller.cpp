@@ -9,13 +9,15 @@
 using namespace std;
 using boost::numeric::ublas::matrix;
 
-PController::PController(string standing_leg,
-                         string ip, double gain) :
+PController::PController(string standing_leg, string ip,
+                         double gain,
+                         double threshold) :
     m_com(ip, 9559), m_mp(ip, 9559)
 {
     m_leg_prefix = standing_leg == "LLeg" ? "L" : "R";
     m_leg = standing_leg;
     m_gain = gain;
+    m_threshold = threshold;
 }
 
 void PController::run()
@@ -25,7 +27,7 @@ void PController::run()
         double error = this->error(m_com.get_CoM(m_leg));
         cout << "Error: " << error << endl;
 
-        if (error < 5)
+        if (error < m_threshold)
             continue;
 
         // output = error * proportional gain
@@ -103,6 +105,6 @@ vector<string> PController::joints =
 
 int main(int argc, char *argv[])
 {
-    PController cont(argv[1], argv[2], atof(argv[3]));
+    PController cont(argv[1], argv[2], atof(argv[3]), atof(argv[4]));
     cont.run();
 }
