@@ -15,7 +15,9 @@ class PController
 /* methods */
 public:
     // constructor
-    PController(string standing_leg, string ip, double gain);
+    PController(string standing_leg, string ip,
+                double gain=0.0005,
+                double threshold=5);
 
     // main loop that balances the Nao
     void run();
@@ -33,6 +35,7 @@ private:
     string m_leg;
     CenterOfMass m_com;
     double m_gain;
+    double m_threshold;
 };
 
 #endif
