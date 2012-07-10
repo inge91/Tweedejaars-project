@@ -160,11 +160,11 @@ Firstly, to determine the point between the ball and a possible retraction point
 we use the following calculation \cite{Xu2010}  : 
 
 \begin{align*}
-    d = ||\vec{{xy}_p\_c} - \vec{{xy}_p} || * 0.7 + ||\vec{{z}_p\_c} -
-    \vec{{z}_p} || * 0.3\\
+    d = ||\vec{pc_{xy}} - \vec{p_{xy}} || * 0.7 + ||\vec{_pc_z} -
+    \vec{p_z} || * 0.3\\
 \end{align*}
 
-Where $\vec{p\_c}$ is the contact pointwhere the ball should be hit and
+Where $\vec{pc}$ is the contact pointwhere the ball should be hit and
 $\vec{p}$ is a possible retraction point and $\vec{d}$ the distance between both
 points. The reason the ${xy}$ dimensions get more weight is because heightening
 the feet for a bigger distance of the retraction is less desirable as it creates
@@ -177,8 +177,6 @@ calculation is made:
 
 \begin{align*}
 \end{align*}
-
-
 
 \section{Required materials and support} 
 To find a solution to our problem statement we need a Nao to experiment on and a
