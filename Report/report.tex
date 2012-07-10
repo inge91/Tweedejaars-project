@@ -115,6 +115,7 @@ position. This stage is still
 hardcoded using keyvalues as it makes for a smoother transition to the kicking
 motion, without having to rely on the balance controllers. 
 
+\subsubsection{Contact point }
 
 \subsubsection(Retraction point)
 After the initial pose the nao calculates its optimal retraction point. This
@@ -130,11 +131,25 @@ the two.
 Firstly, to determine the point between the ball and a possible retraction point
 we use the following calculation \cite{Xu2010}  : 
 
+\begin{align*}
+    d = ||\vec{{xy}_p\_c} - \vec{{xy}_p} || * 0.7 + ||\vec{{z}_p\_c} -
+    \vec{{z}_p} || * 0.3
+\end{align*}
 
-where pu 
+Where $\vec{p\_c}$ is the contact pointwhere the ball should be hit and
+$\vec{p}$ is a possible retraction point and \vec{d} the distance between both
+points. The reason the ${xy}$ dimensions get more weight is because heightening
+the feet for a bigger distance of the retraction is less desirable as it creates
+more imbalance and takes up more time.
 
 
-to find the accuracy of the retractionpoint between the 
+Finding the accuracy of a given retraction point resolves to finding 
+will have the following
+calculation is made:
+
+\begin{align*}
+    
+\end{align*}
 
 
 
