@@ -63,9 +63,6 @@ void PController::run()
             }
         }
 
-        cout << "HipRoll: " << best_rangle << endl;
-        cout << "HipPitch: " << best_pangle << endl;
-
         // actuate!
         m_mp.changeAngles(m_leg_prefix + "HipRoll", best_rangle, 1);
         m_mp.changeAngles(m_leg_prefix + "HipPitch", best_pangle, 1);
