@@ -161,3 +161,18 @@ def bezier_list(p0, p1, p2):
         positions.append( (1-t)**2 * p0 + 2*(1-t)*t*p1 + t**2 *p2)
 
     return positions
+
+def initial_pose(mp):
+    """ args:
+            mp: a MotionProxy
+    """
+    joints = ['LHipPitch', 'RHipPitch', 'LKneePitch', 'RKneePitch']
+    ankles = ['LAnklePitch', 'RAnklePitch']
+
+    joint_angles = mp.getAngles(joints, True)
+    ankle_angles = mp.getAngles(ankles, True)
+
+    # actuation
+    mp.setAngles(joints, joint_angles, 0.1)
+    time.sleep(0.375)
+    mp.setAngles(ankles, ankle_angles, 0.1)
