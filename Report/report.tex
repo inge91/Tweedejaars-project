@@ -98,11 +98,43 @@ more standard, and can deal with unreachable positions (it simply approaches the
 closest reachable position).
 
 \subsection{The kick}
-With the solutions of the previous two problems, we can start to calculate the
-optimal kick trajectory. For this we plan to use a similar system to Nao team
-Humboldt \cite{Xu2010}; we define two measures, one for accuracy and one for
-strength, then search for a path which maximizes a certain balance of these two
-metrics. 
+With the solutions to the previous aspects of the dynamic kick constructed, 
+we can start to calculate the optimal kicking trajectory. This kick is composed
+of different stages, loosely based on the approach of \cite{Xu2010}.
+\begin{itemize}
+    \item Initial pose
+    \item Retraction point
+    \item Contact point
+    \item fitting A bezier curve
+\end{itemize}
+
+\subsubsection(Initial pose)
+The first stage is the initial pose. The nao is positions its center of mass on
+top of its standing leg and lowers his center of mass so as to get a more stable
+position. This stage is still
+hardcoded using keyvalues as it makes for a smoother transition to the kicking
+motion, without having to rely on the balance controllers. 
+
+
+\subsubsection(Retraction point)
+After the initial pose the nao calculates its optimal retraction point. This
+is the rearmost point from which the kick commences, and has two criteria that
+should be satisfied:
+\begin{itemize}
+    \item The retraction point should be far away from the ball
+    \item The retraction point should be accurate
+\end{itemize}
+To meet both criteria as good as possible there should be a trade off between
+the two.
+
+Firstly, to determine the point between the ball and a possible retraction point
+we use the following calculation \cite{Xu2010}  : 
+
+
+where pu 
+
+
+to find the accuracy of the retractionpoint between the 
 
 
 

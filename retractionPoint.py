@@ -1,4 +1,5 @@
 
+#TODO: an initial mode is still needed
 import math
 import numpy as np
 import time 
