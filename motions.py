@@ -3,10 +3,10 @@ import math
 import almath
 
 # Create a motion class with the correct input
-def debug():
+def debug(ip):
     from naoqi import ALProxy
-    motProxy = ALProxy('ALMotion', '169.254.89.225', 9559)
-    posProxy = ALProxy('ALRobotPose', '169.254.89.225', 9559)
+    motProxy = ALProxy('ALMotion', ip, 9559)
+    posProxy = ALProxy('ALRobotPose', ip, 9559)
     return Motions( motProxy, posProxy )
     
 class Motions():
