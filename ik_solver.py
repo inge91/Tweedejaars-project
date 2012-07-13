@@ -2,7 +2,7 @@ from numpy import matrix
 from numpy.linalg import norm, inv
 from math import cos, sin, pi, acos, atan2, sqrt, asin
 
-def get_angles(foot_to_torso):
+def get_angles(foot_to_torso, leg):
     """ returns a dictionary of joint angles required to reach the given
     foot-position. The footposition is given as a homogenous 4x4 numpy matrix
     that transforms foot-coordinates into torso-coordinates.
@@ -12,7 +12,10 @@ def get_angles(foot_to_torso):
 
     # first we define a number of coordinate translations
     # translations are done in millimeters
-    foot_to_hip = trans(y=50) * foot_to_torso
+    if leg == "LLeg":
+        foot_to_hip = trans(y=-50) * foot_to_torso
+    else:
+        foot_to_hip = trans(y=50) * foot_to_torso
     foot_to_hip_orth = rotation_x(pi/4.0) * foot_to_hip
     hiporth_to_foot = inv(foot_to_hip_orth)
 

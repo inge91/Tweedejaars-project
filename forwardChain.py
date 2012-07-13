@@ -84,6 +84,7 @@ def forward_chain(leg, mot):
         direction *= -1 
         T = T * translation_matrix(previous, current, jointOffsets)
         T = T * rotation_matrix(current, direction, mot)
+        print current, T[:, 3]
     print T
 
 
