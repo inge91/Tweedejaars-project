@@ -16,7 +16,8 @@
 
 \section{Introduction} 
 Our research is concerned with making a dynamic, closed
-loop kick for the Nao robot. The Nao is a 58 cm tall humanoid robot made by Aldebaran Robots\footnote{http://www.aldebaran-robotics.com/en/}. It is used in the Stand Platform League of the Robocup\footnote{http://www.robocup.org/}, an organisation which organizes football (soccer) competitions for autonomous robots.
+loop kick for the Nao robot. The Nao is a 58 cm tall humanoid robot made by Aldebaran Robots\footnote{http://www.aldebaran-robotics.com/en/}. It is used in the Stand Platform League of the Robocup\footnote{http://wiki.robocup.org/wiki/Standard_Platform_League}, an organisation which organizes football (soccer)
+competitions for autonomous robots.
 
 Kicking, of course, is an important part of football, and thus a good kick is vital to achieving good results in the Robocup. There are essentially two ways of making a humanoid robot kick a ball:
 \begin{enumerate}
@@ -26,7 +27,7 @@ Kicking, of course, is an important part of football, and thus a good kick is vi
 The first one is referred to as a \emph{keyframe motion}, while the second one is the subject of this paper.
 
 \section{Motivation for this project} 
-While the Dutch Nao Team (the team that represents the University of Amsterdam in the Standard Platform League of the Robocup) has achieved some degree of success with simple keyframe motions, they are clearly not optimal; a lot of time is wasted positioning the robot at just the right angle relative to kick the ball towards the goal. Furthermore, if the ball gets moved after the kicking motion has started, it's impossible for the robot to correct its kicking path. These are all problems that can be reduced with a dynamically generated motion, which is why we will attempt to create one. If we succeed in our endeavour, the resulting kick will be integrated in the Dutch Nao Team's codebase.
+While the Dutch Nao Team (the team that represents the Netherlands in the Standard Platform League of the Robocup) has achieved some degree of success with simple keyframe motions, they are clearly not optimal; a lot of time is wasted positioning the robot at just the right angle relative to kick the ball towards the goal. Furthermore, if the ball gets moved after the kicking motion has started, it's impossible for the robot to correct its kicking path. These are all problems that can be reduced with a dynamically generated motion, which is why we will attempt to create one. If we succeed in our endeavour, the resulting kick will be integrated in the Dutch Nao Team's codebase.
 
 \subsection{Stability}
 Since there is more than one player on
@@ -34,7 +35,7 @@ the field  chasing after the ball,
 there is lots of interference from other Naos while kicking. Due to the
 instability of the Nao this results in falling down quite often, even more
 so when there is no compensation for it when executing a motion. A dynamic
-kick keeps track of the stability and will execute a kick that keeps the nao
+kick keeps track of the stability and will execute a kick that keeps the Nao
 most stable.
 
 Overheating is also a problem for Naos. When this occurs the joints will perform
@@ -72,7 +73,11 @@ and the \emph{support polygon}. The center of mass (\emph{CoM}) is the weighted 
 location of the Nao’s mass, while the support polygon is the location on the
 floor over which the center of mass must be located to achieve stability. In the
 case of a robot standing on the ground, the support polygon is the convex hull
-of the feet touching the ground.
+of the feet touching the ground. Because the CoM is only used in conjuction with
+a proportional controller (which only requires a single target point) and the
+robot will only be balancing on one foot, the support polygon can be simplified
+to be a single point slightly in front of the location of the support leg's ankle
+joint.
 
 The center of mass is a bit more complex to calculate. It's defined as the sum
 of each component’s \emph{centroid} (its own center of mass) multiplied by its
@@ -108,8 +113,11 @@ shown in equation \ref{eq:pcontrol}.
 
 Actuation is achieved solely through the hip's pitch and roll of the standing leg.
 The rotation angles are obtained by searching through all combinations of the angles
-$(0, P_{out}, -P_{out})$ for both joints (thus searching through a $3^3$ sized space)
-and selecting the pair of angles with the largest reduction in error.
+$(0, P_{out}, -P_{out})$ (e.g. $(pitch = 0, roll = 0)$, $(pitch = 0, roll = P_out)$, etc)
+for both joints (thus searching through a $3^2$ sized space) and selecting the pair
+of angles with the largest reduction in error. This approach is acceptably fast
+when actuating two joints, but has the downside of having a complexity of $\mathcal{O}(3^n)$
+in amount of actuated joints.
 
 \subsection{The kinematics problem}
 We want to be able to specify a location for the foot, then have the foot
@@ -137,7 +145,7 @@ of different stages, loosely based on the approach of \cite{Xu2010}.
 \end{itemize}
 
 \subsubsection(Initial pose)
-The first stage is the initial pose. The nao is positions its center of mass on
+The first stage is the initial pose. The Nao is positions its center of mass on
 top of its standing leg and lowers his center of mass so as to get a more stable
 position. This stage is still
 hardcoded using keyvalues as it makes for a smoother transition to the kicking
@@ -146,7 +154,7 @@ motion, without having to rely on the balance controllers.
 \subsubsection{Contact point }
 
 \subsubsection(Retraction point)
-After the initial pose the nao calculates its optimal retraction point. This
+After the initial pose the Nao calculates its optimal retraction point. This
 is the rearmost point from which the kick commences, and has two criteria that
 should be satisfied:
 \begin{itemize}
