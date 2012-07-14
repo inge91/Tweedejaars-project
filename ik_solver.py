@@ -1,4 +1,4 @@
-from numpy import matrix
+from numpy import matrix, vdot
 from numpy.linalg import norm, inv
 from math import cos, sin, pi, acos, atan2, sqrt, asin
 
@@ -100,13 +100,18 @@ def rotation_z(angle):
          [0,          0,           1, 0],
          [0,          0,           0, 1]])
 
-def set_position(mp, leg, location, speed):
+def set_position(ip, leg, location, speed):
     """ Sets the desired end-effector at the given locations.
-    mp: an ALMotion proxy
+    ip: ip of Nao
     Leg: LLeg or RLeg
     Location: a 6d vector (x, y, z, rx, ry, rz) describing the foot relative
     to the torso.
     Speed: the speed with which to change the joint angles """
+
+    import sys
+    sys.path.append("SDK")
+    from naoqi import ALProxy
+    mp = ALProxy("ALMotion", ip, 9559)
 
     x, y, z, rx, ry, rz = location
     location_matrix = (rotation_x(rx) * rotation_y(ry) * rotation_z(rz) *
