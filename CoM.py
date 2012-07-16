@@ -143,7 +143,7 @@ class CenterOfMass():
         return com
 
     # returns the locations of each joint relative to the standing foot
-    def get_locations_dict(self, leg, online=True, joint_dict=None):
+    def get_locations_dict(self, leg, online=True, joint_dict=None, transformation = False):
         path = {
                 "LLeg" : (None, "LAnkleRoll", "LAnklePitch", "LKneePitch", "LHipPitch",
                     "LHipRoll", "LHipYawPitch", "Torso"),
@@ -169,17 +169,20 @@ class CenterOfMass():
             T = T * self.translation_matrix(previous, current)
             T = T * self.rotation_matrix(current, towards_torso, online, joint_dict)
 
-            joint_locs[current] = T * matrix([0, 0, 0, 1]).transpose()
+            if transformation:
+                joint_locs[current] = T
+            else:
+                joint_locs[current] = T * matrix([0, 0, 0, 1]).transpose()
 
         # now calculate all other branches from the torso
         branches = [("LLeg" if leg == "RLeg" else "RLeg"), "LArm", "RArm", "Head"]
         for branch in branches:
-            self.locs_from_torso(deepcopy(T), branch, joint_locs, online, joint_dict)
+            self.locs_from_torso(deepcopy(T), branch, joint_locs, online, joint_dict, transformation)
 
         return joint_locs
 
     # add the joint locations of the given kinematics chain to the given dictionary
-    def locs_from_torso(self, T, part, joint_locs, online=True, joint_dict=None):
+    def locs_from_torso(self, T, part, joint_locs, online=True, joint_dict=None, transformation=False):
         path = {
                 "LLeg" : ("Torso", "LHipYawPitch", "LHipRoll", "LHipPitch", "LKneePitch",
                     "LAnklePitch", "LAnkleRoll"),
@@ -203,7 +206,10 @@ class CenterOfMass():
             T = T * self.rotation_matrix(current, towards_torso, online, joint_dict)
 
             # add joint location
-            joint_locs[current] = T * matrix([0, 0, 0, 1]).transpose()
+            if transformation:
+                joint_locs[current] = T
+            else:
+                joint_locs[current] = T * matrix([0, 0, 0, 1]).transpose()
 
     # constructs a transformation matrx for shifting from the previous
     # coordinate-system to the current one
