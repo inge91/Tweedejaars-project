@@ -30,6 +30,8 @@ Kicking, of course, is an important part of football, and thus a good kick is vi
 \end{enumerate}
 The first one is referred to as a \emph{keyframe motion}, while the second one is the subject of this paper.
 
+\section{Basic information about the Nao}
+
 \section{Motivation for this project} 
 While the Dutch Nao Team (the team that represents the Netherlands in the Standard Platform League of the Robocup) has achieved some degree of success with simple keyframe motions, they are clearly not optimal; a lot of time is wasted positioning the robot at just the right angle relative to kick the ball towards the goal. Furthermore, if the ball gets moved after the kicking motion has started, it's impossible for the robot to correct its kicking path. These are all problems that can be reduced with a dynamically generated motion, which is why we will attempt to create one. If we succeed in our endeavour, the resulting kick will be integrated in the Dutch Nao Team's codebase.
 
@@ -226,7 +228,7 @@ however enable a more accurate and harder kick.
 Finding the accuracy of a given retraction point is less straightforward. This
 problem can be seen as the closeness of a given point to the line, where the
 point consists of a possible retraction point and the line consits of the
-contact point and the destinatiaon point. See Figure \ref{fig:accuracy} for a
+contact point and the destination point. See Figure \ref{fig:accuracy} for a
 visualisation of the problem. This idea makes for a basic linear algebra
 problem that needs to be resolved.
 \begin{align*}
