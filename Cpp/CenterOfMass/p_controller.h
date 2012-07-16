@@ -2,6 +2,7 @@
 #define PCONTROLLER_H
 
 #include <string>
+#include <map>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <alproxies/almotionproxy.h>
 
@@ -24,7 +25,7 @@ public:
 
 private:
     // calculates the error of a position
-    double error(matrix<double> com_loc);
+    pair<double, double> error(matrix<double> com_loc);
 
 /* fields */
 public:

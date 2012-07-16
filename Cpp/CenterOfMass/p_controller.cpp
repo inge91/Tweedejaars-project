@@ -24,14 +24,21 @@ void PController::run()
 {
     // main loop
     while (true) {
-        double error = this->error(m_com.get_CoM(m_leg));
-        cout << "Error: " << error << endl;
+        pair<double, double> error = this->error(m_com.get_CoM(m_leg));
+        double error_x = error.first;
+        double error_y = error.second;
 
-        if (error < m_threshold)
+        if (error_x < m_threshold && error_x > -m_threshold)
+            error_x = 0;
+        if (error_y < m_threshold && error_y > -m_threshold)
+            error_y = 0;
+
+        if ((!error_x) && (!error_y))
             continue;
 
         // output = error * proportional gain
-        double p_out = m_gain * error;
+        double p_out_x = m_gain * error_x;
+        double p_out_y = m_gain * error_y;
 
         vector<float> angles = m_mp.getAngles("Body", true);
         map<string, double> cur_joints;
@@ -44,8 +51,8 @@ void PController::run()
         double best_pangle = 0;
         double best_rangle = 0;
         double best_com_error = 999;
-        vector<double> pitch_range = {0, -p_out, p_out};
-        vector<double> roll_range = {0, -p_out, p_out};
+        vector<double> pitch_range = {0, p_out_x * (m_leg == "LLeg" ? -1 : 1)};
+        vector<double> roll_range = {0, p_out_y * (m_leg == "LLeg" ? 1 : 1)};
 
         for (double &pitch_angle : pitch_range) {
             for (double &roll_angle : roll_range) {
@@ -53,10 +60,11 @@ void PController::run()
                 js[m_leg_prefix + "HipRoll"] += roll_angle;
                 js[m_leg_prefix + "HipPitch"] += pitch_angle;
 
-                double com_err = this->error(m_com.get_CoM(m_leg, false, js));
+                pair<double, double> com_err = this->error(m_com.get_CoM(m_leg, false, js));
+                double abs_err = abs(com_err.first) + abs(com_err.second);
 
-                if (com_err < best_com_error) {
-                    best_com_error = com_err;
+                if (abs_err < best_com_error) {
+                    best_com_error = abs_err;
                     best_pangle = pitch_angle;
                     best_rangle = roll_angle;
                 }
@@ -69,7 +77,7 @@ void PController::run()
     }
 }
 
-double PController::error(matrix<double> com_loc)
+pair<double, double> PController::error(matrix<double> com_loc)
 {
     vector<vector<double> > polygon_v =
     {
@@ -82,12 +90,7 @@ double PController::error(matrix<double> com_loc)
     matrix<double> polygon = CenterOfMass::vec_to_mat(polygon_v);
     matrix<double> diff = polygon - com_loc;
 
-    double abs_sum = 0;
-    for (unsigned i = 0; i < 2; ++i) {
-        abs_sum += abs(diff(i, 0));
-    }
-
-    return abs_sum;
+    return pair<double, double>(diff(0, 0), diff(1, 0));
 }
 
 vector<string> PController::joints =
