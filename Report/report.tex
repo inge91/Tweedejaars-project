@@ -2,6 +2,7 @@
 \usepackage[english]{babel}
 \usepackage{enumerate}
 \usepackage{amsmath}
+\usepackage{tikz}
 \usepackage{graphicx}
 
 \begin{document}
@@ -16,7 +17,10 @@
 
 \section{Introduction} 
 Our research is concerned with making a dynamic, closed
-loop kick for the Nao robot. The Nao is a 58 cm tall humanoid robot made by Aldebaran Robots\footnote{http://www.aldebaran-robotics.com/en/}. It is used in the Stand Platform League of the Robocup\footnote{http://wiki.robocup.org/wiki/Standard_Platform_League}, an organisation which organizes football (soccer)
+loop kick for the Nao robot. The Nao is a 58 cm tall humanoid robot made by
+Aldebaran Robots\footnote{http://www.aldebaran-robotics.com/en/}. It is used in
+the Stand Platform League of the
+Robocup\footnote{http://wiki.robocup.org/wiki/Standard\_Platform\_League}, an organisation which organizes football (soccer)
 competitions for autonomous robots.
 
 Kicking, of course, is an important part of football, and thus a good kick is vital to achieving good results in the Robocup. There are essentially two ways of making a humanoid robot kick a ball:
@@ -133,42 +137,58 @@ We're currently leaning towards the second option, mainly because it’s easier,
 more standard, and can deal with unreachable positions (it simply approaches the
 closest reachable position).
 
-\subsection{The kick}
+\subsection{The Kick}
 With the solutions to the previous aspects of the dynamic kick constructed, 
 we can start to calculate the optimal kicking trajectory. This kick is composed
-of different stages, loosely based on the approach of \cite{Xu2010}.
+of different stages, loosely based on the approach of \cite{Xu2010}. 
 \begin{itemize}
     \item Initial pose
     \item Retraction point
     \item Contact point
-    \item fitting A bezier curve
+    \item Fitting a Bezier curve
 \end{itemize}
 
-\subsubsection(Initial pose)
+For all these stages we assume we have knowledge about the coordinates of the
+ball in some coordinate system relative to the Nao or a fixed point in space,
+the size of the ball to hit and which way we want to kick the ball.
+
+\subsubsection{Initial pose}
 The first stage is the initial pose. The Nao is positions its center of mass on
 top of its standing leg and lowers his center of mass so as to get a more stable
-position. This stage is still
-hardcoded using keyvalues as it makes for a smoother transition to the kicking
-motion, without having to rely on the balance controllers. 
+position while performing his kick. This stage still makes use of the  keyvalues as 
+it makes for a smoother transition to the kicking motion, without having to rely on 
+the balance controllers from the start. 
 
-\subsubsection{Contact point }
+\subsubsection{Contact point}
+The contact point is the point on the ball that has to be hit by the Nao to
+move it in the desired direction. \cite{Xu2010} uses the following
+calculationt to find this, which seems to work exactly as we would like:
+\begin{align*}
+    \vec{c} - ( vec{d} * r )
+\end{align*}
+where $\vec{c}$is the location of the center of mass of the ball, $r$ is the
+ball radius(in the case of the SPL balls this is 33.42 mm) and $\vec{d}$ is the
+force destination (the direction of where we want the ball to end up in
+coordinates).
 
-\subsubsection(Retraction point)
+
+\subsubsection{Retraction point}
 After the initial pose the Nao calculates its optimal retraction point. This
 is the rearmost point from which the kick commences, and has two criteria that
-should be satisfied:
+should be satisfied to be considered a good starting position:
 \begin{itemize}
-    \item The retraction point should be far away from the ball
-    \item The retraction point should be accurate
+    \item The retraction point should be far away from the ball (to make the
+        kick as hard as possible)
+    \item The retraction point should be accurate 
 \end{itemize}
 To meet both criteria as good as possible there should be a trade off between
 the two.
 
 Firstly, to determine the point between the ball and a possible retraction point
-we use the following calculation \cite{Xu2010}  : 
+we use the following calculation: 
 
 \begin{align*}
-    d = ||\vec{pc_{xy}} - \vec{p_{xy}} || * 0.7 + ||\vec{_pc_z} -
+    d = ||\vec{pc_{xy}} - \vec{p_{xy}} || * 0.7 + ||\vec{pc_z} -
     \vec{p_z} || * 0.3\\
 \end{align*}
 
@@ -176,15 +196,66 @@ Where $\vec{pc}$ is the contact pointwhere the ball should be hit and
 $\vec{p}$ is a possible retraction point and $\vec{d}$ the distance between both
 points. The reason the ${xy}$ dimensions get more weight is because heightening
 the feet for a bigger distance of the retraction is less desirable as it creates
-more imbalance and takes up more time.
+more imbalance and takes up more time. The retraction n the x and y direction
+however enable a more accurate and harder kick.
 
+\begin{figure}
+    \begin{tikzpicture}
+        \coordinate [label=left:$\vec{c_p}$] (A) at (-2.5,0.2);
+        \coordinate [label=right:$\vec{f_d}$] (B) at (5, 0 );
+        \coordinate [label=right:$d$] (F) at (-7, 1.25);
+        \coordinate [label=above:$\vec{c}$](C) at (0,0);
+        \coordinate (D) at (-2.5, 0);
+        \coordinate [label=left:$\vec{p}$] (E) at (-7, 2.5);
+        \draw[line width = 2][color = red] (0,0) circle (2.5cm);
+        \draw [style = thick][line width = 1.5][->](-8, 0) -- (B);
+        \draw[dashed] (E) -- (-7,0);
+        \foreach \point in {C,D,E}
+        \fill [black,opacity=1] (\point) circle (2pt);
+    \end{tikzpicture}
+    \caption{Visualisation of the accuracy problem. \small{the contact point
+            ($\vec{p_c}$) and the preferable force direction ($\vec{f_d}$) form a line
+    in 3D space. A possible retraction point $\vec{p}$ can be somewhere around
+    this line. to find its accuracy the distance $d$ should be solved. Note that
+    this only concerns the x and y direction as the z dimension does not
+    influence the accuracy. $\vec{c}$ denotes the center of mass
+    location on the ball and is only shown for clarification.}}
+    \label{fig:accuracy}
+\end{figure}    
 
-Finding the accuracy of a given retraction point resolves to finding 
-will have the following
-calculation is made:
+Finding the accuracy of a given retraction point is less straightforward. This
+problem can be seen as the closeness of a given point to the line, where the
+point consists of a possible retraction point and the line consits of the
+contact point and the destinatiaon point. See Figure \ref{fig:accuracy} for a
+visualisation of the problem. This idea makes for a basic linear algebra
+problem that needs to be resolved.
+\begin{align*}
+    d = \frac{||(\vec{p_{xy}} - cp_{xy}) \times (\vec{p_{xy}} -
+    \vec{f_d})||}{\|\vec{fd_{xy}}- \vec{cp_{xy}}\|}
+\end{align*}
+
+The distance to the line is only important in the $xy$ direction, but a cross
+product can only be taken in 3d space so this is solved by taking the $xy$
+values from the original points in space but adding a 0 value in the z
+direction.
+Now that we have a way to calculate both the distance to the contact point and
+the accuracy towards the force direction, we are able to make a balanced
+decision towards what a good retractionpoint is. It is found by the following
+equation.
 
 \begin{align*}
+    \arg\max_\vec{p} = 1 - \delta * f() + \delta * g()
 \end{align*}
+
+all possible positions $\vec{p}$ should be considerd to solve this equation. To
+determine what is possible the Nao is set in different positions and using a
+forward kinematics chain the end effector of each leg in world space coordinates
+can be retrieved. This way roughly all possible positions are set and can be
+looped thorugh to find the point that maximizes above equation. By also
+retrieving the location of the standing leg we make sure that there is
+no overlap in the reachable space and the position of the other leg.
+
+\subsubsection{Making a kick using the Bezier curve}
 
 \section{Experiments and Results}
 \subsection{Center of mass balancing}
@@ -213,6 +284,11 @@ document this process at the same time. Most of the problems have been covered
 in previous courses, but it still will require some insight in achieving our set
 goals.
 
+\section{Conclusion}
+
+\section{Discussion}
+
+\section{Future works}
 
 \bibliographystyle{plain}
 \bibliography{library}
