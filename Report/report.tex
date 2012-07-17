@@ -166,7 +166,7 @@ The contact point is the point on the ball that has to be hit by the Nao to
 move it in the desired direction. \cite{Xu2010} uses the following
 calculationt to find this, which seems to work exactly as we would like:
 \begin{align*}
-    \vec{c} - ( vec{d} * r )
+    \vec{c} - ( \vec{d} * r )
 \end{align*}
 where $\vec{c}$is the location of the center of mass of the ball, $r$ is the
 ball radius(in the case of the SPL balls this is 33.42 mm) and $\vec{d}$ is the
@@ -190,12 +190,11 @@ Firstly, to determine the point between the ball and a possible retraction point
 we use the following calculation: 
 
 \begin{align*}
-    d = ||\vec{pc_{xy}} - \vec{p_{xy}} || * 0.7 + ||\vec{pc_z} -
-    \vec{p_z} || * 0.3\\
+    d_r = ||\vec{p_{c}^{xy}} - \vec{p^{xy}} || * 0.7 + ||\vec{p_{c}^z} - \vec{p^z}|| * 0.3
 \end{align*}
 
 Where $\vec{pc}$ is the contact pointwhere the ball should be hit and
-$\vec{p}$ is a possible retraction point and $\vec{d}$ the distance between both
+$\vec{p}$ is a possible retraction point and $\vec{d_r}$ the distance between both
 points. The reason the ${xy}$ dimensions get more weight is because heightening
 the feet for a bigger distance of the retraction is less desirable as it creates
 more imbalance and takes up more time. The retraction n the x and y direction
@@ -203,9 +202,9 @@ however enable a more accurate and harder kick.
 
 \begin{figure}
     \begin{tikzpicture}
-        \coordinate [label=left:$\vec{c_p}$] (A) at (-2.5,0.2);
+        \coordinate [label=left:$\vec{p_c}$] (A) at (-2.5,0.2);
         \coordinate [label=right:$\vec{f_d}$] (B) at (5, 0 );
-        \coordinate [label=right:$d$] (F) at (-7, 1.25);
+        \coordinate [label=right:$d_a$] (F) at (-7, 1.25);
         \coordinate [label=above:$\vec{c}$](C) at (0,0);
         \coordinate (D) at (-2.5, 0);
         \coordinate [label=left:$\vec{p}$] (E) at (-7, 2.5);
@@ -218,7 +217,7 @@ however enable a more accurate and harder kick.
     \caption{Visualisation of the accuracy problem. \small{the contact point
             ($\vec{p_c}$) and the preferable force direction ($\vec{f_d}$) form a line
     in 3D space. A possible retraction point $\vec{p}$ can be somewhere around
-    this line. to find its accuracy the distance $d$ should be solved. Note that
+    this line. To find its accuracy the distance $d_a$ should be solved. Note that
     this only concerns the x and y direction as the z dimension does not
     influence the accuracy. $\vec{c}$ denotes the center of mass
     location on the ball and is only shown for clarification.}}
@@ -230,10 +229,11 @@ problem can be seen as the closeness of a given point to the line, where the
 point consists of a possible retraction point and the line consits of the
 contact point and the destination point. See Figure \ref{fig:accuracy} for a
 visualisation of the problem. This idea makes for a basic linear algebra
+\footnote{The intuition behind this calculation can be found on http://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html }
 problem that needs to be resolved.
 \begin{align*}
-    d = \frac{||(\vec{p_{xy}} - cp_{xy}) \times (\vec{p_{xy}} -
-    \vec{f_d})||}{\|\vec{fd_{xy}}- \vec{cp_{xy}}\|}
+    d_a = \frac{(||(\vec{p^{xy}} - p_c^{xy}) \times (\vec{p^{xy}} -
+    \vec{f_d})||}{\|\vec{f_d^{xy}}- \vec{p_c^{xy}}\|}
 \end{align*}
 
 The distance to the line is only important in the $xy$ direction, but a cross
@@ -242,14 +242,20 @@ values from the original points in space but adding a 0 value in the z
 direction.
 Now that we have a way to calculate both the distance to the contact point and
 the accuracy towards the force direction, we are able to make a balanced
-decision towards what a good retractionpoint is. It is found by the following
-equation.
+decision towards what a good retraction point is.
 
 \begin{align*}
-    \arg\max_\theta
+    \vec{p} = 0.1 * d_r + 0.9 * \frac{0.1}{d_a}
 \end{align*}
 
-all possible positions $\vec{p}$ should be considerd to solve this equation. To
+We take the multiplicative inverse of $d_a$ so that the value gets bigger when the
+retraction point is close to the line and rescale it by deviding it with 10 to
+make the value $d_r$ and $d_a$ more in the same range. The multiplicative values
+0.1 and 0.9 could be experimented with to find the optimal result. In the above
+equation accuracy is more important than a big distance between ball and
+retraction point.
+
+All possible positions $\vec{p}$ should be considerd to solve this equation. To
 determine what is possible the Nao is set in different positions and using a
 forward kinematics chain the end effector of each leg in world space coordinates
 can be retrieved. This way roughly all possible positions are set and can be
@@ -258,6 +264,7 @@ retrieving the location of the standing leg we make sure that there is
 no overlap in the reachable space and the position of the other leg.
 
 \subsubsection{Making a kick using the Bezier curve}
+
 
 \section{Experiments and Results}
 \subsection{Center of mass balancing}
