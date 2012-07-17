@@ -1,5 +1,4 @@
 import sys, re, platform
-from cStringIO import StringIO
 
 # adding the correct Naoqi Python SDK to the path
 
