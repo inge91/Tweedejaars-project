@@ -15,7 +15,7 @@ def create(resolution = 10):
     RKneePitch 	 = (int(-0.103083 * resolution), int(2.120198 * resolution))
     
     #position dict is the final dict that will contain all reachable places
-    table_Lleg = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda:
+    table_lLeg = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda:
         defaultdict(lambda: defaultdict(lambda: defaultdict)))))
 
     com = CoM.CenterOfMass()
@@ -68,7 +68,7 @@ def create(resolution = 10):
                             x = joint_locs[0] 
                             y = joint_locs[1]
                             z = joint_locs[2]
-                            (table_lLeg[x][y][z][angle_rhiproll][angle_rhippitch] = angle_dict)
+                            table_lLeg[x][y][z][angle_rhiproll][angle_rhippitch] = angle_dict
     f = open(r'~/Project/Tweedejaarsproject/LLeg_positions.txt','w')
     pickle.dump(table_lLeg, f)
     f.write(table_lLeg)
@@ -120,7 +120,7 @@ def create(resolution = 10):
                                           "HeadPitch"     : 0
                                          }
                             joint_locs = com.get_locations_dict("Lleg", False, angle_dict) 
-                            #(table_rLeg[x][y][z][angle_rhiproll][angle_rhippitch] = angle_dict)
+                            table_rLeg[x][y][z][angle_rhiproll][angle_rhippitch] = angle_dict
     f = open(r'~/Project/Tweedejaarsproject/RLeg_positions.txt','w')
     pickle.dump(table_rLeg, f)
     f.write(table_rLeg)
