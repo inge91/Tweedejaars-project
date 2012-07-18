@@ -105,8 +105,8 @@ def create(resolution = 10):
                                           "RAnklePitch"   : -0.55,
                                           # set other values to initial pose values or
                                           # zero
-                                          "LKneePitch"    : 1.5739259719848633,
-                                          "LAnklePitch"   : -1.0461461544036865,
+                                          "LKneePitch"    : 1.6413381099700928,
+                                          "LAnklePitch"   : -0.9403839111328125,
                                           "LAnkleRoll"    : 0,
                                           "LShoulderPitch": 0, 
                                           "LShoulderRoll" : 0,
@@ -119,8 +119,11 @@ def create(resolution = 10):
                                           "HeadYaw"       : 0,
                                           "HeadPitch"     : 0
                                          }
-                            joint_locs = com.get_locations_dict("Lleg", False, angle_dict) 
-                            table_rLeg[x][y][z][angle_rhiproll][angle_rhippitch] = angle_dict
+                            joint_locs = com.get_locations_dict("LLeg", False, angle_dict) 
+                            x = joint_locs[0] 
+                            y = joint_locs[1]
+                            z = joint_locs[2]
+                            table_rLeg[x][y][z][angle_lhiproll][angle_lhippitch] = angle_dict
     f = open(r'~/Project/Tweedejaarsproject/RLeg_positions.txt','w')
     pickle.dump(table_rLeg, f)
     f.write(table_rLeg)
