@@ -8,6 +8,9 @@ from collections import defaultdict
 import scipy
 from scipy import linalg
 
+sys.path.append("Resources")
+from joint_constraints import joint_constraints
+
 sys.path.append("SDK")
 
 def get_jacobian(leg, joint_angles, joint_trans):
@@ -123,10 +126,30 @@ def set_position(ip, leg, target, lambd=5, max_iter=100):
         lambd = 5
 
         # Levenberg-Marquardt
-        theta += (J.T * inv((J * J.T) + (lambd**2 * eye(3)))) * dX
+        d_theta = (J.T * inv((J * J.T) + (lambd**2 * eye(3)))) * dX
+
+        # update theta and the joint angle dictionary
+        update_theta(theta, d_theta, leg)
         update_angles(angles, kick_joints, theta, stand_joints, mp)
 
     return dict(zip(kick_joints, map(lambda x: x[0, 0], theta)))
+
+# updates theta vector, respecting each joint's angle constraints
+def update_theta(theta, d_theta, leg):
+    kick_joints = ["HipYawPitch", "HipRoll", "HipPitch", "KneePitch"]
+    kick_joints = [("L" if leg == "LLeg" else "R") + joint for joint in kick_joints]
+
+    # update the angles
+    theta += d_theta
+
+    # check the boundaries
+    for i, (joint, angle) in enumerate(zip(kick_joints, theta)):
+        min, max = joint_constraints[joint]
+
+        if angle < min:
+            theta[i, 0] = min
+        elif angle > max:
+            theta[i, 0] = max
 
 def update_angles(angles, joints, theta, stand_joints, mp):
     end_effector_angles = dict(zip(joints, theta))
