@@ -1,5 +1,5 @@
 from numpy import matrix, cross, eye
-from numpy.linalg import eig, pinv, norm
+from numpy.linalg import eig, pinv, norm, inv
 import sys
 from CoM import CenterOfMass
 from naoqi import ALProxy
@@ -67,6 +67,20 @@ def null(A, eps=1e-15):
     null_space = scipy.compress(null_mask, vh, axis=0)
     return scipy.transpose(null_space)
 
+def change_position(ip, leg, offset, max_iter=100):
+    com = CenterOfMass(ip, 9559)
+    stand_leg = "LLeg" if leg == "RLeg" else "RLeg"
+    joint_locs = com.get_locations_dict(stand_leg, transformation=False, online=True)
+
+    current_loc = joint_locs["LAnkleRoll" if leg == "LLeg" else "RAnkleRoll"][:3, 0]
+
+    x, y, z = offset
+    offset_matrix = matrix([[x], [y], [z]])
+    target = current_loc + offset_matrix
+
+    return set_position(ip, leg, target, max_iter=max_iter)
+
+
 def set_position(ip, leg, target, error_thresh=5, max_iter=100):
     # initialization of some variables
     com = CenterOfMass(ip, 9559)
@@ -103,20 +117,15 @@ def set_position(ip, leg, target, error_thresh=5, max_iter=100):
         # difference between goal position and end-effector
         dX = target - (joint_trans[end_effector] * matrix([[0], [0], [0], [1]]))[:3, 0]
         print norm(dX)
-        if norm(dX) < 15:
+        if norm(dX) < 20:
             break
 
         J = get_jacobian(leg, angles, joint_trans)
-        Jinv = pinv(J)
 
-        while True:
-            error = norm( (eye(J.shape[0]) - (J*Jinv)) * dX )
-            if (error < error_thresh):
-                break;
-            else:
-                dX /= 2
+        lambd = 5
 
-        theta += (Jinv * dX) + (eye(6) - (Jinv * J)) * matrix([[0], [0], [0], [0], [0], [0]])
+        # Levenberg-Marquardt
+        theta += (J.T * inv((J * J.T) + (lambd**2 * eye(3)))) * dX
         update_angles(angles, kick_joints, theta, stand_joints, mp)
 
     return dict(zip(kick_joints, map(lambda x: x[0, 0], theta)))
@@ -148,6 +157,17 @@ def testing(ip):
     import sys
     sys.path.append("SDK")
     from naoqi import ALProxy
+
+    joints = ["HipYawPitch", "HipRoll", "HipPitch", "KneePitch",
+              "AnklePitch", "AnkleRoll"]
+
+    leg = "RLeg"
+    if leg == "LLeg":
+        joints = ["L" + joint for joint in joints]
+        end_effectors = ["LAnkleRoll"]
+    else:
+        joints = ["R" + joint for joint in joints]
+        end_effectors = ["RAnkleRoll"]
 
     com = c.CenterOfMass(ip, 9559)
     mp = ALProxy("ALMotion", ip, 9559)
