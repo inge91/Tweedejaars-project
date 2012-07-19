@@ -3,6 +3,7 @@ from numpy.linalg import eig, pinv, norm
 import sys
 from CoM import CenterOfMass
 from naoqi import ALProxy
+from collections import defaultdict
 
 import scipy
 from scipy import linalg
@@ -70,48 +71,68 @@ def set_position(ip, leg, target, error_thresh=5, max_iter=100):
     # initialization of some variables
     com = CenterOfMass(ip, 9559)
     mp = ALProxy("ALMotion", ip, 9559)
-    joints = ["HipYawPitch", "HipRoll", "HipPitch", "KneePitch",
+
+    kick_joints = ["HipYawPitch", "HipRoll", "HipPitch", "KneePitch",
               "AnklePitch", "AnkleRoll"]
-    joints = [("L" if leg == "LLeg" else "R") + joint for joint in joints]
+    kick_joints = [("L" if leg == "LLeg" else "R") + joint for joint in kick_joints]
+
+    stand_joints = ["HipYawPitch", "HipRoll", "HipPitch", "KneePitch",
+              "AnklePitch", "AnkleRoll"]
+    stand_joints = [("R" if leg == "LLeg" else "L") + joint for joint in stand_joints]
+
+    rest_of_body = ["HeadPitch", "HeadYaw", "LShoulderPitch", "LShoulderRoll",
+                    "LElbowYaw", "LElbowRoll", "RShoulderPitch", "RShoulderRoll",
+                    "RElbowYaw", "RElbowRoll"]
 
     # initial angles
     angles = {}
-    for joint in joints:
-        angles[joint] = mp.getAngles(joint, True)
+    for joint in kick_joints:        J = get_jacobian(leg, angles, joint_trans)
+        Jinv = pinv(J)
+
+        angles[joint] = mp.getAngles(joint, True)[0]
+    for joint in stand_joints:
+        angles[joint] = mp.getAngles(joint, True)[0]
+    for joint in rest_of_body:
+        angles[joint] = mp.getAngles(joint, True)[0]
 
     end_effector = "LAnkleRoll" if leg == "LLeg" else "RAnkleRoll"
     stand_leg = "RLeg" if leg == "LLeg" else "LLeg"
-    theta = matrix([angles[joint] for joint in joints])
+    theta = matrix([angles[joint] for joint in kick_joints]).T
 
     for _ in xrange(max_iter):
-        joint_trans = com.get_locations_dict(stand_leg, transformation=True, online=True, joint_dict=angles)
+        joint_trans = com.get_locations_dict(stand_leg, transformation=True, online=False, joint_dict=angles)
 
         # difference between goal position and end-effector
         dX = target - (joint_trans[end_effector] * matrix([[0], [0], [0], [1]]))[:3, 0]
-        print dX
-        if norm(dX) < 50:
+        print norm(dX)
+        if norm(dX) < 15:
             break
 
-        while True:
-            J = get_jacobian(leg, angles, joint_trans)
-            Jinv = pinv(J)
+        J = get_jacobian(leg, angles, joint_trans)
+        Jinv = pinv(J)
 
-            error = norm( (eye(J.shape[0]) - J*Jinv) * dX )
+        while True:
+            error = norm( (eye(J.shape[0]) - (J*Jinv)) * dX )
             if (error < error_thresh):
                 break;
             else:
                 dX /= 2
 
         theta += Jinv * dX
-        update_angles(angles, joints, theta)
+        update_angles(angles, kick_joints, theta, stand_joints, mp)
 
-    return dict(zip(joints, map(lambda x: x[0, 0], theta)))
+    return dict(zip(kick_joints, map(lambda x: x[0, 0], theta)))
 
-def update_angles(angles, joints, theta):
+def update_angles(angles, joints, theta, stand_joints, mp):
     end_effector_angles = dict(zip(joints, theta))
 
     for joint, angle in end_effector_angles.iteritems():
         angles[joint] = angle
+
+    # update the angles of the standing leg because they might've been changed
+    # by a balance controller
+    for joint in stand_joints:
+        angles[joint] = mp.getAngles(joint, True)[0]
 
 def modulo(a, b):
     if a < 0:
