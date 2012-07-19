@@ -73,7 +73,7 @@ def create(resolution = 10):
     pickle.dump(table_lLeg, f)
     f.write(table_lLeg)
     f.close()
-    #table_rLeg = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda:
+    table_rLeg = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda:
         defaultdict(lambda: defaultdict(lambda: defaultdict)))))
     # loop constructs dict for left leg kick
     for i in xrange(RHipYawPitch[0], RHipYawPitch[1]) :
