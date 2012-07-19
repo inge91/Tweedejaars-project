@@ -13,8 +13,7 @@ sys.path.append("SDK")
 def get_jacobian(leg, joint_angles, joint_trans):
     """ Returns the Jacobian matrix """
 
-    joints = ["HipYawPitch", "HipRoll", "HipPitch", "KneePitch",
-              "AnklePitch", "AnkleRoll"]
+    joints = ["HipYawPitch", "HipRoll", "HipPitch", "KneePitch"]
 
     if leg == "LLeg":
         joints = ["L" + joint for joint in joints]
@@ -67,7 +66,7 @@ def null(A, eps=1e-15):
     null_space = scipy.compress(null_mask, vh, axis=0)
     return scipy.transpose(null_space)
 
-def change_position(ip, leg, offset, max_iter=100):
+def change_position(ip, leg, offset, lambd=5, max_iter=100):
     com = CenterOfMass(ip, 9559)
     stand_leg = "LLeg" if leg == "RLeg" else "RLeg"
     joint_locs = com.get_locations_dict(stand_leg, transformation=False, online=True)
@@ -78,25 +77,24 @@ def change_position(ip, leg, offset, max_iter=100):
     offset_matrix = matrix([[x], [y], [z]])
     target = current_loc + offset_matrix
 
-    return set_position(ip, leg, target, max_iter=max_iter)
+    return set_position(ip, leg, target, lambd=lambd, max_iter=max_iter)
 
 
-def set_position(ip, leg, target, error_thresh=5, max_iter=100):
+def set_position(ip, leg, target, lambd=5, max_iter=100):
     # initialization of some variables
     com = CenterOfMass(ip, 9559)
     mp = ALProxy("ALMotion", ip, 9559)
 
-    kick_joints = ["HipYawPitch", "HipRoll", "HipPitch", "KneePitch",
-              "AnklePitch", "AnkleRoll"]
+    kick_joints = ["HipYawPitch", "HipRoll", "HipPitch", "KneePitch"]
     kick_joints = [("L" if leg == "LLeg" else "R") + joint for joint in kick_joints]
 
-    stand_joints = ["HipYawPitch", "HipRoll", "HipPitch", "KneePitch",
-              "AnklePitch", "AnkleRoll"]
+    stand_joints = ["HipYawPitch", "HipRoll", "HipPitch", "KneePitch"]
     stand_joints = [("R" if leg == "LLeg" else "L") + joint for joint in stand_joints]
 
     rest_of_body = ["HeadPitch", "HeadYaw", "LShoulderPitch", "LShoulderRoll",
                     "LElbowYaw", "LElbowRoll", "RShoulderPitch", "RShoulderRoll",
-                    "RElbowYaw", "RElbowRoll"]
+                    "RElbowYaw", "RElbowRoll", "LAnkleRoll", "LAnklePitch",
+                    "RAnklePitch", "RAnkleRoll"]
 
     # initial angles
     angles = {}
@@ -117,7 +115,7 @@ def set_position(ip, leg, target, error_thresh=5, max_iter=100):
         # difference between goal position and end-effector
         dX = target - (joint_trans[end_effector] * matrix([[0], [0], [0], [1]]))[:3, 0]
         print norm(dX)
-        if norm(dX) < 20:
+        if norm(dX) < 15:
             break
 
         J = get_jacobian(leg, angles, joint_trans)
@@ -158,8 +156,7 @@ def testing(ip):
     sys.path.append("SDK")
     from naoqi import ALProxy
 
-    joints = ["HipYawPitch", "HipRoll", "HipPitch", "KneePitch",
-              "AnklePitch", "AnkleRoll"]
+    joints = ["HipYawPitch", "HipRoll", "HipPitch", "KneePitch"]
 
     leg = "RLeg"
     if leg == "LLeg":
