@@ -86,9 +86,7 @@ def set_position(ip, leg, target, error_thresh=5, max_iter=100):
 
     # initial angles
     angles = {}
-    for joint in kick_joints:        J = get_jacobian(leg, angles, joint_trans)
-        Jinv = pinv(J)
-
+    for joint in kick_joints:        
         angles[joint] = mp.getAngles(joint, True)[0]
     for joint in stand_joints:
         angles[joint] = mp.getAngles(joint, True)[0]
@@ -118,7 +116,7 @@ def set_position(ip, leg, target, error_thresh=5, max_iter=100):
             else:
                 dX /= 2
 
-        theta += Jinv * dX
+        theta += (Jinv * dX) + (eye(6) - (Jinv * J)) * matrix([[0], [0], [0], [0], [0], [0]])
         update_angles(angles, kick_joints, theta, stand_joints, mp)
 
     return dict(zip(kick_joints, map(lambda x: x[0, 0], theta)))
