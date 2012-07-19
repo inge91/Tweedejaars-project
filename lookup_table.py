@@ -14,6 +14,8 @@ def create(resolution = 10):
     RHipPitch 	 = (int(-1.772308 * resolution), int(0.485624 * resolution))
     RKneePitch 	 = (int(-0.103083 * resolution), int(2.120198 * resolution))
     
+    print RHipRoll
+    print RHipPitch
     #position dict is the final dict that will contain all reachable places
     table_lLeg = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda:
         defaultdict(lambda: defaultdict(lambda: defaultdict)))))
@@ -28,12 +30,12 @@ def create(resolution = 10):
                     for m in xrange(RHipRoll[0], RHipRoll[1]):
                         for n in xrange(RHipPitch[0], RHipPitch[1]):
                             #calculate back to the readians
-                            angle_hipyawpitch = i / resolution
-                            angle_hiproll     = j / resolution
-                            angle_hippitch    = k / resolution
-                            angle_kneepitch   = l / resolution
-                            angle_rhiproll    = m / resolution
-                            angle_rhippitch   = n / resolution
+                            angle_hipyawpitch = i / float(resolution)
+                            angle_hiproll     = j / float(resolution)
+                            angle_hippitch    = k / float(resolution)
+                            angle_kneepitch   = l / float(resolution)
+                            angle_rhiproll    = m / float(resolution)
+                            angle_rhippitch   = n / float(resolution)
                             # putting the angles in a dict
                             angle_dict = {
                                           "LHipYawPitch"  : angle_hipyawpitch,
@@ -58,16 +60,17 @@ def create(resolution = 10):
                                           "LElbowYaw"     : 0,
                                           "LElbowRoll"    : 0,
                                           "RShoulderPitch": 0,
-                                          "]ShoulderRoll" : 0,
+                                          "RShoulderRoll" : 0,
                                           "RElbowYaw"     : 0,
                                           "RElbowRoll"    : 0,
                                           "HeadYaw"       : 0,
                                           "HeadPitch"     : 0
                                          }
-                            joint_locs = com.get_locations_dict("RLeg", False, angle_dict) 
-                            x = joint_locs[0] 
-                            y = joint_locs[1]
-                            z = joint_locs[2]
+                            joint_locs = com.get_locations_dict("RLeg", False,
+                                    angle_dict)["LAnkleRoll"]
+                            x = joint_locs[0,0] 
+                            y = joint_locs[1,0]
+                            z = joint_locs[2,0]
                             table_lLeg[x][y][z][angle_rhiproll][angle_rhippitch] = angle_dict
     f = open(r'~/Project/Tweedejaarsproject/LLeg_positions.txt','w')
     pickle.dump(table_lLeg, f)
