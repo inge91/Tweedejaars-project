@@ -36,7 +36,6 @@ def get_jacobian(leg, joint_angles, joint_trans):
 
             v = rotation_axis(joint_trans[joint])
             v = v[:3]
-            v *= -1 # FIXME: just trying it out, potentionally wrong
             s = joint_trans[end_effector] * matrix([[0], [0], [0], [1]])
             s = s[:3]
             p = joint_trans[joint] * matrix([[0], [0], [0], [1]])
@@ -54,7 +53,7 @@ def rotation_axis(transformation):
     transformation matrix """
 
     rotation = transformation[:3, :3]
-    nullspace = null(eye(3) - rotation)
+    nullspace = null(rotation - eye(3))
 
     if nullspace.shape != (3, 1):
         raise Exception("Nullspace dimensions invalid")
@@ -89,7 +88,8 @@ def set_position(ip, leg, target, error_thresh=5, max_iter=100):
 
         # difference between goal position and end-effector
         dX = target - (joint_trans[end_effector] * matrix([[0], [0], [0], [1]]))[:3, 0]
-        if norm(dX) < 5:
+        print dX
+        if norm(dX) < 50:
             break
 
         while True:
@@ -103,9 +103,26 @@ def set_position(ip, leg, target, error_thresh=5, max_iter=100):
                 dX /= 2
 
         theta += Jinv * dX
+        update_angles(angles, joints, theta)
 
     return dict(zip(joints, map(lambda x: x[0, 0], theta)))
 
+def update_angles(angles, joints, theta):
+    end_effector_angles = dict(zip(joints, theta))
+
+    for joint, angle in end_effector_angles.iteritems():
+        angles[joint] = angle
+
+def modulo(a, b):
+    if a < 0:
+        negative = True
+    a = abs(a)
+    mod = a % b
+
+    if negative:
+        return -1 * mod
+    else:
+        return mod
 
 def testing(ip):
     import CoM as c
