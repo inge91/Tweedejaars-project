@@ -86,12 +86,12 @@ def create(resolution = 10):
                     for m in xrange(LHipRoll[0], LHipRoll[1]):
                         for n in xrange(LHipPitch[0], LHipPitch[1]):
                             #calculate back to the readians
-                            angle_hipyawpitch = i / resolution
-                            angle_hiproll     = j / resolution
-                            angle_hippitch    = k / resolution
-                            angle_kneepitch   = l / resolution
-                            angle_lhiproll    = m / resolution
-                            angle_lhippitch   = n / resolution
+                            angle_hipyawpitch = i / float(resolution)
+                            angle_hiproll     = j / float(resolution)
+                            angle_hippitch    = k / float(resolution)
+                            angle_kneepitch   = l / float(resolution)
+                            angle_lhiproll    = m / float(resolution)
+                            angle_lhippitch   = n / float(resolution)
                             # putting the angles in a dict
                             angle_dict = {
                                           "RHipYawPitch"  : angle_hipyawpitch,
@@ -122,10 +122,11 @@ def create(resolution = 10):
                                           "HeadYaw"       : 0,
                                           "HeadPitch"     : 0
                                          }
-                            joint_locs = com.get_locations_dict("LLeg", False, angle_dict) 
-                            x = joint_locs[0] 
-                            y = joint_locs[1]
-                            z = joint_locs[2]
+                            joint_locs = com.get_locations_dict("LLeg", False,
+                                    angle_dict)["RAnkleRoll"]
+                            x = joint_locs[0,0] 
+                            y = joint_locs[1,0]
+                            z = joint_locs[2,0]
                             table_rLeg[x][y][z][angle_lhiproll][angle_lhippitch] = angle_dict
     f = open(r'~/Project/Tweedejaarsproject/RLeg_positions.txt','w')
     pickle.dump(table_rLeg, f)
