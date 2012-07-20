@@ -7,6 +7,10 @@
 
 \begin{document}
 
+% custom commands to make matrices more convenient
+\newcommand{\bvect}[1] {\begin{bmatrix} #1 \end{bmatrix}}
+\newcommand{\pvect}[1] {\begin{pmatrix} #1 \end{pmatrix}}
+
 \title{Designing a Dynamic Kick for the Nao Robot}
 \author{ Inge Becht \\ 
          Maarten de Jonge \\ 
@@ -36,7 +40,7 @@ The first one is referred to as a \emph{keyframe motion}, while the second one i
     \item space
     \item rotations
     \item length of end effectors
-    \itme built in functions
+    \item built in functions
 \end{itemize}
 
 
@@ -136,15 +140,33 @@ in amount of actuated joints.
 \subsection{The kinematics problem}
 We want to be able to specify a location for the foot, then have the foot
 automatically move there, which means that the we'll need to be able calculate
-the required joint angles. This is known as \emph{inverse kinematics}. There are
-different potential solutions to this problem, for example: 
-\begin{enumerate}
+the required joint angles. This is known as \emph{inverse kinematics}. There is
+a number of potential solutions to this problem, for example: 
+\begin{itemize}
 \item analytically solve the inverse kinematics chain using goniometry (as done by \cite{Graf2009})
 \item use a hillclimbing algorithm to approach the desired location over a number of iterations
-\end{enumerate}
+\end{itemize}
 
-We have tried different techniques (see appendix A), but in the end used \dots 
+We wound up going with an iterative, Jacobian-based solution.
 
+\subsubsection{Problem specification and terminology}
+Let $\theta$ be a $1 \times n$ vector describing the angles of $n$ joints
+($\theta = \bvect{\theta_1 & \dots & \theta_n}^T$), $\vec{t}$ the vector containing
+the target position for each end effector, and $\vec{s}$ the vector of the end
+effectors' current positions. $\vec{t}$ and $\vec{s}$ are both of size $1 \times f$ where
+$f$ is the desired amount of degrees of freedom in the end effectors (generally
+3 if you only care about the spatial location, or 6 if you take the rotation
+into account too). Thus, if you have $k$ end effectors and 3 degrees of freedom
+in your position:
+\begin{align*}
+    \vec{t} &= \bvect{t_1, &\dots, &t_k}^T \\
+    \vec{s} &= \bvect{s_1, &\dots, &s_k}^T
+\end{align*}
+where
+\begin{align*}
+    t_i &= \bvect{t_{i_{x}}, &t_{i_{y}}, &t_{i_{z}}}^T \\
+    s_i &= \bvect{s_{i_{x}}, &s_{i_{y}}, &s_{i_{z}}}^T
+\end{align*}
 
 \subsection{The Kick}
 With the solutions to the previous aspects of the dynamic kick constructed, 
