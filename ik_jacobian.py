@@ -84,6 +84,14 @@ def change_position(ip, leg, offset, lambd=5, max_iter=100):
 
 
 def set_position(ip, leg, target, lambd=5, max_iter=100):
+    """
+    ip: IP address of the desired naoqi
+    leg: the leg to be actuated
+    target: target position relative to the other (stand, non-actuated leg) leg
+    lambd: lambda parameter for Levenberg-Marquardt method (lambda is a protected
+        python keyword)
+    max_iter: maximum number of iterations
+    """
     # initialization of some variables
     com = CenterOfMass(ip, 9559)
     mp = ALProxy("ALMotion", ip, 9559)
