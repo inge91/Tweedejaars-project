@@ -13,64 +13,68 @@ def find_point(ball_loc, direction, kick_positions, positions):
     kick_x, kick_y, kick_z = kick_positions
     pos_x, pos_y, pos_z = positions 
     # ball position relative to the kicking foot
-    ball_loc = [0.1, 0, 0.010 ]
+    ball_loc = [100, -100.55154471, 0.09521921 ]
+    print "ball pos", ball_loc
+    print "kick pos ", kick_positions
+    print "standing pos", positions
     # all boundaries for the kicking leg
-    min_x = kick_positions[0] - 0.13641
-    max_x = kick_positions[0]
-    min_y = kick_positions[1] - 0.1340
-    max_y = kick_positions[1] + 0.1014
-    min_z = kick_positions[2] + 0.05
-    max_z = kick_positions[2] + 0.1526
+    min_x = int(kick_positions[0] - 75) #- 0.13641
+    max_x = int(kick_positions[0] +75)
+    min_y = int(kick_positions[1] - 75)  #0.1340
+    max_y = int(kick_positions[1] + 75)#0.1014
+    min_z = int(kick_positions[2] - 75) #0.05
+    max_z = int(kick_positions[2] + 75)  #0.1526
+    print min_x, max_x
+    print min_y, max_y
+    print min_z, max_z
+
     # make ball position in world_space coordinates
-    bal_x = kick_x + ball_loc[0]
-    bal_y = kick_y + ball_loc[1]
-    bal_z = kick_z + ball_loc[2]
+    bal_x =  ball_loc[0]
+    bal_y =  ball_loc[1]
+    bal_z =  ball_loc[2]
     print "Ball location: ", bal_x, bal_y, bal_z
     # make direction in world_space coordinates
-    direction_x = kick_x + direction[0]
-    direction_y = kick_y + direction[1]
-    direction_z = kick_z + direction[2]
+    #direction_x = kick_x + direction[0]
+    #direction_y = kick_y + direction[1]
+    #direction_z = kick_z + direction[2]
     direction = np.matrix([ [direction[0]], [direction[1]], [direction[2]]])
     # no retraction when other leg is there(change these values)
-    if( pos_y < max_y or pos_y > min_y):
-        if( abs(pos_y - max_y) > abs(pos_y - min_y)):
-            min_y = pos_y
-        else:
-            max_y = pos_y
+    #if( pos_y < max_y or pos_y > min_y):
+    #    if( abs(pos_y - max_y) > abs(pos_y - min_y)):
+    #        min_y = pos_y
+    #    else:
+    #        max_y = pos_y
     best_pos = 0
-    # make the minimal values compatible with xrange
-    min_x_r = int(min_x*100)
-    max_x_r = int(max_x*100)
-    min_y_r = int(min_y*100)
-    max_y_r = int(max_y*100)
-    min_z_r = int(min_z*100)
-    max_z_r = int(max_z*100)
     # make matrix of the world_space ball and direction coordinates
     bal_loc = np.matrix([[bal_x], [bal_y], [bal_z]])
-    direction = np.matrix([[direction_x], [direction_y], [direction_z]])
-    for x in xrange(min_x_r, max_x_r, 1):
-        for y in xrange(min_y_r, max_y_r, 1):
-            for z in xrange(min_z_r, max_z_r, 1):
-                #time.sleep(1)
-                contact_point, value = retractionPoint(bal_loc, np.matrix([[x/100.0], [y/100.0],
-                    [z/100.0]]), direction, 1)
+    #direction = np.matrix([[direction_x], [direction_y], [direction_z]])
+    print min_x, max_x
+    for x in xrange(min_x, max_x, 20):
+        print x
+        for y in xrange(min_y, max_y, 20):
+            for z in xrange(min_z, max_z, 20):
+                contact_point, value = retractionPoint(bal_loc, np.matrix([[x], [y],
+                    [z]]), direction, 1)
+                #print "contact", contact_point
                 if value > best_pos:
                     best_pos = value
-                    kick_x = x/100.0
-                    kick_y = y/100.0
-                    kick_z = z/100.0
+                    kick_x = x
+                    kick_y = y
+                    kick_z = z
                 
     contact = [contact_point[0,0], contact_point[1,0], contact_point[2,0]]
     return contact, [kick_x, kick_y, kick_z]
 
 
 # the function that evaluates the best possible retraction point
-def retractionPoint(ball_loc, point, direction, t, delta = 0.9 ):
+def retractionPoint(ball_loc, point, direction, t, delta = 0.001 ):
     """ball_loc is the location of the ball, direction is a vector in a direction to
     kick the ball to"""
     # ball radius is given in meters
-    ball_radius = 0.03342
+    ball_radius = 33.42
     force_direction = direction
+    #print "dir", direction
+    #print ball_radius
     # where to kick the ball
     contact_point = ball_loc - (direction * ball_radius) 
     (retract_distance ,output) = g(point, contact_point,  force_direction, ball_loc, t)
@@ -92,11 +96,17 @@ def g(point, contact_point, force_direction, ball_loc, t):
     #the smaller the distance, the bigger the number
     distance = 0.1 / distance
 
-    retract_distance_xy = math.sqrt(np.vdot(contact_point[:2] - point[:2], contact_point[:2] - point[:2]))
-    retract_distance_z = abs(point[2] - contact_point[2])
+    retract_distance_x = math.sqrt(np.vdot(contact_point[0] - point[0],
+        contact_point[0] - point[0]))
+    retract_distance_y = math.sqrt(np.vdot(contact_point[1] - point[1],
+        contact_point[1] - point[1]))
+    retract_distance_z = math.sqrt(np.vdot(contact_point[2] - point[2], contact_point[2] - point[2]))
 
+    retract_distance = 0
     # the retraction distance gets favored in the x and y directions
-    retract_distance = ((0.7 * retract_distance_xy) + (0.3 * retract_distance_z)) / 2
+    retract_distance =  (force_direction[0] * retract_distance_x + -1*
+            retract_distance_y + 0.3 *  retract_distance_z)
+            #force_direction[1] * retract_distance_y + force_direction[2] *  retract_distance_z)
     return (retract_distance, distance)
 
 # tests the retraction point
@@ -111,8 +121,9 @@ def test_retraction(ip, kicking_leg, direction):
     from naoqi import ALProxy
     mp = ALProxy("ALMotion", ip, 9559)
     import CoM
-     = CoM.CenterOfMass(ip)
-
+    fk = CoM.CenterOfMass(ip, 9559)
+    import ik_jacobian
+    import time
     # set the other leg's name
     other_leg = "RLeg" if kicking_leg == "LLeg" else "LLeg"
 
@@ -120,18 +131,34 @@ def test_retraction(ip, kicking_leg, direction):
     normalPose(mp, True)
 
     
-    kick_pos = mp.getPosition(kicking_leg, 1, True)[:3]
-    other_pos = mp.getPosition(other_leg, 1, True)[:3]
+    kick_pos = [i[0,0] for i in fk.get_locations_dict(other_leg)[ kicking_leg[0] +
+        "AnkleRoll"]]
+    kick_pos = kick_pos[:-1]
+    print "kickpos", kick_pos
+    other_pos = [0,0,0]
     contact_point ,point = find_point("This is irrelevant!", direction, kick_pos, other_pos)
     print contact_point
     print point
-    contact_point += [0,0,0]
-    point += [0, 0, 0] # make it 6d for cartesian control api
+    print "point", point
+    print "contact", contact_point
 
-    # test the location!
-    mp.setPosition(kicking_leg, 1, point, 0.5, 7)
-    time.sleep(2)
-    mp.setPosition(kicking_leg, 1, contact_point, 1, 7)
+    angle_list = ik_jacobian.set_position(ip, kicking_leg, np.matrix(point).T,
+            lambd = 2, max_iter = 500)
+    joints = []
+    angles = []
+    for joint in angle_list:
+        joints = joints + [joint]
+        angles = angles + [angle_list[joint]]
+    mp.setAngles(joints, angles, 0.3)
+    time.sleep(3)
+    joints = []
+    angles = []
+    angle_list = ik_jacobian.set_position(ip, kicking_leg,
+            np.matrix(contact_point).T, lambd = 2, max_iter = 500)
+    for joint in angle_list:
+        joints = joints + [joint]
+        angles = angles + [angle_list[joint]]
+    mp.setAngles(joints, angles, 0.3)
 
 
 def normalPose(motProxy, force = False): 
