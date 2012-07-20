@@ -1,19 +1,22 @@
 from numpy import matrix, cross, eye
-from numpy.linalg import eig, pinv, norm
+from numpy.linalg import eig, pinv, norm, inv
 import sys
 from CoM import CenterOfMass
 from naoqi import ALProxy
+from collections import defaultdict
 
 import scipy
 from scipy import linalg
+
+sys.path.append("Resources")
+from joint_constraints import joint_constraints
 
 sys.path.append("SDK")
 
 def get_jacobian(leg, joint_angles, joint_trans):
     """ Returns the Jacobian matrix """
 
-    joints = ["HipYawPitch", "HipRoll", "HipPitch", "KneePitch",
-              "AnklePitch", "AnkleRoll"]
+    joints = ["HipYawPitch", "HipRoll", "HipPitch", "KneePitch"]
 
     if leg == "LLeg":
         joints = ["L" + joint for joint in joints]
@@ -66,52 +69,98 @@ def null(A, eps=1e-15):
     null_space = scipy.compress(null_mask, vh, axis=0)
     return scipy.transpose(null_space)
 
-def set_position(ip, leg, target, error_thresh=5, max_iter=100):
+def change_position(ip, leg, offset, lambd=5, max_iter=100):
+    com = CenterOfMass(ip, 9559)
+    stand_leg = "LLeg" if leg == "RLeg" else "RLeg"
+    joint_locs = com.get_locations_dict(stand_leg, transformation=False, online=True)
+
+    current_loc = joint_locs["LAnkleRoll" if leg == "LLeg" else "RAnkleRoll"][:3, 0]
+
+    x, y, z = offset
+    offset_matrix = matrix([[x], [y], [z]])
+    target = current_loc + offset_matrix
+
+    return set_position(ip, leg, target, lambd=lambd, max_iter=max_iter)
+
+
+def set_position(ip, leg, target, lambd=5, max_iter=100):
     # initialization of some variables
     com = CenterOfMass(ip, 9559)
     mp = ALProxy("ALMotion", ip, 9559)
-    joints = ["HipYawPitch", "HipRoll", "HipPitch", "KneePitch",
-              "AnklePitch", "AnkleRoll"]
-    joints = [("L" if leg == "LLeg" else "R") + joint for joint in joints]
+
+    kick_joints = ["HipYawPitch", "HipRoll", "HipPitch", "KneePitch"]
+    kick_joints = [("L" if leg == "LLeg" else "R") + joint for joint in kick_joints]
+
+    stand_joints = ["HipYawPitch", "HipRoll", "HipPitch", "KneePitch"]
+    stand_joints = [("R" if leg == "LLeg" else "L") + joint for joint in stand_joints]
+
+    rest_of_body = ["HeadPitch", "HeadYaw", "LShoulderPitch", "LShoulderRoll",
+                    "LElbowYaw", "LElbowRoll", "RShoulderPitch", "RShoulderRoll",
+                    "RElbowYaw", "RElbowRoll", "LAnkleRoll", "LAnklePitch",
+                    "RAnklePitch", "RAnkleRoll"]
 
     # initial angles
     angles = {}
-    for joint in joints:
-        angles[joint] = mp.getAngles(joint, True)
+    for joint in kick_joints:        
+        angles[joint] = mp.getAngles(joint, True)[0]
+    for joint in stand_joints:
+        angles[joint] = mp.getAngles(joint, True)[0]
+    for joint in rest_of_body:
+        angles[joint] = mp.getAngles(joint, True)[0]
 
     end_effector = "LAnkleRoll" if leg == "LLeg" else "RAnkleRoll"
     stand_leg = "RLeg" if leg == "LLeg" else "LLeg"
-    theta = matrix([angles[joint] for joint in joints])
+    theta = matrix([angles[joint] for joint in kick_joints]).T
 
     for _ in xrange(max_iter):
-        joint_trans = com.get_locations_dict(stand_leg, transformation=True, online=True, joint_dict=angles)
+        joint_trans = com.get_locations_dict(stand_leg, transformation=True, online=False, joint_dict=angles)
 
         # difference between goal position and end-effector
         dX = target - (joint_trans[end_effector] * matrix([[0], [0], [0], [1]]))[:3, 0]
-        print dX
-        if norm(dX) < 50:
+        print norm(dX)
+        if norm(dX) < 15:
             break
 
-        while True:
-            J = get_jacobian(leg, angles, joint_trans)
-            Jinv = pinv(J)
+        J = get_jacobian(leg, angles, joint_trans)
 
-            error = norm( (eye(J.shape[0]) - J*Jinv) * dX )
-            if (error < error_thresh):
-                break;
-            else:
-                dX /= 2
+        lambd = 5
 
-        theta += Jinv * dX
-        update_angles(angles, joints, theta)
+        # Levenberg-Marquardt
+        d_theta = (J.T * inv((J * J.T) + (lambd**2 * eye(3)))) * dX
 
-    return dict(zip(joints, map(lambda x: x[0, 0], theta)))
+        # update theta and the joint angle dictionary
+        update_theta(theta, d_theta, leg)
+        update_angles(angles, kick_joints, theta, stand_joints, mp)
 
-def update_angles(angles, joints, theta):
+    return dict(zip(kick_joints, map(lambda x: x[0, 0], theta)))
+
+# updates theta vector, respecting each joint's angle constraints
+def update_theta(theta, d_theta, leg):
+    kick_joints = ["HipYawPitch", "HipRoll", "HipPitch", "KneePitch"]
+    kick_joints = [("L" if leg == "LLeg" else "R") + joint for joint in kick_joints]
+
+    # update the angles
+    theta += d_theta
+
+    # check the boundaries
+    for i, (joint, angle) in enumerate(zip(kick_joints, theta)):
+        min, max = joint_constraints[joint]
+
+        if angle < min:
+            theta[i, 0] = min
+        elif angle > max:
+            theta[i, 0] = max
+
+def update_angles(angles, joints, theta, stand_joints, mp):
     end_effector_angles = dict(zip(joints, theta))
 
     for joint, angle in end_effector_angles.iteritems():
         angles[joint] = angle
+
+    # update the angles of the standing leg because they might've been changed
+    # by a balance controller
+    for joint in stand_joints:
+        angles[joint] = mp.getAngles(joint, True)[0]
 
 def modulo(a, b):
     if a < 0:
@@ -129,6 +178,16 @@ def testing(ip):
     import sys
     sys.path.append("SDK")
     from naoqi import ALProxy
+
+    joints = ["HipYawPitch", "HipRoll", "HipPitch", "KneePitch"]
+
+    leg = "RLeg"
+    if leg == "LLeg":
+        joints = ["L" + joint for joint in joints]
+        end_effectors = ["LAnkleRoll"]
+    else:
+        joints = ["R" + joint for joint in joints]
+        end_effectors = ["RAnkleRoll"]
 
     com = c.CenterOfMass(ip, 9559)
     mp = ALProxy("ALMotion", ip, 9559)
