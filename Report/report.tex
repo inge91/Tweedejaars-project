@@ -137,6 +137,134 @@ of angles with the largest reduction in error. This approach is acceptably fast
 when actuating two joints, but has the downside of having a complexity of $\mathcal{O}(3^n)$
 in amount of actuated joints.
 
+\newpage
+\section{Using force-sensitive resistors to keep balance}
+
+As the balacing using the Center Of Mass allows a good conversion to a stable position it does not react to external influences.
+Using the force-sensitive resistors under Nao's feet these external influences can be measured and neutralized.
+\begin{figure}[htb]
+	\centering
+	\includegraphics[scale=0.75]{pics/naosfeet.jpg}
+	\label{fig:fsr_plot}
+	\caption{The force-sensitive resistors under Nao's feet}
+\end{figure}\\
+While kicking a ball you stand on one leg while kicking with the other leg, the leg on which the robot stands is called the support leg. 
+When taking the left foot as support leg (the same goes for the right leg), the foot will be divided into four sections (Front, Left, Right and Back). 
+\begin{itemize}
+    \item $Front_t = (1-s) * Front_{t-1} + s * (LFsrFL + LFsrFR)$
+    \item $Left_t = (1-s) * Left_{t-1} + s *(LFsrFL + LFsrRL)$
+    \item $Right_t = (1-s) * Right_{t-1} + s *(LFsrFR + LFsrRR)$
+    \item $Back_t = (1-s) * Back_{t-1} + s *(LFsrRL + LFsrRR)$ 
+\end{itemize}
+Where s is the smoothing parameter and t is the present time.
+
+\subsection{proportional-Derivative controller}
+
+The Proportional-Derivative controller (PD-controller) is a special case of the Proportional-Integral-Derivative controller (PID controller) where the integral term (I) is not used.  The PD-controller has 2 terms the proportional (P) and the derivative (D) term. The response of each term can be tweaked using there own tweaking parameter, the proportional gain $K_p$ and the derivative gain $K_d$. \\
+The proportional term is given by:
+\[
+P_{out}  = K_pe(t)
+ \]
+and the derivative term is given by:
+\[
+D_{out}  = K_d\frac{d}{dt}e(t)
+\]
+The Hip Pitch is used to compensate for the error in the x direction (Front and Back) while the Hip Roll compensates for the error in the y direction (Right and Left).
+The angle offsets for the hip joints are calculated by;
+\begin{itemize}
+    \item $P_{out} x = (Front_t - Back_t) * K_p$
+    \item $P_{out} y = (Right_t - Left_t) * K_p$
+    \item $D_{out} x = \frac{Front_t - Back_t}{timeTaken}K_d$
+    \item $D_{out} y = \frac{Right_t - Left_t}{timeTaken}K_d$
+    \item  $Offset$ $Hip$ $Pitch$ $= P_{out}x + D_{out}x$ 
+    \item $Offset$ $Hip$ $Roll$ $=  P_{out}y + D_{out}y$ 
+\end{itemize}
+Where $timeTaken = time_t - time_{t-1}$(the time taken between the current and previous execution) .\\\\
+Using an error band to allow a range of stable points and therefore better conversion. Without this range the robot would diverge and finally fall due to the oscillation. When the error is within this range it will be set to 0, this allows the robot to converge to a stable position. Due to the robots build the forward and sideways stabilization act differently, different error bands are therefore needed. The function of the proportional term becomes;
+\[
+  P_{out}x = \left\{ 
+  \begin{array}{l l}
+     (Front_t - Back_t)K_p& \quad \text{if $Thres_{min X} < (Front_t - Back_t) < Thres_{max X}$}\\ 
+     0& \quad \text{Otherwise}\\
+  \end{array} \right.
+\]
+\[
+  P_{out}y = \left\{ 
+  \begin{array}{l l}
+     (Right_t - Left_t)K_p& \quad \text{if $Thres_{min Y} < (Front_t - Back_t) < Thres_{max Y}$}\\ 
+     0& \quad \text{Otherwise}\\
+  \end{array} \right.
+\]
+Where $Thres_{min}$ is the lower bound of the error band and $Thres_{max}$ is the upper bound
+and $K_p$ is the  first tweak parameter of the PD-controller.\\
+$Thres_{min X} = -Thres_{max X}$ and
+$Thres_{min Y} = -Thres_{max Y}$
+\[
+  D_{out}x = \left\{ 
+  \begin{array}{l l}
+      \frac{Front_t - Back_t}{timeTaken}K_d& \quad \text{if $Thres_{min X} < (Front_t - Back_t) < Thres_{max X}$}\\ 
+     0& \quad \text{Otherwise}\\
+  \end{array} \right.
+\]
+\[
+  D_{out}y = \left\{ 
+  \begin{array}{l l}
+     \frac{Right_t - Left_t}{timeTaken}K_d& \quad \text{if $Thres_{min Y} < (Front_t - Back_t) < Thres_{max Y}$}\\ 
+     0& \quad \text{Otherwise}\\
+  \end{array} \right.
+\]
+
+\subsection{Sampling Rate Issues (needs work)}
+
+timing-independant compensation architectur¨
+time scaling, realtime conversion, instruction clock compensation
+
+Making the sensitivity and thresholds dynamic will allow keeping the power per second ratio and therefore making the script invariant to the CPU’s power availability.\\
+$K_p$, $K_d$, $Thres_{min X}$ and $Thres_{min Y}$ multiplied by $timeTaken$\\
+Giving an error at TimeTaken of n and an error of n/2 at TimeTaken/2 this linear relation allows us to adapt to any giving CPU power availability using the same parameters. 
+
+\subsection{The setup error}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{pics/startupError.jpg}
+	\label{fig:startup_error_plot}
+	\caption{The startup error (needs new plot!)}
+\end{figure} 
+As the script runs the first measurements of TimeTaken are relative big in some cases even a factor 100 from the normal values as seen in Figure ~\ref{fig:startup_error_plot} . This big value will change the angles in such a way the robot will overshoot and possibly even fall.
+Therefore disregarding these values will be necessary, adding a low-pass filter to $\nabla TimeTaken$ allows finding these measurements. When the threshold of the low-pass filter has been exceeded the angle offsets will be set to 0, ignoring the large values.
+\[
+  Offset Hip Pitch = \left\{ 
+  \begin{array}{l l}
+     P_{out}x + D_{out}x& \quad \text{if $\nabla TimeTaken < Thres_{low-pass}$}\\ 
+    0 & \quad \text{Otherwise}\\
+  \end{array} \right.
+\]
+
+\[
+  Offset Hip Roll = \left\{ 
+  \begin{array}{l l}
+     P_{out}y + D_{out}y& \quad \text{if $\nabla TimeTaken < Thres_{low-pass}$}\\ 
+    0 & \quad \text{Otherwise}\\
+  \end{array} \right.
+\]
+Where $Thres_{low-pass}$ is the threshold value for the low-pass filter.
+
+\subsection{Manual tuning  (weet nog niet of dit erin moet)}
+
+The parameters\\\\
+Increasing $s$ will cause blablabla\\
+$K_p$\\
+$K_d$\\
+$Thres_{max X}$\\
+$Thres_{max Y}$\\
+$Thres_{low-pass}$
+
+\subsection{Results}
+
+*picture from a Nao pushing the balancing Nao (the test environment)*\\\\
+*plot with balancer off*\\\\
+*plot with balancer on*
+
 \subsection{The kinematics problem}
 We want to be able to specify a location for the foot, then have the foot
 automatically move there, which means that the we'll need to be able calculate
