@@ -4,6 +4,8 @@ project(Kinematics)
 find_package(qibuild)
 find_package(boost COMPONENTS numeric REQUIRED)
 
+add_definitions("-std=c++0x")
+
 # Create a executable named Kinematics
 # with the source file: main.cpp
 qi_create_lib(kinematics kinematics.cpp)

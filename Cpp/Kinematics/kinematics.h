@@ -20,11 +20,6 @@ class Kinematics
 {
     /* enumerations */
     public:
-        enum Leg {
-            LLEG,
-            RLEG
-        };
-
         enum BodyPart {
             LLEG,
             RLEG,
@@ -42,7 +37,7 @@ class Kinematics
          * - a vector containing 3 elements, the x y and z offsets
          * - a multiplier (1 or -1) indicating whether the transition is towards the torso
          */
-        static map<string, pair<vector<double>, double> > jointCOM;
+        static map<pair<string, string>, pair<vector<double>, double> > jointOffsets;
     private:
         /**
          * An ALMotion proxy
@@ -68,7 +63,7 @@ class Kinematics
          * specified if the "online" parameter is true.
          * @return A map of joint names with their angles.
          */
-        joint_loc_map get_locations_dict(Leg leg, bool online=true,
+        joint_loc_map get_locations_dict(BodyPart leg, bool online=true,
                 const map<string, double> &joint_dict=map<string, double>());
 
     private:
