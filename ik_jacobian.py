@@ -135,15 +135,13 @@ def set_position(ip, leg, target, lambd=5, max_iter=100, method=0):
         # difference between goal position and end-effector
         dX = target - (joint_trans[end_effector] * matrix([[0], [0], [0], [1]]))[:3, 0]
         error = norm(dX)
-        print error
-
-        if error < 15:
-            best_theta = theta
-            break
 
         if error < best_error:
             best_error = error
             best_theta = theta
+
+        if best_error < 15:
+            break
 
         J = get_jacobian(leg, angles, joint_trans)
 
@@ -154,6 +152,7 @@ def set_position(ip, leg, target, lambd=5, max_iter=100, method=0):
         update_theta(theta, d_theta, leg)
         update_angles(angles, kick_joints, theta, stand_joints, mp)
 
+    print "Error of solution: ", best_error
     return dict(zip(kick_joints, map(lambda x: x[0, 0], best_theta)))
 
 # updates theta vector, respecting each joint's angle constraints
