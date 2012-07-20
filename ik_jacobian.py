@@ -73,7 +73,7 @@ def null(A, eps=1e-15):
     null_space = scipy.compress(null_mask, vh, axis=0)
     return scipy.transpose(null_space)
 
-def change_position(ip, leg, offset, lambd=5, max_iter=100):
+def change_position(ip, leg, offset, error_thresh=5, max_iter=100):
     com = CenterOfMass(ip, 9559)
     stand_leg = "LLeg" if leg == "RLeg" else "RLeg"
     joint_locs = com.get_locations_dict(stand_leg, transformation=False, online=True)
@@ -84,10 +84,10 @@ def change_position(ip, leg, offset, lambd=5, max_iter=100):
     offset_matrix = matrix([[x], [y], [z]])
     target = current_loc + offset_matrix
 
-    return set_position(ip, leg, target, lambd=lambd, max_iter=max_iter)
+    return set_position(ip, leg, target, error_thresh=error_thresh, max_iter=max_iter)
 
 
-def set_position(ip, leg, target, lambd=5, max_iter=100, method=0):
+def set_position(ip, leg, target, error_thresh=5, max_iter=100, method=0):
     """
     ip: IP address of the desired naoqi
     leg: the leg to be actuated
@@ -135,6 +135,7 @@ def set_position(ip, leg, target, lambd=5, max_iter=100, method=0):
         # difference between goal position and end-effector
         dX = target - (joint_trans[end_effector] * matrix([[0], [0], [0], [1]]))[:3, 0]
         error = norm(dX)
+        print error
 
         if error < best_error:
             best_error = error
@@ -145,10 +146,16 @@ def set_position(ip, leg, target, lambd=5, max_iter=100, method=0):
 
         J = get_jacobian(leg, angles, joint_trans)
 
-        # Levenberg-Marquardt
-        d_theta = (J.T * inv((J * J.T) + (lambd**2 * eye(3)))) * dX
+        # Moore-Penrose pseudoinverse
+        Jinv = pinv(J)
+
+        inv_error = norm( (eye(3) - (J*Jinv)) * dX)
+        while inv_error > error_thresh:
+            dX /= 2
+            inv_error = norm( (eye(3) - (J*Jinv)) * dX)
 
         # update theta and the joint angle dictionary
+        d_theta = Jinv * dX
         update_theta(theta, d_theta, leg)
         update_angles(angles, kick_joints, theta, stand_joints, mp)
 
