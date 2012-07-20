@@ -110,6 +110,8 @@ def test_retraction(ip, kicking_leg, direction):
     sys.path.append("SDK")
     from naoqi import ALProxy
     mp = ALProxy("ALMotion", ip, 9559)
+    import CoM
+     = CoM.CenterOfMass(ip)
 
     # set the other leg's name
     other_leg = "RLeg" if kicking_leg == "LLeg" else "LLeg"
@@ -117,6 +119,7 @@ def test_retraction(ip, kicking_leg, direction):
     mp.setStiffnesses("Body", 1)
     normalPose(mp, True)
 
+    
     kick_pos = mp.getPosition(kicking_leg, 1, True)[:3]
     other_pos = mp.getPosition(other_leg, 1, True)[:3]
     contact_point ,point = find_point("This is irrelevant!", direction, kick_pos, other_pos)

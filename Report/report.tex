@@ -17,7 +17,7 @@
 
 \section{Introduction} 
 Our research is concerned with making a dynamic, closed
-loop kick for the Nao robot. The Nao is a 58 cm tall humanoid robot made by
+loop kick for the Nao robot. The Nao is a humanoid robot made by
 Aldebaran Robots\footnote{http://www.aldebaran-robotics.com/en/}. It is used in
 the Stand Platform League of the
 Robocup\footnote{http://wiki.robocup.org/wiki/Standard\_Platform\_League}, an organisation which organizes football (soccer)
@@ -31,6 +31,14 @@ Kicking, of course, is an important part of football, and thus a good kick is vi
 The first one is referred to as a \emph{keyframe motion}, while the second one is the subject of this paper.
 
 \section{Basic information about the Nao}
+\begin{itemize}
+    \item foot sensors
+    \item space
+    \item rotations
+    \item length of end effectors
+    \itme built in functions
+\end{itemize}
+
 
 \section{Motivation for this project} 
 While the Dutch Nao Team (the team that represents the Netherlands in the Standard Platform League of the Robocup) has achieved some degree of success with simple keyframe motions, they are clearly not optimal; a lot of time is wasted positioning the robot at just the right angle relative to kick the ball towards the goal. Furthermore, if the ball gets moved after the kicking motion has started, it's impossible for the robot to correct its kicking path. These are all problems that can be reduced with a dynamically generated motion, which is why we will attempt to create one. If we succeed in our endeavour, the resulting kick will be integrated in the Dutch Nao Team's codebase.
@@ -129,15 +137,14 @@ in amount of actuated joints.
 We want to be able to specify a location for the foot, then have the foot
 automatically move there, which means that the we'll need to be able calculate
 the required joint angles. This is known as \emph{inverse kinematics}. There are
-two potential solutions to this problem:
+different potential solutions to this problem, for example: 
 \begin{enumerate}
-  \item analytically solve the inverse kinematics chain using goniometry (as done by \cite{Graf2009})
+\item analytically solve the inverse kinematics chain using goniometry (as done by \cite{Graf2009})
 \item use a hillclimbing algorithm to approach the desired location over a number of iterations
 \end{enumerate}
 
-We're currently leaning towards the second option, mainly because it’s easier,
-more standard, and can deal with unreachable positions (it simply approaches the
-closest reachable position).
+We have tried different techniques (see appendix A), but in the end used \dots 
+
 
 \subsection{The Kick}
 With the solutions to the previous aspects of the dynamic kick constructed, 
@@ -166,10 +173,10 @@ The contact point is the point on the ball that has to be hit by the Nao to
 move it in the desired direction. \cite{Xu2010} uses the following
 calculationt to find this, which seems to work exactly as we would like:
 \begin{align*}
-    \vec{c} - ( \vec{d} * r )
+    \vec{c} - ( \vec{e} * r )
 \end{align*}
 where $\vec{c}$is the location of the center of mass of the ball, $r$ is the
-ball radius(in the case of the SPL balls this is 33.42 mm) and $\vec{d}$ is the
+ball radius(in the case of the SPL balls this is 33.42 mm) and $\vec{e}$ is the
 force destination (the direction of where we want the ball to end up in
 coordinates).
 
@@ -264,7 +271,8 @@ retrieving the location of the standing leg we make sure that there is
 no overlap in the reachable space and the position of the other leg.
 
 \subsubsection{Making a kick using the Bezier curve}
-
+now that we have 2 points which the Nao should use in space to place a kick,
+making a kick withou
 
 \section{Experiments and Results}
 \subsection{Center of mass balancing}
@@ -294,10 +302,31 @@ in previous courses, but it still will require some insight in achieving our set
 goals.
 
 \section{Conclusion}
+\begin{itemize}
+    \item our kick is awesome
+\end{itemize}
 
 \section{Discussion}
+Although the problem of making a dynamic kick has been solved by various teams
+in the Standard Platform League already (citations, citations), there are various solutions to our
+problems that we have not yet encountered in other papers. For instance the idea
+of making a proportinal controller based on the Center of Mass is one that is
+implemeneted often, but making a search space through which to find the optimal
+position is not one we have encountered but works great.
+
+It comes to show that although our problem initially looked as if it would be a
+straight path we have been able to give it our own interpretation which only
+gives the 
 
 \section{Future works}
+Things to discuss:
+\begin{itemize}
+    \item optimizing the code to run in C++
+    \item using Denavit Hartenberg for the forward kinematics
+    \item making the code run on the Nao(talk about stable runningspeed which
+        Richard made)
+    \item Now that we have the basics we can start working on a dynamic walk
+\end{itemize}
 
 \bibliographystyle{plain}
 \bibliography{library}
