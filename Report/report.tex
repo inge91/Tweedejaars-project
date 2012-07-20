@@ -166,10 +166,10 @@ The contact point is the point on the ball that has to be hit by the Nao to
 move it in the desired direction. \cite{Xu2010} uses the following
 calculationt to find this, which seems to work exactly as we would like:
 \begin{align*}
-    \vec{c} - ( \vec{d} * r )
+    \vec{c} - ( \vec{e} * r )
 \end{align*}
 where $\vec{c}$is the location of the center of mass of the ball, $r$ is the
-ball radius(in the case of the SPL balls this is 33.42 mm) and $\vec{d}$ is the
+ball radius(in the case of the SPL balls this is 33.42 mm) and $\vec{e}$ is the
 force destination (the direction of where we want the ball to end up in
 coordinates).
 
@@ -295,9 +295,19 @@ goals.
 
 \section{Conclusion}
 
+
 \section{Discussion}
 
 \section{Future works}
+Things to discuss:
+\begin{itemize}
+    \item optimizing the code to run in C++
+    \item using Denavit Hartenberg for the forward kinematics
+    \item making the code run on the Nao(talk about stable runningspeed which
+        Richard made)
+    \item Now that we have the basics we can start working on a dynamic walk
+
+\end{itemize}
 
 \bibliographystyle{plain}
 \bibliography{library}
