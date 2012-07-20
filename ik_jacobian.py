@@ -13,6 +13,10 @@ from joint_constraints import joint_constraints
 
 sys.path.append("SDK")
 
+# enumerations for Jinv method
+PINV = 0
+DAMPENED = 1
+
 def get_jacobian(leg, joint_angles, joint_trans):
     """ Returns the Jacobian matrix """
 
@@ -83,7 +87,7 @@ def change_position(ip, leg, offset, lambd=5, max_iter=100):
     return set_position(ip, leg, target, lambd=lambd, max_iter=max_iter)
 
 
-def set_position(ip, leg, target, lambd=5, max_iter=100):
+def set_position(ip, leg, target, lambd=5, max_iter=100, method=0):
     """
     ip: IP address of the desired naoqi
     leg: the leg to be actuated
@@ -126,12 +130,10 @@ def set_position(ip, leg, target, lambd=5, max_iter=100):
         # difference between goal position and end-effector
         dX = target - (joint_trans[end_effector] * matrix([[0], [0], [0], [1]]))[:3, 0]
         print norm(dX)
-        if norm(dX) < 15:
+        if norm(dX) < 30:
             break
 
         J = get_jacobian(leg, angles, joint_trans)
-
-        lambd = 5
 
         # Levenberg-Marquardt
         d_theta = (J.T * inv((J * J.T) + (lambd**2 * eye(3)))) * dX
