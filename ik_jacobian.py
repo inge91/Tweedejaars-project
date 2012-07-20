@@ -124,14 +124,26 @@ def set_position(ip, leg, target, lambd=5, max_iter=100, method=0):
     stand_leg = "RLeg" if leg == "LLeg" else "LLeg"
     theta = matrix([angles[joint] for joint in kick_joints]).T
 
+    # save the best result in case the algorithm does not terminate before the
+    # maximum number of iterations
+    best_theta = []
+    best_error = 9999999
+
     for _ in xrange(max_iter):
         joint_trans = com.get_locations_dict(stand_leg, transformation=True, online=False, joint_dict=angles)
 
         # difference between goal position and end-effector
         dX = target - (joint_trans[end_effector] * matrix([[0], [0], [0], [1]]))[:3, 0]
-        print norm(dX)
-        if norm(dX) < 30:
+        error = norm(dX)
+        print error
+
+        if error < 15:
+            best_theta = theta
             break
+
+        if error < best_error:
+            best_error = error
+            best_theta = theta
 
         J = get_jacobian(leg, angles, joint_trans)
 
@@ -142,7 +154,7 @@ def set_position(ip, leg, target, lambd=5, max_iter=100, method=0):
         update_theta(theta, d_theta, leg)
         update_angles(angles, kick_joints, theta, stand_joints, mp)
 
-    return dict(zip(kick_joints, map(lambda x: x[0, 0], theta)))
+    return dict(zip(kick_joints, map(lambda x: x[0, 0], best_theta)))
 
 # updates theta vector, respecting each joint's angle constraints
 def update_theta(theta, d_theta, leg):
