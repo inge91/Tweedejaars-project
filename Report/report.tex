@@ -7,6 +7,10 @@
 
 \begin{document}
 
+% custom commands to make matrices more convenient
+\newcommand{\bvect}[1] {\begin{bmatrix} #1 \end{bmatrix}}
+\newcommand{\pvect}[1] {\begin{pmatrix} #1 \end{pmatrix}}
+
 \title{Designing a Dynamic Kick for the Nao Robot}
 \author{ Inge Becht \\ 
          Maarten de Jonge \\ 
@@ -36,7 +40,7 @@ The first one is referred to as a \emph{keyframe motion}, while the second one i
     \item space
     \item rotations
     \item length of end effectors
-    \itme built in functions
+    \item built in functions
 \end{itemize}
 
 
@@ -113,8 +117,8 @@ The CoM is calculated relative to the standing leg's ankle joint, and we define
 the center of the support polygon to be ``about 3cm in front of that''. Thus the
 error-calculation becomes:
 \begin{align}
-	d &= \begin{bmatrix} 3 \\ 0 \end{bmatrix} - \vec{CoM_{xy}} \\
-	error &= \sum_{i \in d} |i|
+  d &= \begin{bmatrix} 3 \\ 0 \end{bmatrix} - \vec{CoM_{xy}} \\
+  error &= \sum_{i \in d} |i|
 \end{align}
 The Z-axis is ignored, because the height is irrelevant in this case (the CoM
 balancer only accounts for gravity, not other phenomena such as momentum).
@@ -122,7 +126,7 @@ balancer only accounts for gravity, not other phenomena such as momentum).
 The proportional control equation with an arbitrary \emph{gain} parameter is
 shown in equation \ref{eq:pcontrol}.
 \begin{align}
-	P_{out} = gain * error 				\label{eq:pcontrol}
+  P_{out} = gain * error        \label{eq:pcontrol}
 \end{align}
 
 Actuation is achieved solely through the hip's pitch and roll of the standing leg.
@@ -133,18 +137,170 @@ of angles with the largest reduction in error. This approach is acceptably fast
 when actuating two joints, but has the downside of having a complexity of $\mathcal{O}(3^n)$
 in amount of actuated joints.
 
+\newpage
+\section{Using force-sensitive resistors to keep balance}
+
+As the balacing using the Center Of Mass allows a good conversion to a stable position it does not react to external influences.
+Using the force-sensitive resistors under Nao's feet these external influences can be measured and neutralized.
+\begin{figure}[htb]
+	\centering
+	\includegraphics[scale=0.75]{pics/naosfeet.jpg}
+	\label{fig:fsr_plot}
+	\caption{The force-sensitive resistors under Nao's feet}
+\end{figure}\\
+While kicking a ball you stand on one leg while kicking with the other leg, the leg on which the robot stands is called the support leg. 
+When taking the left foot as support leg (the same goes for the right leg), the foot will be divided into four sections (Front, Left, Right and Back). 
+\begin{itemize}
+    \item $Front_t = (1-s) * Front_{t-1} + s * (LFsrFL + LFsrFR)$
+    \item $Left_t = (1-s) * Left_{t-1} + s *(LFsrFL + LFsrRL)$
+    \item $Right_t = (1-s) * Right_{t-1} + s *(LFsrFR + LFsrRR)$
+    \item $Back_t = (1-s) * Back_{t-1} + s *(LFsrRL + LFsrRR)$ 
+\end{itemize}
+Where s is the smoothing parameter and t is the present time.
+
+\subsection{proportional-Derivative controller}
+
+The Proportional-Derivative controller (PD-controller) is a special case of the Proportional-Integral-Derivative controller (PID controller) where the integral term (I) is not used.  The PD-controller has 2 terms the proportional (P) and the derivative (D) term. The response of each term can be tweaked using there own tweaking parameter, the proportional gain $K_p$ and the derivative gain $K_d$. \\
+The proportional term is given by:
+\[
+P_{out}  = K_pe(t)
+ \]
+and the derivative term is given by:
+\[
+D_{out}  = K_d\frac{d}{dt}e(t)
+\]
+The Hip Pitch is used to compensate for the error in the x direction (Front and Back) while the Hip Roll compensates for the error in the y direction (Right and Left).
+The angle offsets for the hip joints are calculated by;
+\begin{itemize}
+    \item $P_{out} x = (Front_t - Back_t) * K_p$
+    \item $P_{out} y = (Right_t - Left_t) * K_p$
+    \item $D_{out} x = \frac{Front_t - Back_t}{timeTaken}K_d$
+    \item $D_{out} y = \frac{Right_t - Left_t}{timeTaken}K_d$
+    \item  $Offset$ $Hip$ $Pitch$ $= P_{out}x + D_{out}x$ 
+    \item $Offset$ $Hip$ $Roll$ $=  P_{out}y + D_{out}y$ 
+\end{itemize}
+Where $timeTaken = time_t - time_{t-1}$(the time taken between the current and previous execution) .\\\\
+Using an error band to allow a range of stable points and therefore better conversion. Without this range the robot would diverge and finally fall due to the oscillation. When the error is within this range it will be set to 0, this allows the robot to converge to a stable position. Due to the robots build the forward and sideways stabilization act differently, different error bands are therefore needed. The function of the proportional term becomes;
+\[
+  P_{out}x = \left\{ 
+  \begin{array}{l l}
+     (Front_t - Back_t)K_p& \quad \text{if $Thres_{min X} < (Front_t - Back_t) < Thres_{max X}$}\\ 
+     0& \quad \text{Otherwise}\\
+  \end{array} \right.
+\]
+\[
+  P_{out}y = \left\{ 
+  \begin{array}{l l}
+     (Right_t - Left_t)K_p& \quad \text{if $Thres_{min Y} < (Front_t - Back_t) < Thres_{max Y}$}\\ 
+     0& \quad \text{Otherwise}\\
+  \end{array} \right.
+\]
+Where $Thres_{min}$ is the lower bound of the error band and $Thres_{max}$ is the upper bound
+and $K_p$ is the  first tweak parameter of the PD-controller.\\
+$Thres_{min X} = -Thres_{max X}$ and
+$Thres_{min Y} = -Thres_{max Y}$
+\[
+  D_{out}x = \left\{ 
+  \begin{array}{l l}
+      \frac{Front_t - Back_t}{timeTaken}K_d& \quad \text{if $Thres_{min X} < (Front_t - Back_t) < Thres_{max X}$}\\ 
+     0& \quad \text{Otherwise}\\
+  \end{array} \right.
+\]
+\[
+  D_{out}y = \left\{ 
+  \begin{array}{l l}
+     \frac{Right_t - Left_t}{timeTaken}K_d& \quad \text{if $Thres_{min Y} < (Front_t - Back_t) < Thres_{max Y}$}\\ 
+     0& \quad \text{Otherwise}\\
+  \end{array} \right.
+\]
+
+\subsection{Sampling Rate Issues (needs work)}
+
+timing-independant compensation architectur¨
+time scaling, realtime conversion, instruction clock compensation
+
+Making the sensitivity and thresholds dynamic will allow keeping the power per second ratio and therefore making the script invariant to the CPU’s power availability.\\
+$K_p$, $K_d$, $Thres_{min X}$ and $Thres_{min Y}$ multiplied by $timeTaken$\\
+Giving an error at TimeTaken of n and an error of n/2 at TimeTaken/2 this linear relation allows us to adapt to any giving CPU power availability using the same parameters. 
+
+\subsection{The setup error}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{pics/startupError.jpg}
+	\label{fig:startup_error_plot}
+	\caption{The startup error (needs new plot!)}
+\end{figure} 
+As the script runs the first measurements of TimeTaken are relative big in some cases even a factor 100 from the normal values as seen in Figure ~\ref{fig:startup_error_plot} . This big value will change the angles in such a way the robot will overshoot and possibly even fall.
+Therefore disregarding these values will be necessary, adding a low-pass filter to $\nabla TimeTaken$ allows finding these measurements. When the threshold of the low-pass filter has been exceeded the angle offsets will be set to 0, ignoring the large values.
+\[
+  Offset Hip Pitch = \left\{ 
+  \begin{array}{l l}
+     P_{out}x + D_{out}x& \quad \text{if $\nabla TimeTaken < Thres_{low-pass}$}\\ 
+    0 & \quad \text{Otherwise}\\
+  \end{array} \right.
+\]
+
+\[
+  Offset Hip Roll = \left\{ 
+  \begin{array}{l l}
+     P_{out}y + D_{out}y& \quad \text{if $\nabla TimeTaken < Thres_{low-pass}$}\\ 
+    0 & \quad \text{Otherwise}\\
+  \end{array} \right.
+\]
+Where $Thres_{low-pass}$ is the threshold value for the low-pass filter.
+
+\subsection{Manual tuning  (weet nog niet of dit erin moet)}
+
+The parameters\\\\
+Increasing $s$ will cause blablabla\\
+$K_p$\\
+$K_d$\\
+$Thres_{max X}$\\
+$Thres_{max Y}$\\
+$Thres_{low-pass}$
+
+\subsection{Results}
+
+*picture from a Nao pushing the balancing Nao (the test environment)*\\\\
+*plot with balancer off*\\\\
+*plot with balancer on*
+
 \subsection{The kinematics problem}
 We want to be able to specify a location for the foot, then have the foot
 automatically move there, which means that the we'll need to be able calculate
-the required joint angles. This is known as \emph{inverse kinematics}. There are
-different potential solutions to this problem, for example: 
-\begin{enumerate}
+the required joint angles. This is known as \emph{inverse kinematics}. There is
+a number of potential solutions to this problem, for example: 
+\begin{itemize}
 \item analytically solve the inverse kinematics chain using goniometry (as done by \cite{Graf2009})
 \item use a hillclimbing algorithm to approach the desired location over a number of iterations
-\end{enumerate}
+\end{itemize}
 
-We have tried different techniques (see appendix A), but in the end used \dots 
+We wound up going with an iterative, Jacobian-based solution as decribed by
+\cite{Meredith2004} and \cite{Buss2009}.
 
+\subsubsection{Problem specification and terminology}
+Let:
+\begin{itemize}
+    \item $\theta$ be a $1 \times n$ vector describing the angles of $n$ joints
+        ($\theta = \bvect{\theta_1 & \dots & \theta_n}^T$)
+    \item $\vec{t}$ the vector containing the goal position for each end effector
+    \item $\vec{s}$ the vector of the end effectors' current positions
+\end{itemize}
+
+$\vec{t}$ and $\vec{s}$ are both of size $1 \times f$ where $f$ is the desired
+amount of degrees of freedom in the end effectors (generally 3 if you only care
+about the spatial location, or 6 if you take the rotation into account too).
+Thus, if you have $k$ end effectors and 3 degrees of freedom in your position:
+
+\begin{align*}
+    \vec{t} &= \bvect{t_1, &\dots, &t_k}^T \\
+    \vec{s} &= \bvect{s_1, &\dots, &s_k}^T
+\end{align*}
+where
+\begin{align*}
+    t_i &= \bvect{t_{i_{x}}, &t_{i_{y}}, &t_{i_{z}}}^T \\
+    s_i &= \bvect{s_{i_{x}}, &s_{i_{y}}, &s_{i_{z}}}^T
+\end{align*}
 
 \subsection{The Kick}
 With the solutions to the previous aspects of the dynamic kick constructed, 
@@ -277,10 +433,10 @@ making a kick withou
 \section{Experiments and Results}
 \subsection{Center of mass balancing}
 \begin{figure}[htb]
-	\centering
-	\includegraphics[width=1\textwidth]{pics/com_error__threshold_3__gain_0_0005.pdf}
-	\label{fig:com_plot}
-	\caption{The error of the CoM P-Controller over a number of trials}
+  \centering
+  \includegraphics[width=1\textwidth]{pics/com_error__threshold_3__gain_0_0005.pdf}
+  \label{fig:com_plot}
+  \caption{The error of the CoM P-Controller over a number of trials}
 \end{figure}
 
 Figure \ref{fig:com_plot} shows the error of the CoM P-Controller over roughly 200
