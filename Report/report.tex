@@ -35,12 +35,16 @@ Kicking, of course, is an important part of football, and thus a good kick is vi
 The first one is referred to as a \emph{keyframe motion}, while the second one is the subject of this paper.
 
 \section{Basic information about the Nao}
+The Nao is a 58 cm high humanoid robot developed by Aldebaran Robotics. The Nao
+is equipped with all kinds of different gadgets. Here we will discuss the most
+important ones 
 \begin{itemize}
     \item foot sensors
     \item space
     \item rotations
     \item length of end effectors
     \item built in functions
+    \item Terminalogy
 \end{itemize}
 
 
@@ -460,6 +464,8 @@ goals.
 \section{Conclusion}
 \begin{itemize}
     \item our kick is awesome
+    \item using iterative inverse kinematics solutions are problematic in
+        accuracy and sustainability
 \end{itemize}
 
 \section{Discussion}
@@ -475,9 +481,34 @@ straight path we have been able to give it our own interpretation which only
 gives the 
 
 \section{Future works}
-Things to discuss:
-\begin{itemize}
-    \item optimizing the code to run in C++
+Now that all sub problems of making a dynamic kick are mostly succesfully
+solved, there are still some future improvements we would like to work on.
+
+\subsection{Wrapping up our current progress}
+Firstly we would like to integrate all elements to make a succesful kick. This
+was something we wanted to complete by the time this project ended, but in
+hindsight was a little too advanced to actually complete in the limited
+tiemframe. However, as we still were able to find
+solutions to each and every problem (except for the inverse kinematics solver
+which seems a little too unreliable) we could now take the time to put everything
+together for delivering a robust kick.
+
+\subsection{optimizing the code to run in C++}
+Another future improvement is dealing with the slowness of the current
+implementations for some of the calculations. For instance, making hundred
+iterations with our current Inverse Kinematics solver can cost multiple seconds.
+This is not an option when the Nao has to perform a kik in a Robocup match. This
+can be easily solved by rewriting all our code into c++ instead of python (the
+language we use now). This will surely increase the speed of our program, but if
+it is fast enough remains to be seen.
+
+
+As of now the code has only been tested while running from our computers, but
+for the Robocup competiton it will need to run on the Naos itself.
+
+Finally, if our kick seems to be sufficiently working we can integrate it as a
+module into the current Dutch Nao Team code as to replace the hardcoded kicks.
+
     \item using Denavit Hartenberg for the forward kinematics
     \item making the code run on the Nao(talk about stable runningspeed which
         Richard made)

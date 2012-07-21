@@ -20,10 +20,14 @@ def find_point(ball_loc, direction, kick_positions, positions):
     # all boundaries for the kicking leg
     min_x = int(kick_positions[0] - 75) #- 0.13641
     max_x = int(kick_positions[0] +75)
-    min_y = int(kick_positions[1] - 75)  #0.1340
-    max_y = int(kick_positions[1] + 75)#0.1014
-    min_z = int(kick_positions[2] - 75) #0.05
-    max_z = int(kick_positions[2] + 75)  #0.1526
+    #min_y = int(kick_positions[1] - 75)  #0.1340
+    #max_y = int(kick_positions[1] + 75)#0.1014
+    min_y =  -140
+    max_y = -90
+    #min_z = int(kick_positions[2] ) #0.05
+    #max_z = int(kick_positions[2] + 50)  #0.1526
+    min_z = 50
+    max_z = 75
     print min_x, max_x
     print min_y, max_y
     print min_z, max_z
@@ -52,7 +56,7 @@ def find_point(ball_loc, direction, kick_positions, positions):
     for x in xrange(min_x, max_x, 20):
         print x
         for y in xrange(min_y, max_y, 20):
-            for z in xrange(min_z, max_z, 20):
+            for z in xrange(min_z, max_z, 10):
                 contact_point, value = retractionPoint(bal_loc, np.matrix([[x], [y],
                     [z]]), direction, 1)
                 #print "contact", contact_point
@@ -104,7 +108,8 @@ def g(point, contact_point, force_direction, ball_loc, t):
 
     retract_distance = 0
     # the retraction distance gets favored in the x and y directions
-    retract_distance =  (force_direction[0] * retract_distance_x + -1*
+    retract_distance =  (force_direction[0] * retract_distance_x +
+            force_direction[1] *
             retract_distance_y + 0.3 *  retract_distance_z)
             #force_direction[1] * retract_distance_y + force_direction[2] *  retract_distance_z)
     return (retract_distance, distance)
@@ -127,8 +132,8 @@ def test_retraction(ip, kicking_leg, direction):
     # set the other leg's name
     other_leg = "RLeg" if kicking_leg == "LLeg" else "LLeg"
 
-    mp.setStiffnesses("Body", 1)
-    normalPose(mp, True)
+    #mp.setStiffnesses("Body", 1)
+    #normalPose(mp, True)
 
     
     kick_pos = [i[0,0] for i in fk.get_locations_dict(other_leg)[ kicking_leg[0] +
@@ -143,7 +148,7 @@ def test_retraction(ip, kicking_leg, direction):
     print "contact", contact_point
 
     angle_list = ik_jacobian.set_position(ip, kicking_leg, np.matrix(point).T,
-            lambd = 2, max_iter = 500)
+            error_thresh = 2, max_iter = 500)
     joints = []
     angles = []
     for joint in angle_list:
@@ -154,7 +159,7 @@ def test_retraction(ip, kicking_leg, direction):
     joints = []
     angles = []
     angle_list = ik_jacobian.set_position(ip, kicking_leg,
-            np.matrix(contact_point).T, lambd = 2, max_iter = 500)
+            np.matrix(contact_point).T, error_thresh = 2, max_iter = 500)
     for joint in angle_list:
         joints = joints + [joint]
         angles = angles + [angle_list[joint]]
