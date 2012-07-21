@@ -17,7 +17,6 @@ Kinematics::Kinematics(string ip_address) :
 {
 }
 
-
 joint_loc_map Kinematics::get_locations_dict(BodyPart leg, bool online,
                                                const map<string, double> &joint_dict)
 {
@@ -68,6 +67,45 @@ joint_loc_map Kinematics::get_locations_dict(BodyPart leg, bool online,
 
     return joint_locs;
 }
+
+matrix<double> Kinematics::get_CoM(BodyPart leg,
+                             bool online,
+                             const map<string, double> &joint_dict)
+{
+    joint_loc_map joint_locs = get_locations_dict(leg, online, joint_dict);
+
+    // calculating total mass
+    double total_mass = 0;
+
+    for (auto &jcom : jointCOM) {
+        total_mass += jcom.second.second;
+    }
+
+    // calculating CoM
+    vector<vector<double> > origin = { {0}, {0}, {0}, {1} };
+    matrix<double> com = vec_to_mat(origin);
+
+    string joint;
+    matrix<double> joint_loc;
+    vector<double> centroid_vec;
+    matrix<double> centroid(4, 1);
+    double mass;
+    for (auto &p : joint_locs) {
+        joint = p.first;
+        joint_loc = p.second;
+        pair<vector<double>, double> com_mass = jointCOM[joint];
+        centroid_vec = com_mass.first;  mass = com_mass.second;
+
+        centroid(0, 0) = centroid_vec[0]; centroid(1, 0) = centroid_vec[1];
+        centroid(2, 0) = centroid_vec[2];
+
+        joint_loc += centroid;
+        com += (mass * joint_loc) / total_mass;
+    }
+
+    return com;
+}
+
 
 void Kinematics::locs_from_torso(matrix<double> T, BodyPart part,
                                    joint_loc_map &joint_locs,

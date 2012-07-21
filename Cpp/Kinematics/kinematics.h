@@ -38,6 +38,16 @@ class Kinematics
          * - a multiplier (1 or -1) indicating whether the transition is towards the torso
          */
         static map<pair<string, string>, pair<vector<double>, double> > jointOffsets;
+
+        /**
+         * A map of center-of-mass information.
+         *
+         * The keys are joint names, the values are pairs of:
+         * - a vector containing the centroid location relative to the joint
+         * - a double indicating the joint's mass
+         */
+        static map<string, pair<vector<double>, double> > jointCOM;
+
     private:
         /**
          * An ALMotion proxy
@@ -54,7 +64,7 @@ class Kinematics
         Kinematics(string ip_address);
 
         /**
-         * Returns a map of joint name with their corresponding location in space.
+         * Returns a map of joint names with their corresponding location in space.
          *
          * @param leg The leg whose ankle is used as origin of the coordinate system.
          * @param online Whether the calculation is done online (using the current
@@ -65,6 +75,20 @@ class Kinematics
          */
         joint_loc_map get_locations_dict(BodyPart leg, bool online=true,
                 const map<string, double> &joint_dict=map<string, double>());
+
+        /**
+         * Returns the center of mass of the robot, relative to a given leg.
+         *
+         * @param leg The leg whose ankle joint will be used as center of the
+         * coordinate system
+         * @param online Whether the calculation is done online (using the current
+         * pose of the Nao) or offline using a specified map of joint angles.
+         * @param joint_dict A map of joint names and their angle. Only needs to be
+         * specified if the "online" parameter is true.
+         * @return The center of mass of the robot given as a vector.
+         */
+    matrix<double> get_CoM(BodyPart leg, bool online=true,
+                           const map<string, double> &joint_dict=map<string, double>());
 
     private:
         /**
