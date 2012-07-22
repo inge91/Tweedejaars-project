@@ -291,10 +291,11 @@ Let:
     \item $\vec{s}$ the vector of the end effectors' current positions
 \end{itemize}
 
-$\vec{t}$ and $\vec{s}$ are both of size $1 \times f$ where $f$ is the desired
-amount of degrees of freedom in the end effectors (generally 3 if you only care
-about the spatial location, or 6 if you take the rotation into account too).
-Thus, if you have $k$ end effectors and 3 degrees of freedom in your position:
+$\vec{t}$ and $\vec{s}$ are both of size $1 \times f$ where $f$ is the
+desired amount of degrees of freedom in the end effectors (generally 3
+if you only care about the spatial location, or 6 if you take the
+rotation into account too).  Thus, if you have $k$ end effectors and 3
+degrees of freedom in your position:
 
 \begin{align*}
     \vec{t} &= \bvect{t_1, &\dots, &t_k}^T \\
@@ -305,6 +306,42 @@ where
     t_i &= \bvect{t_{i_{x}}, &t_{i_{y}}, &t_{i_{z}}}^T \\
     s_i &= \bvect{s_{i_{x}}, &s_{i_{y}}, &s_{i_{z}}}^T
 \end{align*}
+
+Viewing the end effectors locations as a function of the joint angles,
+we want to find values for $\theta$ such that $\vec{t} =
+\vec{s}(\theta)$. One way to do this is by taking a linear
+approximation of the function with respect to the joint angles, and
+slightly adjusting the angles to get closer to the solution.  Over a
+number of iterations, the end effectors will hopefully converge to the
+desired position.  This linear approximation is done using the
+Jacobian matrix $J$, defined as:
+\begin{align}
+  J(\theta)_{i, j} &= \frac{\partial s_i}{\partial \theta_j} \\
+  \frac{\partial s_i}{\partial \theta_j} &= v_j \times (s_i - p_j)    \label{eq:fillJ}
+\end{align}
+In the case of a rotational joint (as is the case with every joint on
+the Nao robot), the the entries of the Jacobian are given by
+(\ref{eq:fillJ}), where $v_j$ is a unit vector describing the axis of
+rotation of the joint belonging to $\theta_j$ and $p_j$ is the
+location of that joint in space.
+
+Using the Jacobian matrix, the change in end effector locations
+corresponding with a certain change in joints angles can be described
+as:
+\begin{align*}
+  \Delta \vec{s} \approx J \Delta \theta
+\end{align*}
+$\Delta \vec{s}$ should be as close as possible to the error $\vec{e}
+= \vec{t} - \vec{s}$, which means that the equation
+we're looking for is:
+\begin{align*}
+  \Delta \theta = J^{-1} \vec{e}
+\end{align*}
+
+Since the Jacobian will generally not be invertable, its inverse will
+have to be approximated. Some methods of approximation include the
+Jacobian transpose method, the Moore-Penrose pseudo-inverse, and the
+Levenberg-Marquardt dampened least squares method (see \cite{Buss2009}).
 
 \subsection{The Kick}
 With the solutions to the previous aspects of the dynamic kick constructed, 
@@ -509,6 +546,7 @@ for the Robocup competiton it will need to run on the Naos itself.
 Finally, if our kick seems to be sufficiently working we can integrate it as a
 module into the current Dutch Nao Team code as to replace the hardcoded kicks.
 
+\begin{itemize}
     \item using Denavit Hartenberg for the forward kinematics
     \item making the code run on the Nao(talk about stable runningspeed which
         Richard made)
