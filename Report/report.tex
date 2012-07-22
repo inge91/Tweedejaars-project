@@ -141,8 +141,7 @@ of angles with the largest reduction in error. This approach is acceptably fast
 when actuating two joints, but has the downside of having a complexity of $\mathcal{O}(3^n)$
 in amount of actuated joints.
 
-\newpage
-\section{Using force-sensitive resistors to keep balance}
+\subsection{Using force-sensitive resistors to keep balance}
 
 As the balacing using the Center Of Mass allows a good conversion to a stable position it does not react to external influences.
 Using the force-sensitive resistors under Nao's feet these external influences can be measured and neutralized.
@@ -162,7 +161,7 @@ When taking the left foot as support leg (the same goes for the right leg), the 
 \end{itemize}
 Where s is the smoothing parameter and t is the present time.
 
-\subsection{proportional-Derivative controller}
+\subsubsection{proportional-Derivative controller}
 
 The Proportional-Derivative controller (PD-controller) is a special case of the Proportional-Integral-Derivative controller (PID controller) where the integral term (I) is not used.  The PD-controller has 2 terms the proportional (P) and the derivative (D) term. The response of each term can be tweaked using there own tweaking parameter, the proportional gain $K_p$ and the derivative gain $K_d$. \\
 The proportional term is given by:
@@ -218,7 +217,7 @@ $Thres_{min Y} = -Thres_{max Y}$
   \end{array} \right.
 \]
 
-\subsection{Sampling Rate Issues (needs work)}
+\subsubsection{Sampling Rate Issues (needs work)}
 
 timing-independant compensation architectur¨
 time scaling, realtime conversion, instruction clock compensation
@@ -227,7 +226,7 @@ Making the sensitivity and thresholds dynamic will allow keeping the power per s
 $K_p$, $K_d$, $Thres_{min X}$ and $Thres_{min Y}$ multiplied by $timeTaken$\\
 Giving an error at TimeTaken of n and an error of n/2 at TimeTaken/2 this linear relation allows us to adapt to any giving CPU power availability using the same parameters. 
 
-\subsection{The setup error}
+\subsubsection{The setup error}
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{pics/startupError.jpg}
@@ -253,7 +252,7 @@ Therefore disregarding these values will be necessary, adding a low-pass filter 
 \]
 Where $Thres_{low-pass}$ is the threshold value for the low-pass filter.
 
-\subsection{Manual tuning  (weet nog niet of dit erin moet)}
+\subsubsection{Manual tuning  (weet nog niet of dit erin moet)}
 
 The parameters\\\\
 Increasing $s$ will cause blablabla\\
@@ -263,7 +262,7 @@ $Thres_{max X}$\\
 $Thres_{max Y}$\\
 $Thres_{low-pass}$
 
-\subsection{Results}
+\subsubsection{Results}
 
 *picture from a Nao pushing the balancing Nao (the test environment)*\\\\
 *plot with balancer off*\\\\
