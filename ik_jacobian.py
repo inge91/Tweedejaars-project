@@ -73,7 +73,7 @@ def null(A, eps=1e-15):
     null_space = scipy.compress(null_mask, vh, axis=0)
     return scipy.transpose(null_space)
 
-def change_position(ip, leg, offset, lambd=5, max_iter=100):
+def change_position(ip, leg, offset, lambd=0.25, max_iter=300, dmax=50):
     com = CenterOfMass(ip, 9559)
     stand_leg = "LLeg" if leg == "RLeg" else "RLeg"
     joint_locs = com.get_locations_dict(stand_leg, transformation=False, online=True)
@@ -87,7 +87,7 @@ def change_position(ip, leg, offset, lambd=5, max_iter=100):
     return set_position(ip, leg, target, lambd=lambd, max_iter=max_iter)
 
 
-def set_position(ip, leg, target, lambd=5, max_iter=100, method=0):
+def set_position(ip, leg, target, lambd=0.25, max_iter=300, dmax=50):
     """
     ip: IP address of the desired naoqi
     leg: the leg to be actuated
@@ -144,6 +144,7 @@ def set_position(ip, leg, target, lambd=5, max_iter=100, method=0):
             break
 
         J = get_jacobian(leg, angles, joint_trans)
+        dX = dX if norm(dX) < 50 else (50 * (dX / norm(dX)) )
 
         # Levenberg-Marquardt
         d_theta = (J.T * inv((J * J.T) + (lambd**2 * eye(3)))) * dX
@@ -220,3 +221,4 @@ def testing(ip):
     target_pos = matrix([[1], [1], [1]])
 
     return get_jacobian("RLeg", angles, joint_trans)
+
