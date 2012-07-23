@@ -108,7 +108,7 @@ requires each centroid to be described in the same coordinate system.
 \begin{align}
   \frac{\sum_i \vec{c}_i m_i} {m}        \label{eq:CoM}
 \end{align}
-In the Nao’s documentation, each component’s centroid is described relative to
+In the Nao’s documentation, each components centroid is described relative to
 its own coordinate system, and offsets are included to convert between adjacent
 components’ coordinate systems. To handle this, we construct a chain of
 transformations to walk through each component while calculating the center of
@@ -133,7 +133,7 @@ shown in equation \ref{eq:pcontrol}.
   P_{out} = gain * error        \label{eq:pcontrol}
 \end{align}
 
-Actuation is achieved solely through the hip's pitch and roll of the standing leg.
+Actuation is achieved solely through the hips pitch and roll of the standing leg.
 The rotation angles are obtained by searching through all combinations of the angles
 $(0, P_{out}, -P_{out})$ (e.g. $(pitch = 0, roll = 0)$, $(pitch = 0, roll = P_out)$, etc)
 for both joints (thus searching through a $3^2$ sized space) and selecting the pair
@@ -143,27 +143,30 @@ in amount of actuated joints.
 
 \subsection{Using force-sensitive resistors to keep balance}
 
-As the balacing using the Center Of Mass allows a good conversion to a stable position it does not react to external influences.
-Using the force-sensitive resistors under Nao's feet these external influences can be measured and neutralized.
+Although the balacing using the Center Of Mass allows a good conversion to a
+stable position, it does not react to external influences.
+Using the force-sensitive resistors under Naos feet these external influences can be measured and neutralized.
 \begin{figure}[htb]
 	\centering
 	\includegraphics[scale=0.75]{pics/naosfeet.jpg}
 	\label{fig:fsr_plot}
 	\caption{The force-sensitive resistors under Nao's feet}
 \end{figure}\\
-While kicking a ball you stand on one leg while kicking with the other leg, the leg on which the robot stands is called the support leg. 
-When taking the left foot as support leg (the same goes for the right leg), the foot will be divided into four sections (Front, Left, Right and Back). 
+The foot of the support leg will be divided into four sections (Front, Left, Right and Back). 
 \begin{itemize}
     \item $Front_t = (1-s) * Front_{t-1} + s * (LFsrFL + LFsrFR)$
     \item $Left_t = (1-s) * Left_{t-1} + s *(LFsrFL + LFsrRL)$
     \item $Right_t = (1-s) * Right_{t-1} + s *(LFsrFR + LFsrRR)$
     \item $Back_t = (1-s) * Back_{t-1} + s *(LFsrRL + LFsrRR)$ 
 \end{itemize}
-Where s is the smoothing parameter and t is the present time.
+Where $s$ is the smoothing parameter and $t$ is the present time.
 
 \subsubsection{proportional-Derivative controller}
 
-The Proportional-Derivative controller (PD-controller) is a special case of the Proportional-Integral-Derivative controller (PID controller) where the integral term (I) is not used.  The PD-controller has 2 terms the proportional (P) and the derivative (D) term. The response of each term can be tweaked using there own tweaking parameter, the proportional gain $K_p$ and the derivative gain $K_d$. \\
+The Proportional-Derivative controller (PD-controller) is a special case of the
+Proportional-Integral-Derivative controller (PID controller) where the integral
+term (I) is not used.  The PD-controller has 2 terms the proportional (P) and
+the derivative (D) term. The response of each term can be tweaked using their own tweaking parameter, the proportional gain $K_p$ and the derivative gain $K_d$. \\
 The proportional term is given by:
 \[
 P_{out}  = K_pe(t)
@@ -172,8 +175,9 @@ and the derivative term is given by:
 \[
 D_{out}  = K_d\frac{d}{dt}e(t)
 \]
-The Hip Pitch is used to compensate for the error in the x direction (Front and Back) while the Hip Roll compensates for the error in the y direction (Right and Left).
-The angle offsets for the hip joints are calculated by;
+The Hip Pitch is used to compensate for the error in the $x$ direction (Front
+and Back) while the Hip Roll compensates for the error in the $y$ direction (Right and Left).
+The angle offsets for the hip joints are calculated by
 \begin{itemize}
     \item $P_{out} x = (Front_t - Back_t) * K_p$
     \item $P_{out} y = (Right_t - Left_t) * K_p$
@@ -183,7 +187,12 @@ The angle offsets for the hip joints are calculated by;
     \item $Offset$ $Hip$ $Roll$ $=  P_{out}y + D_{out}y$ 
 \end{itemize}
 Where $timeTaken = time_t - time_{t-1}$(the time taken between the current and previous execution) .\\\\
-Using an error band to allow a range of stable points and therefore better conversion. Without this range the robot would diverge and finally fall due to the oscillation. When the error is within this range it will be set to 0, this allows the robot to converge to a stable position. Due to the robots build the forward and sideways stabilization act differently, different error bands are therefore needed. The function of the proportional term becomes;
+Using an error band to allow a range of stable points and therefore better
+conversion. Without this range the robot would diverge and finally fall due to
+the oscillation. When the error is within this range it will be set to 0, this
+allows the robot to converge to a stable position. Due to the robots build the
+forward and sideways stabilization act differently, different error bands are
+needed for either side. The function of the proportional term becomes
 \[
   P_{out}x = \left\{ 
   \begin{array}{l l}
@@ -519,7 +528,7 @@ gives the
 \section{Future works}
 Now that all sub problems of making a dynamic kick seem to be solved succesfully, there are still some future improvements we would like to work on.
 
-\subsection{Wrapping up our current progress}
+\subsection{Wrapping up our current work}
 Firstly, we would like to integrate all elements talked about to make a succesful kick. This
 was something we wanted to complete by the time this project ended, but in
 hindsight was a little too advanced for the limited
@@ -549,12 +558,6 @@ Naotypes.
 
 Finally, if our kick seems to be sufficiently working we can integrate it as a
 module into the current Dutch Nao Team code as to replace the hardcoded kicks.
-
-    \item using Denavit Hartenberg for the forward kinematics
-    \item making the code run on the Nao(talk about stable runningspeed which
-        Richard made)
-    \item Now that we have the basics we can start working on a dynamic walk
-\end{itemize}
 
 \bibliographystyle{plain}
 \bibliography{library}
