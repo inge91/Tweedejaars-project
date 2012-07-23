@@ -140,7 +140,7 @@ def set_position(ip, leg, target, lambd=0.25, max_iter=300, dmax=50):
             break
 
         J = get_jacobian(leg, angles, joint_trans)
-        dX = dX if norm(dX) < 50 else (50 * (dX / norm(dX)) )
+        dX = dX if norm(dX) < dmax else (dmax * (dX / norm(dX)) )
 
         # Levenberg-Marquardt
         d_theta = (J.T * inv((J * J.T) + (lambd**2 * eye(3)))) * dX
