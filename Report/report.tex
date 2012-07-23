@@ -4,6 +4,7 @@
 \usepackage{amsmath}
 \usepackage{tikz}
 \usepackage{graphicx}
+\usepackage{placeins}
 
 \begin{document}
 
@@ -18,6 +19,17 @@
          \large{University of Amsterdam}}
 \date{\today}
 \maketitle
+
+\newenvironment{changemargin}[2]{%
+\begin{list}{}{%
+\setlength{\topsep}{0pt}%
+\setlength{\leftmargin}{#1}%
+\setlength{\rightmargin}{#2}%
+\setlength{\listparindent}{\parindent}%
+\setlength{\itemindent}{\parindent}%
+\setlength{\parsep}{\parskip}%
+}%
+\item[]}{\end{list}}
 
 \section{Introduction} 
 Our research is concerned with making a dynamic, closed
@@ -278,6 +290,7 @@ $Thres_{low-pass}$
 *plot with balancer on*
 
 \subsection{The kinematics problem}
+\label{sec:ik}
 We want to be able to specify a location for the foot, then have the foot
 automatically move there, which means that the we'll need to be able calculate
 the required joint angles. This is known as \emph{inverse kinematics}. There is
@@ -481,16 +494,52 @@ now that we have 2 points which the Nao should use in space to place a kick,
 making a kick withou
 
 \section{Experiments and Results}
-\subsection{Center of mass balancing}
-\begin{figure}[htb]
+
+\subsection{Inverse kinematics}
+\FloatBarrier
+Since our inverse kinematics solution relies on two parameters
+($\lambda$ and $D_{max}$, see section \ref{sec:ik}), some testing needs to be
+done to optimize these. For testing, 3 reasonable target positions were chosen,
+where the parameters were chosen from the set $\{\lambda, D_{max} \mid \lambda \in
+  (0.1, 0.25, 0.5, 1, 5), D_{max} \in (10, 20, 30, 40, 50)\}$. The results can be
+seen in figures \ref{fig:ik_plot1}, \ref{fig:ik_plot2} and \ref{fig:ik_plot3}.
+The error in the plots is defined as $|| \vec{t} - \vec{s} ||$.
+
+\begin{figure}[htbp]
   \centering
-  \includegraphics[width=1\textwidth]{pics/com_error__threshold_3__gain_0_0005.pdf}
-  \label{fig:com_plot}
-  \caption{The error of the CoM P-Controller over a number of trials}
+  \makebox[\textwidth] {
+    \includegraphics[width=1.3\textwidth]{pics/ik_1.pdf}
+  }
+  \caption{The first position, with the positional error set out against
+         the time.}
+  \label{fig:ik_plot1}
 \end{figure}
 
-Figure \ref{fig:com_plot} shows the error of the CoM P-Controller over roughly 200
-trials.
+\begin{figure}[htbp]
+  \centering
+  \makebox[\textwidth] {
+    \includegraphics[width=1.3\textwidth]{pics/ik_1.pdf}
+  }
+  \caption{The second position, with the positional error set out against
+         the time.}
+  \label{fig:ik_plot2}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \makebox[\textwidth] {
+    \includegraphics[width=1.3\textwidth]{pics/ik_3.pdf}
+  }
+  \caption{The third position, with the positional error set out against
+         the time.}
+  \label{fig:ik_plot3}
+\end{figure}
+\FloatBarrier
+
+In each case, the optimal value for $\lambda$ was 5, while $D_{max}$ was either
+50 or 20, which is a relatively large difference given the range of values. Of
+course, three tests isn't enough to conclusively determine the optimal
+parameters, but they offer a nice starting point for further practical testing.
 
 \section{Required materials and support} 
 To find a solution to our problem statement we need a Nao to experiment on and a
