@@ -288,7 +288,8 @@ a number of potential solutions to this problem, for example:
 \end{itemize}
 
 We wound up going with an iterative, Jacobian-based solution as decribed by
-\cite{Meredith2004} and \cite{Buss2009}.
+\cite{Meredith2004} and \cite{Buss2009}. To see a short summary of other
+experimentations, see \ref{A}.
 
 \subsubsection{Problem specification and terminology}
 Let:
@@ -547,7 +548,7 @@ can be easily solved by rewriting all our code into c++ instead of python (the
 language we use now). Although it is not certaint yet how much this will
 increase the speed, it will indeed do so.
 
-\subsection{Making code run on the Nao and DNT code} 
+\subsection{Making code run on the Nao and within the DNT code} 
 As of now the code has only been tested while running stand-alone from our computers, but
 for the Robocup competiton it will need to run on the Naos themselves, next to all
 other processes. Because we
@@ -558,6 +559,38 @@ Naotypes.
 
 Finally, if our kick seems to be sufficiently working we can integrate it as a
 module into the current Dutch Nao Team code as to replace the hardcoded kicks.
+
+\appendix
+\section{Experimentations with solving the inverse kinematics problem.}
+\label{A}
+To solve this particular part of our problem we started out with some quite
+naive solutions until we just implemented an iterative solution.
+Here you find an overview of some of these experimentations and why we have
+abandoned them.
+
+\subsection{Using built-in functions}
+Aldebaran Robotics constructed functions that make it possible to by-pass having
+to write your own inverse kinematics solution. The function \emph{getPosition}
+make it possible to retrieve the position of an endeffector(like a leg) in
+different coordinate systems. The function  \emph{setPosition} made it possible
+to move to a position in this same coordinate system. The possible coordinate
+systems were space(where the origin was somewhere around the Nao), the torso
+and the last one between the legs. Because the torso coordinate system was
+dependent of the posture of the Nao as well as the coordinate system between
+the leg, we chose to work with the coordinate somewhere in space.
+To determine the range of the legs we took the Nao by hand and set the legs in
+the most stretched positions and used \emph{getPosition} to retrieve the
+maximum and minimum $x$ ,$y$ and $z$ values.  These were taken as absolute
+ranges relative to a starting position; the DNT-normalpose.
+
+In the end this approach didn't work as making a request for the current
+position as well as setting a new position in this coordinate frame was not
+reliable enough. It seemed that the sensor values used to find these positions
+weren't well enough to use for such an operation.
+
+\subsection{Using Usarsim to find all possible op}
+
+\subsection{Making a lookup-table}
 
 \bibliographystyle{plain}
 \bibliography{library}
