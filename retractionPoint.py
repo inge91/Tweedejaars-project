@@ -115,7 +115,7 @@ def g(point, contact_point, force_direction, ball_loc, t):
     return (retract_distance, distance)
 
 # tests the retraction point
-def test_retraction(ip, kicking_leg, direction):
+def test_retraction(ip, kicking_leg, direction, lambd=0.25, dmax=50):
     """
     kicking_leg: LLeg or RLeg
     direction: a direction vector as python list
@@ -148,7 +148,7 @@ def test_retraction(ip, kicking_leg, direction):
     print "contact", contact_point
 
     angle_list = ik_jacobian.set_position(ip, kicking_leg, np.matrix(point).T,
-            error_thresh = 2, max_iter = 500)
+                                          lambd=lambd, dmax=dmax)
     joints = []
     angles = []
     for joint in angle_list:
@@ -159,7 +159,8 @@ def test_retraction(ip, kicking_leg, direction):
     joints = []
     angles = []
     angle_list = ik_jacobian.set_position(ip, kicking_leg,
-            np.matrix(contact_point).T, error_thresh = 2, max_iter = 500)
+                                          np.matrix(contact_point).T,
+                                          lambd=lambd, dmax=dmax)
     for joint in angle_list:
         joints = joints + [joint]
         angles = angles + [angle_list[joint]]
