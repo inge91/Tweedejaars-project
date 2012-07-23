@@ -13,10 +13,6 @@ from joint_constraints import joint_constraints
 
 sys.path.append("SDK")
 
-# enumerations for Jinv method
-PINV = 0
-DAMPENED = 1
-
 def get_jacobian(leg, joint_angles, joint_trans):
     """ Returns the Jacobian matrix """
 
@@ -177,7 +173,7 @@ def update_angles(angles, joints, theta, stand_joints, mp):
     end_effector_angles = dict(zip(joints, theta))
 
     for joint, angle in end_effector_angles.iteritems():
-        angles[joint] = angle
+        angles[joint] = angle[0, 0]
 
     # update the angles of the standing leg because they might've been changed
     # by a balance controller
