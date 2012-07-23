@@ -80,7 +80,7 @@ def change_position(ip, leg, offset, lambd=0.25, max_iter=300, dmax=50):
     offset_matrix = matrix([[x], [y], [z]])
     target = current_loc + offset_matrix
 
-    return set_position(ip, leg, target, lambd=lambd, max_iter=max_iter)
+    return set_position(ip, leg, target, lambd=lambd, dmax=dmax, max_iter=max_iter)
 
 
 def set_position(ip, leg, target, lambd=0.25, max_iter=300, dmax=50):
