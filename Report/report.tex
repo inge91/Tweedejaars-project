@@ -494,9 +494,10 @@ Now that we have a way to calculate both the distance to the contact point and
 the accuracy towards the force direction, we are able to make a balanced
 decision towards what a good retraction point is.
 
-\begin{align*}
+\begin{align}
     \vec{p} = 1-\delta * d_r + \delta * \frac{100}{d_a}
-\end{align*}
+\label{eq:delta}
+\end{align}
 
 We take the multiplicative inverse of $d_a$ so that the value gets bigger when the
 retraction point is close to the line and rescale it by multiplying it with 100 to
@@ -568,7 +569,8 @@ parameters, but they offer a nice starting point for further practical testing.
     \includegraphics[width=1\textwidth]{pics/retract.pdf}
   }
   \caption{Visualistation of relevance of all tried retraction point. The red
-      point is the finally used point.
+      point is the finally used point. The red asterisk is the contact point. In
+      tis case the ball should be kicked straight forward.
          }
   \label{fig:retraction_plot1}
 \end{figure}
@@ -582,18 +584,23 @@ $\begin{bmatrix} 1 \\  0 \\ 0 \end{bmatrix}$ and a center of mass positioning of
     would like to see the foot retraction take place, as it is the line on which
     both the direction and the contact point of the ball lie. The blue dots are
     the reachable positions that are evaluated as possible retraction points. The red dot is the
-    chosen retraction point the Nao executes, and the red star is the contact
+    chosen retraction point the Nao executes, and the red asterisk is the contact
     point. For this experiment we chose 
-    $\delta = 0.999$, so that accuracy was more important than distance. The
+    $\delta = 0.999$ in equation \ref{eq:delta}, so that accuracy was more important than distance. The
     effect is in this case that still the point with the greatest distance is
     chosen because the whole row of those points have the same accuracy so still
-    the one with the biggest distance to the contact point gets chosen
+    the one with the biggest distance to the contact point gets chosen.
 
 Another experiment shows the same idea but, instead of kicking straight ahead,
 the direction was 45 degrees to the left, or $\begin{bmatrix} \frac{1}{\sqrt{2}} \\
 \frac{1}{\sqrt{2}} \\ 0 \end{bmatrix}$. Using the same $\delta$ value as before gave us
-the result as can be seen in \ref{fig: retraction_plot2}. It is the most
+the result as can be seen in \ref{fig:retraction_plot2}. It is the most
 accurate point given a list of possible elements. 
+
+Although there is another good point (at approximate (-60, -140)) it is nearly
+impossbile to get this value as the most optimal point. When lowering the
+$\delta$ value even slightly it changes the distance drastically in the x
+direction.
 
 \begin{figure}[htbp]
   \centering
@@ -601,7 +608,8 @@ accurate point given a list of possible elements.
     \includegraphics[width=1\textwidth]{pics/retract3.pdf}
   }
   \caption{Visualistation of relevance of all tried retraction point. The red
-      point is the finally used point.
+      point is the finally used point, the red asterisk is the contact point. 
+      In this case the ball is kicked with an 45 degree angle to the left.
          }
   \label{fig:retraction_plot2}
 \end{figure}

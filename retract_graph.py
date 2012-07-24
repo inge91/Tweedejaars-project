@@ -87,7 +87,7 @@ def find_point(ball_loc, direction, kick_positions, positions):
 
 
 # the function that evaluates the best possible retraction point
-def retractionPoint(ball_loc, point, direction, t, delta = 0.9999 ):
+def retractionPoint(ball_loc, point, direction, t, delta = 0.999 ):
     """ball_loc is the location of the ball, direction is a vector in a direction to
     kick the ball to"""
     # ball radius is given in meters
@@ -159,20 +159,20 @@ def test_retraction(kicking_leg, direction):
     kick_pos = [1.5962, -99.724, -0.18]
     other_pos = [0,0,0]
     contact_point ,point = find_point("This is irrelevant!", direction, kick_pos, other_pos)
-    #global xy
-    #print xy
-    #global z
-    #print z 
-    #global distance_point
-    #print distance_point
-    #global accuracy_point 
-    #print  accuracy_point 
-    global x_pos
-    global y_pos
-    print x_pos
-    print y_pos
-    print contact_point
-    print point
+    global xy
+    print xy
+    global z
+    print z 
+    global distance_point
+    print distance_point
+    global accuracy_point 
+    print  accuracy_point 
+   # global x_pos
+   # global y_pos
+   # print x_pos
+   # print y_pos
+   # print contact_point
+   # print point
 
 
 def normalPose(motProxy, force = False): 
