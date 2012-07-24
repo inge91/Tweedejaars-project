@@ -388,7 +388,25 @@ have to be approximated. Some methods of approximation include the
 Jacobian transpose method, the Moore-Penrose pseudo-inverse, and the
 Levenberg-Marquardt dampened least squares method (see \cite{Buss2009}).
 
+\subsubsection{The algorithm}
+We opted to go for a 3-dimensional positioning, without regards for the rotation
+of the end-effector (see section \ref{sec:kick} for motivation). Because the
+ankle joint is taken as end-effector, the ankle itself has no influence on the
+location. This leaves us with 4 joints; the pitch, roll and yaw of the hip,
+along with the knee's pitch.
+
+The joints tend to behave erratically when a target location is far away. This
+is counteracted by moving the target closer if the distance exceeds a certain
+threshold. This is done according to (\ref{eq:clampmag}).
+\begin{align*}
+  \vec{e} = \begin{cases}
+    \vec{t} - \vec{s} & \text{if } ||\vec{t} - \vec{s}|| < D_{max} \\
+    D_{max} \frac{\vec{t} - \vec{s}}{||\vec{t} - \vec{s}||}
+  \end{cases}      \label{eq:clampmag}
+\end{align*}
+
 \subsection{The Kick}
+\label{sec:kick}
 With the solutions to the previous aspects of the dynamic kick constructed, 
 we can start to calculate the optimal kicking trajectory. This kick is composed
 of different stages, loosely based on the approach of \cite{Xu2010}. 
