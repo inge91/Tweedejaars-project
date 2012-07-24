@@ -94,6 +94,7 @@ def g(point, contact_point, force_direction, ball_loc, t):
     # distance to the ooi
     #distance = ( np.linalg.norm( np.cross((ball_loc[:2] - point[:2]), force_direction[:2], 0, 0) ) / 
     #    np.linalg.norm(force_direction[:2]))
+    force_direction = force_direction + contact_point
     distance = np.linalg.norm(np.cross(point[:2] - contact_point[:2], point[:2] -
         force_direction[:2], 0 , 0)) / np.linalg.norm(abs(force_direction[:2] -
             contact_point[:2]))
