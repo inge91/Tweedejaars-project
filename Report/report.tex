@@ -511,15 +511,14 @@ the accuracy towards the force direction, we are able to make a balanced
 decision towards what a good retraction point is.
 
 \begin{align*}
-    \vec{p} = 0.1 * d_r + 0.9 * \frac{100}{d_a}
+    \vec{p} = 1-\delta * d_r + \delta * \frac{100}{d_a}
 \end{align*}
 
 We take the multiplicative inverse of $d_a$ so that the value gets bigger when the
 retraction point is close to the line and rescale it by multiplying it with 100 to
-make the value $d_r$ and $d_a$ more in the same range. The multiplicative values
-0.1 and 0.9 could be experimented with to find the optimal result. In the above
-equation accuracy is more important than a big distance between ball and
-retraction point.
+make the value $d_r$ and $d_a$ more in the same range. The value $\delta$  could
+be experimented with to find the optimal result.Accuracy is more important than a big distance between ball and
+retraction point, something that will become evident in the results section.
 
 All possible positions $\vec{p}$ should be considerd to solve this equation. To
 determine what is possible the Nao is set in different positions and using a
@@ -531,7 +530,6 @@ no overlap in the reachable space and the position of the other leg.
 
 
 \section{Experiments and Results}
-
 \subsection{Inverse kinematics}
 \FloatBarrier
 Since our inverse kinematics solution relies on two parameters
@@ -586,8 +584,19 @@ is the result of a direction
 $\begin{bmatrix} 1 \\  0 \\ 0 \end{bmatrix}$ and a center of mass positioning of
     the ball right in front of the right foot. The line is the point on which we
     would like to see the foot retraction take place, as it is the line on which
-    both the direction and the contact point of the ball lie. The red dot is the
-    chosen retraction point the Nao executes.
+    both the direction and the contact point of the ball lie. The blue dots are
+    the reachable positions that are evaluated as possible retraction points. The red dot is the
+    chosen retraction point the Nao executes. For this experiment we chose a
+    $\delta = 0.001$, so that distance was more important than accuracy.In this
+    case this gave the right effect; both giving a accurate and powerful
+    kicking speed.
+
+Another experiment shows the same idea but, instead of kicking straight ahead,
+the direction was 45 degrees to the right, or $\begin{bmatrix} \sqrt{2}  \\
+\sqrt{2} \\ 0 \end{bmatrix}$. Using the same $\lambda$ value as before gave us
+the result as can be seen in \ref{fig: retraction_plot2}
+
+
 
 
 \begin{figure}[htbp]
