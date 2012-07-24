@@ -474,11 +474,11 @@ the accuracy towards the force direction, we are able to make a balanced
 decision towards what a good retraction point is.
 
 \begin{align*}
-    \vec{p} = 0.1 * d_r + 0.9 * \frac{0.1}{d_a}
+    \vec{p} = 0.1 * d_r + 0.9 * \frac{100}{d_a}
 \end{align*}
 
 We take the multiplicative inverse of $d_a$ so that the value gets bigger when the
-retraction point is close to the line and rescale it by deviding it with 10 to
+retraction point is close to the line and rescale it by multiplying it with 100 to
 make the value $d_r$ and $d_a$ more in the same range. The multiplicative values
 0.1 and 0.9 could be experimented with to find the optimal result. In the above
 equation accuracy is more important than a big distance between ball and
@@ -488,7 +488,7 @@ All possible positions $\vec{p}$ should be considerd to solve this equation. To
 determine what is possible the Nao is set in different positions and using a
 forward kinematics chain the end effector of each leg in world space coordinates
 can be retrieved. This way roughly all possible positions are set and can be
-looped thorugh to find the point that maximizes above equation. By also
+looped through to find the point that maximizes above equation. By also
 retrieving the location of the standing leg we make sure that there is
 no overlap in the reachable space and the position of the other leg.
 
@@ -539,6 +539,29 @@ In each case, the optimal value for $\lambda$ was 5, while $D_{max}$ was either
 50 or 20, which is a relatively large difference given the range of values. Of
 course, three tests isn't enough to conclusively determine the optimal
 parameters, but they offer a nice starting point for further practical testing.
+
+
+\subsection{Calculating the retraction point}
+To see how well the calculation of the retraction point really works, we
+visualised the different points that were tried out. Figure \ref{fig:retraction_plot1}
+is the result of a direction 
+$\begin{bmatrix} 1 \\  0 \\ 0 \end{bmatrix}$ and a center of mass positioning of
+    the ball right in front of the right foot. The line is the point on which we
+    would like to see the foot retraction take place, as it is the line on which
+    both the direction and the contact point of the ball lie. The red dot is the
+    chosen retraction point the Nao executes.
+
+
+\begin{figure}[htbp]
+  \centering
+  \makebox[\textwidth] {
+    \includegraphics[width=1\textwidth]{pics/retract.pdf}
+  }
+  \caption{Visualistation of relevance of all tried retraction point. The red
+      point is the finally used point.
+         }
+  \label{fig:retraction_plot1}
+\end{figure}
 
 
 \section{Conclusion}
