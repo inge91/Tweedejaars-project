@@ -55,9 +55,9 @@ def find_point(ball_loc, direction, kick_positions, positions):
     # make matrix of the world_space ball and direction coordinates
     bal_loc = np.matrix([[bal_x], [bal_y], [bal_z]])
     #direction = np.matrix([[direction_x], [direction_y], [direction_z]])
-    for x in xrange(min_x, max_x, 20):
-        for y in xrange(min_y, max_y, 20):
-            for z in xrange(min_z, max_z, 20):
+    for x in xrange(min_x, max_x, 10):
+        for y in xrange(min_y, max_y, 10):
+            for z in xrange(min_z, max_z, 10):
                 global x_pos
                 global y_pos
                 global z_pos
@@ -156,8 +156,8 @@ def test_retraction(kicking_leg, direction):
     print z 
     global distance_point
     print distance_point
-    #global accuracy_point 
-    #print  accuracy_point 
+    global accuracy_point 
+    print  accuracy_point 
    # global x_pos
    # global y_pos
    # print x_pos
