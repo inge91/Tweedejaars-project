@@ -24,9 +24,6 @@ def find_point(ball_loc, direction, kick_positions, positions):
     pos_x, pos_y, pos_z = positions 
     # ball position relative to the kicking foot
     ball_loc = [100, -100.55154471, 0.09521921 ]
-    print "ball pos", ball_loc
-    print "kick pos ", kick_positions
-    print "standing pos", positions
     # all boundaries for the kicking leg
     min_x = int(kick_positions[0] - 75) #- 0.13641
     max_x = int(kick_positions[0] +75)
@@ -38,16 +35,11 @@ def find_point(ball_loc, direction, kick_positions, positions):
     #max_z = int(kick_positions[2] + 50)  #0.1526
     min_z = 40
     max_z = 75
-    print min_x, max_x
-    print min_y, max_y
-    print min_z, max_z
 
     # make ball position in world_space coordinates
     bal_x =  ball_loc[0]
     bal_y =  ball_loc[1]
     bal_z =  ball_loc[2]
-    print "Ball location: ", bal_x, bal_y, bal_z
-    print "baly", bal_y
     # make direction in world_space coordinates
     #direction_x = kick_x + direction[0]
     #direction_y = kick_y + direction[1]
@@ -72,7 +64,6 @@ def find_point(ball_loc, direction, kick_positions, positions):
                 x_pos = x_pos + [x]
                 y_pos = y_pos + [y]
                 z_pos = z_pos + [z]
-                print y
                 contact_point, value = retractionPoint(bal_loc, np.matrix([[x], [y],
                     [z]]), direction, 1)
                 #print "contact", contact_point
@@ -110,12 +101,12 @@ def g(point, contact_point, force_direction, ball_loc, t):
     # distance to the ooi
     #distance = ( np.linalg.norm( np.cross((ball_loc[:2] - point[:2]), force_direction[:2], 0, 0) ) / 
     #    np.linalg.norm(force_direction[:2]))
+    direction = force_direction
     force_direction = force_direction + contact_point
     print force_direction
     distance = np.linalg.norm(np.cross(point[:2] - contact_point[:2], point[:2] -
         force_direction[:2], 0 , 0)) / np.linalg.norm(abs(force_direction[:2] -
             contact_point[:2]))
-    print distance
     #the smaller the distance, the bigger the number
     distance = 100 / distance
 
@@ -130,16 +121,16 @@ def g(point, contact_point, force_direction, ball_loc, t):
     global xy
     xy = xy + [retract_distance_x + retract_distance_y]
     global z 
-    z = z + [retract_distance_z]
+    z = z + [retract_distance_z * 0.3]
 
     retract_distance = 0
     # the retraction distance gets favored in the x and y directions
-    retract_distance =  (force_direction[0] * retract_distance_x +
-            force_direction[1] *
+    retract_distance =  (direction[0] * retract_distance_x +
+            direction[1] *
             retract_distance_y + 0.3 *  retract_distance_z)
             #force_direction[1] * retract_distance_y + force_direction[2] *  retract_distance_z)
     global distance_point 
-    #print retract_distance
+    print retract_distance
     distance_point =  distance_point + [np.ndarray.tolist(retract_distance)[0][0]]
     return (retract_distance, distance)
 
@@ -165,8 +156,8 @@ def test_retraction(kicking_leg, direction):
     print z 
     global distance_point
     print distance_point
-    global accuracy_point 
-    print  accuracy_point 
+    #global accuracy_point 
+    #print  accuracy_point 
    # global x_pos
    # global y_pos
    # print x_pos

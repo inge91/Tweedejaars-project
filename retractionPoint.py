@@ -94,6 +94,7 @@ def g(point, contact_point, force_direction, ball_loc, t):
     # distance to the ooi
     #distance = ( np.linalg.norm( np.cross((ball_loc[:2] - point[:2]), force_direction[:2], 0, 0) ) / 
     #    np.linalg.norm(force_direction[:2]))
+    direction = force_direction
     force_direction = force_direction + contact_point
     distance = np.linalg.norm(np.cross(point[:2] - contact_point[:2], point[:2] -
         force_direction[:2], 0 , 0)) / np.linalg.norm(abs(force_direction[:2] -
@@ -109,8 +110,8 @@ def g(point, contact_point, force_direction, ball_loc, t):
 
     retract_distance = 0
     # the retraction distance gets favored in the x and y directions
-    retract_distance =  (force_direction[0] * retract_distance_x +
-            force_direction[1] *
+    retract_distance =  (direction[0] * retract_distance_x +
+            direction[1] *
             retract_distance_y + 0.3 *  retract_distance_z)
             #force_direction[1] * retract_distance_y + force_direction[2] *  retract_distance_z)
     return (retract_distance, distance)
