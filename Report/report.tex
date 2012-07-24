@@ -33,7 +33,7 @@
 
 \section{Introduction} 
 Our research is concerned with making a dynamic, closed
-loop kick for the Nao robot. The Nao is a humanoid robot made by
+loop stabilised kick for the Nao robot. The Nao is a humanoid robot made by
 Aldebaran Robots\footnote{http://www.aldebaran-robotics.com/en/}. It is used in
 the Stand Platform League of the
 Robocup\footnote{http://wiki.robocup.org/wiki/Standard\_Platform\_League}, an organisation which organizes football (soccer)
@@ -41,10 +41,15 @@ competitions for autonomous robots.
 
 Kicking, of course, is an important part of football, and thus a good kick is vital to achieving good results in the Robocup. There are essentially two ways of making a humanoid robot kick a ball:
 \begin{enumerate}
-  \item Positioning the robot in a specific place relative to the ball, then executing a manually specified series of movements
-  \item Using the location of the ball, and the angle you want the ball to go to dynamically determine a trajectory for the robot to move
+  \item Positioning the robot in a specific place relative to the ball, then
+      executing a manually specified series of movements to kick the ball
+  \item Using the location of the ball, and the direction you want the ball to
+      go to dynamically determine a trajectory for the robot to move
 \end{enumerate}
-The first one is referred to as a \emph{keyframe motion}, while the second one is the subject of this paper.
+The first one is referred to as a \emph{keyframe motion}, while the second one
+is the subject of this paper. Furthermore, we implement in this dynamic kick a
+balance system so that we get a more stable kick that is able to adapt itself to
+outside disturbances.
 
 \section{Basic information about the Nao}
 The Nao is a 58 cm high humanoid robot developed by Aldebaran Robotics. The Nao
@@ -68,14 +73,17 @@ time is wasted positioning the robot at just the right angle relative to kick
 the ball towards the goal. Furthermore, if the ball gets moved after the kicking
 motion has started, it is impossible for the robot to correct its kicking path. These are all problems that can be reduced with a dynamically generated motion, which is why we will attempt to create one. If we succeed in our endeavour, the resulting kick will be integrated in the Dutch Nao Team's codebase.
 
-\subsection{Stability}
+Here are some more reasons why a dynamic kick is to preferred above keyframe
+kicks.
+
+\subsection{Stability in a match}
 Since there is more than one player on
 the field  chasing after the ball,
-lots of interference can be expected from other Naos while kicking. Due to the
+lots of interference can be expected pushing other Naos while trying to perform a kick. Due to the
 instability of the Nao this results in falling down quite often, even more
 so when there is no compensation for it when executing a motion. A dynamic
-kick keeps track of the stability and will execute a kick that keeps the Nao
-most stable.
+kick keeps track of how stable Naos current position is and compensates for
+outside disturbances while kicking. 
 
 Overheating is also a problem for Naos. When this occurs the joints will perform
 not as expected or even fail. Using this dynamic system the temperature of the
@@ -93,7 +101,7 @@ current keyframe motion used by DNT is very brittle, with our dynamic kick we wi
 more robust kick that can give our universities team a bigger chance of
 winning in competitions. 
 This integration makes this project a valuable activity in the long run, and not
-just a one time experiment.
+just a one time experiment that will not be further developed.
 
 \section{Methodology}
 The task of kicking a ball requires a couple of things: We need to plan a path
@@ -379,7 +387,6 @@ of different stages, loosely based on the approach of \cite{Xu2010}.
     \item Initial pose
     \item Retraction point
     \item Contact point
-    \item Fitting a Bezier curve
 \end{itemize}
 
 For all these stages we assume we have knowledge about the coordinates of the
@@ -495,9 +502,6 @@ looped thorugh to find the point that maximizes above equation. By also
 retrieving the location of the standing leg we make sure that there is
 no overlap in the reachable space and the position of the other leg.
 
-\subsubsection{Making a kick using the Bezier curve}
-now that we have 2 points which the Nao should use in space to place a kick,
-making a kick withou
 
 \section{Experiments and Results}
 
@@ -546,21 +550,6 @@ In each case, the optimal value for $\lambda$ was 5, while $D_{max}$ was either
 50 or 20, which is a relatively large difference given the range of values. Of
 course, three tests isn't enough to conclusively determine the optimal
 parameters, but they offer a nice starting point for further practical testing.
-
-\section{Required materials and support} 
-To find a solution to our problem statement we need a Nao to experiment on and a
-possible simulation environment for at home. All of these materials are
-available in the robolab.
-
-Furthermore, there are different papers concerned with the problems we are
-trying to tackle, but none of them cover the whole problem statement, and not
-all are specifically about the Nao. For example we found a paper about
-calculating the center of mass for robots with multiple joints\cite{Cotton2008} but not tailored
-to the connection of joints of a  Nao robot.The difficulty for us is to put all this
-information together and to make it work specifically on the Nao, and to
-document this process at the same time. Most of the problems have been covered
-in previous courses, but it still will require some insight in achieving our set
-goals.
 
 \section{Conclusion}
 \begin{itemize}
@@ -641,9 +630,22 @@ ranges relative to a starting position; the DNT-normalpose.
 In the end this approach didn't work as making a request for the current
 position as well as setting a new position in this coordinate frame was not
 reliable enough. It seemed that the sensor values used to find these positions
-weren't well enough to use for such an operation.
+weren't well enough to use for such an operation. Another big problem is that
+using the \emph{setPosition} function actuating is very slow, even on the
+fastest
+setting it would not make a powerful kick.
 
-\subsection{Using Usarsim to find all possible op}
+\subsection{Using a simulator to find all possible positions}
+We also tried to use the \emph{setPosition} and \emph{getPositions} function in
+a simulated environment\footnote{The environment used can be found on
+http://www.nao.sandern.com}. This time we wanted to get a big table with all
+reachablee positions for the leg. We used \emph{setPosition}to set the leg
+somewhere in space and if the setposition was the same as \emph{getPosition}
+gave back\footnote{\emph{setPosition} always gives back a position but does not
+work when the position is out of range for the end-effector. It will start
+jittering and not end up in the same position as requested}, the position was possible and was written to file.
+In the end this was not as reliable as hoped due to the same issues as spoken in
+the last section.
 
 \subsection{Making a lookup-table}
 

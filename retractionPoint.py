@@ -94,6 +94,7 @@ def g(point, contact_point, force_direction, ball_loc, t):
     # distance to the ooi
     #distance = ( np.linalg.norm( np.cross((ball_loc[:2] - point[:2]), force_direction[:2], 0, 0) ) / 
     #    np.linalg.norm(force_direction[:2]))
+    force_direction = force_direction + contact_point
     distance = np.linalg.norm(np.cross(point[:2] - contact_point[:2], point[:2] -
         force_direction[:2], 0 , 0)) / np.linalg.norm(abs(force_direction[:2] -
             contact_point[:2]))
@@ -115,7 +116,7 @@ def g(point, contact_point, force_direction, ball_loc, t):
     return (retract_distance, distance)
 
 # tests the retraction point
-def test_retraction(ip, kicking_leg, direction, lambd=0.25, dmax=50):
+def test_retraction(ip, kicking_leg, direction, lambd=5, dmax=50):
     """
     kicking_leg: LLeg or RLeg
     direction: a direction vector as python list
@@ -132,8 +133,8 @@ def test_retraction(ip, kicking_leg, direction, lambd=0.25, dmax=50):
     # set the other leg's name
     other_leg = "RLeg" if kicking_leg == "LLeg" else "LLeg"
 
-    #mp.setStiffnesses("Body", 1)
-    #normalPose(mp, True)
+    mp.setStiffnesses("Body", 1)
+    normalPose(mp, True)
 
     
     kick_pos = [i[0,0] for i in fk.get_locations_dict(other_leg)[ kicking_leg[0] +
@@ -155,7 +156,7 @@ def test_retraction(ip, kicking_leg, direction, lambd=0.25, dmax=50):
         joints = joints + [joint]
         angles = angles + [angle_list[joint]]
     mp.setAngles(joints, angles, 0.3)
-    time.sleep(3)
+    #time.sleep(3)
     joints = []
     angles = []
     angle_list = ik_jacobian.set_position(ip, kicking_leg,
@@ -164,7 +165,7 @@ def test_retraction(ip, kicking_leg, direction, lambd=0.25, dmax=50):
     for joint in angle_list:
         joints = joints + [joint]
         angles = angles + [angle_list[joint]]
-    mp.setAngles(joints, angles, 0.3)
+    mp.setAngles(joints, angles, 1)
 
 
 def normalPose(motProxy, force = False): 
