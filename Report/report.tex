@@ -34,7 +34,7 @@
 \section{Introduction} 
 Our research is concerned with making a dynamic, closed
 loop stabilised kick for the Nao robot. The Nao is a humanoid robot made by
-Aldebaran Robots\footnote{http://www.aldebaran-robotics.com/en/}. It is used in
+Aldebaran Robotics\footnote{http://www.aldebaran-robotics.com/en/}. It is used in
 the Stand Platform League of the
 Robocup\footnote{http://wiki.robocup.org/wiki/Standard\_Platform\_League}, an organisation which organizes football (soccer)
 competitions for autonomous robots.
@@ -53,16 +53,37 @@ outside disturbances.
 
 \section{Basic information about the Nao}
 The Nao is a 58 cm high humanoid robot developed by Aldebaran Robotics. The Nao
-is equipped with all kinds of different gadgets. Here we will discuss the most
-important ones 
-\begin{itemize}
-    \item foot sensors
-    \item space
-    \item rotations
-    \item length of end effectors
-    \item built in functions
-    \item Terminalogy
-\end{itemize}
+is equipped with all kinds of hardware that can be used to solve our problem
+statement. Here we will discuss the most
+important elements of the Nao that are useful for understanding the report. All
+experiments have been conducted on Nao version 3.3
+
+\subsection{Foot sensors} 
+\begin{figure}[htb]
+	\centering
+	\includegraphics[scale=0.75]{pics/naosfeet.jpg}
+	\label{fig:fsr_plot2}
+	\caption{The force-sensitive resistors under Nao's feet}
+\end{figure}
+There are different hardware implementations for the
+Nao that can be used to figure out how stable it is in its current position. The one we use in this
+reports are the force-sensitive foot sensors. There are four of these sensors on either foot
+(as shown in Figure \ref{fig:fsr_plot2})
+which give a constant reading of the current pressure on each of the sensors.
+
+\subsection{The coordinate space}
+\begin{figure}[htb]
+	\centering
+	\includegraphics[scale=0.4]{pics/hardware_inertialunit.png}
+	\label{fig:hardware}
+	\caption{The force-sensitive resistors under Nao's feet}
+\end{figure}
+
+Figure \ref{fig:hardware} shows the way in which the coordinate system works that we
+apply in our report. The x-axis point to the fron of the Nao, while the y-axis
+points to the side and the z-axis upwards. All mentions of these eaxis in this
+report will be around this same coordinate frame.
+
 
 
 \section{Motivation for this project} 
@@ -177,10 +198,10 @@ $\mathcal{O}(3^n)$ in amount of actuated joints.
 
 \subsection{Using force-sensitive resistors to keep balance}
 
-Although the balacing using the Center Of Mass allows a good conversion to a
+Although balancing using the Center Of Mass allows a good conversion to a
 stable position, it does not react to external influences.
 Using the force-sensitive resistors under Naos feet these external influences can be measured and neutralized.
-\begin{figure}[htb]
+\begin{figure}[htb] 
 	\centering
 	\includegraphics[scale=0.75]{pics/naosfeet.jpg}
 	\label{fig:fsr_plot}
@@ -195,7 +216,7 @@ The foot of the support leg will be divided into four sections (Front, Left, Rig
 \end{itemize}
 Where $s$ is the smoothing parameter and $t$ is the present time.
 
-\subsubsection{proportional-Derivative controller}
+\subsubsection{Proportional-Derivative controller}
 
 The Proportional-Derivative controller (PD-controller) is a special case of the
 Proportional-Integral-Derivative controller (PID controller) where the integral
