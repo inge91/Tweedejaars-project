@@ -438,11 +438,13 @@ Firstly, to determine the point between the ball and a possible retraction point
 we use the following calculation: 
 
 \begin{align*}
-    d_r = ||\vec{p_{c}^{xy}} - \vec{p^{xy}} || * 0.7 + ||\vec{p_{c}^z} - \vec{p^z}|| * 0.3
+d_r = \vec{e}^{x} * || \vec{p}_{c}^{x} \dot \vec{p}^{x} || + \vec{e}^y * ||\vec{p}_{c}^z
+    \dot \vec{p}^z|| * 0.3
 \end{align*}
 
-Where $\vec{p_c}$ is the contact point where the ball should be hit and
-$\vec{p}$ is a possible retraction point and $\vec{d_r}$ the distance between both
+Where $\vec{p_c}$ is the contact point where the ball should be hit,
+$\vec{p}$ is a possible retraction point, $\vec{e}$ is theunit vector pointing
+to the desired desination and $\vec{d_r}$ the distance between both
 points. The reason the ${xy}$ dimensions get more weight is because heightening
 the feet for a bigger distance of the retraction is less desirable as it creates
 more imbalance and takes up more time. The retraction n the x and y direction
@@ -560,27 +562,6 @@ parameters, but they offer a nice starting point for further practical testing.
 
 
 \subsection{Calculating the retraction point}
-To see how well the calculation of the retraction point really works, we
-visualised the different points that were tried out. Figure \ref{fig:retraction_plot1}
-is the result of a direction 
-$\begin{bmatrix} 1 \\  0 \\ 0 \end{bmatrix}$ and a center of mass positioning of
-    the ball right in front of the right foot. The line is the point on which we
-    would like to see the foot retraction take place, as it is the line on which
-    both the direction and the contact point of the ball lie. The blue dots are
-    the reachable positions that are evaluated as possible retraction points. The red dot is the
-    chosen retraction point the Nao executes. For this experiment we chose a
-    $\delta = 0.001$, so that distance was more important than accuracy.In this
-    case this gave the right effect; both giving a accurate and powerful
-    kicking speed.
-
-Another experiment shows the same idea but, instead of kicking straight ahead,
-the direction was 45 degrees to the right, or $\begin{bmatrix} \sqrt{2}  \\
-\sqrt{2} \\ 0 \end{bmatrix}$. Using the same $\lambda$ value as before gave us
-the result as can be seen in \ref{fig: retraction_plot2}
-
-
-
-
 \begin{figure}[htbp]
   \centering
   \makebox[\textwidth] {
@@ -591,7 +572,42 @@ the result as can be seen in \ref{fig: retraction_plot2}
          }
   \label{fig:retraction_plot1}
 \end{figure}
+\FloatBarrier
+To see how well the calculation of the retraction point really works, we
+visualised the different points that were tried out. Figure \ref{fig:retraction_plot1}
+is the result of a direction 
+$\begin{bmatrix} 1 \\  0 \\ 0 \end{bmatrix}$ and a center of mass positioning of
+    the ball right in front of the right foot (the kick commenced with the right
+    leg as well). The line is the point on which we
+    would like to see the foot retraction take place, as it is the line on which
+    both the direction and the contact point of the ball lie. The blue dots are
+    the reachable positions that are evaluated as possible retraction points. The red dot is the
+    chosen retraction point the Nao executes, and the red star is the contact
+    point. For this experiment we chose 
+    $\delta = 0.999$, so that accuracy was more important than distance. The
+    effect is in this case that still the point with the greatest distance is
+    chosen because the whole row of those points have the same accuracy so still
+    the one with the biggest distance to the contact point gets chosen
 
+Another experiment shows the same idea but, instead of kicking straight ahead,
+the direction was 45 degrees to the left, or $\begin{bmatrix} \frac{1}{\sqrt{2}} \\
+\frac{1}{\sqrt{2}} \\ 0 \end{bmatrix}$. Using the same $\delta$ value as before gave us
+the result as can be seen in \ref{fig: retraction_plot2}. It is the most
+accurate point given a list of possible elements. 
+
+\begin{figure}[htbp]
+  \centering
+  \makebox[\textwidth] {
+    \includegraphics[width=1\textwidth]{pics/retract3.pdf}
+  }
+  \caption{Visualistation of relevance of all tried retraction point. The red
+      point is the finally used point.
+         }
+  \label{fig:retraction_plot2}
+\end{figure}
+
+This gives the presumption that the calculations used work quite well with this
+value for $\delta$ but more experimentations are needed to be certain.
 
 \section{Conclusion}
 \begin{itemize}
