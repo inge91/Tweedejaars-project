@@ -175,8 +175,12 @@ error-calculation becomes:
 The Z-axis is ignored, because the height is irrelevant in this case (the CoM
 balancer only accounts for gravity, not other phenomena such as momentum).
 
-The proportional control equation with an arbitrary \emph{gain} parameter is
-shown in \ref{eq:pcontrolx} and \ref{eq:pcontroly}.
+The proportional control equation with two arbitrary \emph{gain} parameters is
+shown in \ref{eq:pcontrolx} and \ref{eq:pcontroly}. The use of a different gain
+parameter for the x- and y-directions allows compensation for the fact that the
+Nao's feet (and really, feet in general) are rather elongated in the forward
+direction, making them far more stable to forces along the x-axis as opposed to
+the y-axis.
 \begin{align}
   P_{out_{x}} = gain_x * error_x        \label{eq:pcontrolx} \\
   P_{out_{y}} = gain_y * error_y        \label{eq:pcontroly}
@@ -194,9 +198,9 @@ The rotation angles are obtained by searching through the set
 \end{align*}
 and selecting the pair of angles with the largest reduction in error. This
 avoids situations where both components of the actuation interfere with
-eachother and actually make the robot more unstable. This approach is acceptably
+each other and actually make the robot more unstable. This approach is acceptably
 fast when actuating two joints, but has the downside of having a complexity of
-$\mathcal{O}(3^n)$ in amount of actuated joints.
+$\mathcal{O}(2^n)$ in amount of actuated joints.
 
 \subsection{Using force-sensitive resistors to keep balance}
 
