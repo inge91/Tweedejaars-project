@@ -134,7 +134,7 @@ requires each centroid to be described in the same coordinate system.
 \begin{align}
   \frac{\sum_i \vec{c}_i m_i} {m}        \label{eq:CoM}
 \end{align}
-In the Nao’s documentation, each components centroid is described relative to
+In the Nao’s documentation, each component's centroid is described relative to
 its own coordinate system, and offsets are included to convert between adjacent
 components’ coordinate systems. To handle this, we construct a chain of
 transformations to walk through each component while calculating the center of
@@ -147,25 +147,33 @@ The CoM is calculated relative to the standing leg's ankle joint, and we define
 the center of the support polygon to be ``about 3cm in front of that''. Thus the
 error-calculation becomes:
 \begin{align}
-  d &= \begin{bmatrix} 3 \\ 0 \end{bmatrix} - \vec{CoM_{xy}} \\
-  error &= \sum_{i \in d} |i|
+  \begin{bmatrix} error_x \\ error_y \end{bmatrix} = \begin{bmatrix} 3 \\ 0 \end{bmatrix} - \vec{CoM_{xy}} \\
 \end{align}
 The Z-axis is ignored, because the height is irrelevant in this case (the CoM
 balancer only accounts for gravity, not other phenomena such as momentum).
 
 The proportional control equation with an arbitrary \emph{gain} parameter is
-shown in equation \ref{eq:pcontrol}.
+shown in \ref{eq:pcontrolx} and \ref{eq:pcontroly}.
 \begin{align}
-  P_{out} = gain * error        \label{eq:pcontrol}
+  P_{out_{x}} = gain_x * error_x        \label{eq:pcontrolx} \\
+  P_{out_{y}} = gain_y * error_y        \label{eq:pcontroly}
 \end{align}
+The value of $P_{out_{x}}$ is inverted when balancing on the left leg because of
+the direction the joint rotates.
 
-Actuation is achieved solely through the hips pitch and roll of the standing leg.
-The rotation angles are obtained by searching through all combinations of the angles
-$(0, P_{out}, -P_{out})$ (e.g. $(pitch = 0, roll = 0)$, $(pitch = 0, roll = P_out)$, etc)
-for both joints (thus searching through a $3^2$ sized space) and selecting the pair
-of angles with the largest reduction in error. This approach is acceptably fast
-when actuating two joints, but has the downside of having a complexity of $\mathcal{O}(3^n)$
-in amount of actuated joints.
+Actuation is achieved solely through the hip's pitch and roll of the support
+leg. Even though there are possible poses which are impossible to correct with
+only the hip, these poses are very unlikely to ever occur during any intended motion.
+The rotation angles are obtained by searching through the set
+\begin{align*}
+  \{ (\theta_{pitch}, \theta_{roll}) \mid \theta_{pitch} \in (0, P_{out_{x}}),
+  \theta_{roll} \in (0, P_{out_{y}}) \}
+\end{align*}
+and selecting the pair of angles with the largest reduction in error. This
+avoids situations where both components of the actuation interfere with
+eachother and actually make the robot more unstable. This approach is acceptably
+fast when actuating two joints, but has the downside of having a complexity of
+$\mathcal{O}(3^n)$ in amount of actuated joints.
 
 \subsection{Using force-sensitive resistors to keep balance}
 
@@ -311,7 +319,8 @@ the required joint angles. This is known as \emph{inverse kinematics}. There is
 a number of potential solutions to this problem, for example: 
 \begin{itemize}
 \item analytically solve the inverse kinematics chain using goniometry (as done by \cite{Graf2009})
-\item use a hillclimbing algorithm to approach the desired location over a number of iterations
+\item use an iterative algorithm to approach the desired location over a number
+  of iterations (\cite{Buss2009})
 \end{itemize}
 
 We wound up going with an iterative, Jacobian-based solution as decribed by
