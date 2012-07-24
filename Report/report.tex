@@ -5,6 +5,8 @@
 \usepackage{tikz}
 \usepackage{graphicx}
 \usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
 
 \begin{document}
 
@@ -398,12 +400,52 @@ along with the knee's pitch.
 The joints tend to behave erratically when a target location is far away. This
 is counteracted by moving the target closer if the distance exceeds a certain
 threshold. This is done according to (\ref{eq:clampmag}).
-\begin{align*}
+\begin{align}
   \vec{e} = \begin{cases}
     \vec{t} - \vec{s} & \text{if } ||\vec{t} - \vec{s}|| < D_{max} \\
     D_{max} \frac{\vec{t} - \vec{s}}{||\vec{t} - \vec{s}||}
   \end{cases}      \label{eq:clampmag}
-\end{align*}
+\end{align}
+
+Pseudocode for the algorithm can be seen in algorithm \ref{code:ik}.
+
+\begin{algorithm}
+  \begin{algorithmic}
+    \Function{inverse\_kinematics}{$target$, $\lambda$, $max\_iter$, $D_{max}$, $threshold$}
+      \State $best\_error = \infty$
+      \State $best\_\theta = nil$
+      \State $\theta \gets$ the current body angles
+      \While{$n\_iter < max\_iter$}
+        \State $\vec{s} \gets $the current end effector position
+        \State $\vec{e} \gets target - \vec{s}$
+        \State $error \gets ||\vec{e}||$
+
+        \If{$error < best\_error$}
+          \State $best\_error \gets error$
+          \State $best\_\theta \gets \theta$
+        \EndIf
+        \If{$best\_error < threshold$}
+          \State \Return $best\_\theta$
+        \Else
+          \State $J \gets get\_jacobian(\theta)$
+          \If{$||\vec{e}|| > D_{max}$}
+            \State $\vec{e} \gets D_{max} \frac{\vec{e}}{||\vec{e}||}$
+          \EndIf
+          \State $J^{-1} \gets J^T (J J^T)^{-1} + \lambda^2 I(3)$
+          \Comment{I(3) is the $ 3\times 3$ identity matrix}
+          \State $d\theta \gets J^{-1} * \vec{e}$
+          \State $\theta \gets \theta + d\theta$
+        \EndIf
+      \EndWhile
+      \State \Return $best\_\theta$
+    \EndFunction
+  \end{algorithmic}
+  \caption{The inverse kinematics solution}
+  \label{code:ik}
+\end{algorithm}
+
+When updating the joint angles ($\theta$), take care to restrict them to their
+actual range to avoid a solution with impossible angles.
 
 \subsection{The Kick}
 \label{sec:kick}
