@@ -13,10 +13,6 @@ from joint_constraints import joint_constraints
 
 sys.path.append("SDK")
 
-# enumerations for Jinv method
-PINV = 0
-DAMPENED = 1
-
 def get_jacobian(leg, joint_angles, joint_trans):
     """ Returns the Jacobian matrix """
 
@@ -73,7 +69,7 @@ def null(A, eps=1e-15):
     null_space = scipy.compress(null_mask, vh, axis=0)
     return scipy.transpose(null_space)
 
-def change_position(ip, leg, offset, lambd=5, max_iter=100):
+def change_position(ip, leg, offset, lambd=0.25, max_iter=300, dmax=50):
     com = CenterOfMass(ip, 9559)
     stand_leg = "LLeg" if leg == "RLeg" else "RLeg"
     joint_locs = com.get_locations_dict(stand_leg, transformation=False, online=True)
@@ -84,10 +80,10 @@ def change_position(ip, leg, offset, lambd=5, max_iter=100):
     offset_matrix = matrix([[x], [y], [z]])
     target = current_loc + offset_matrix
 
-    return set_position(ip, leg, target, lambd=lambd, max_iter=max_iter)
+    return set_position(ip, leg, target, lambd=lambd, dmax=dmax, max_iter=max_iter)
 
 
-def set_position(ip, leg, target, lambd=5, max_iter=100, method=0):
+def set_position(ip, leg, target, lambd=0.25, max_iter=300, dmax=50):
     """
     ip: IP address of the desired naoqi
     leg: the leg to be actuated
@@ -144,6 +140,7 @@ def set_position(ip, leg, target, lambd=5, max_iter=100, method=0):
             break
 
         J = get_jacobian(leg, angles, joint_trans)
+        dX = dX if norm(dX) < dmax else (dmax * (dX / norm(dX)) )
 
         # Levenberg-Marquardt
         d_theta = (J.T * inv((J * J.T) + (lambd**2 * eye(3)))) * dX
@@ -176,7 +173,7 @@ def update_angles(angles, joints, theta, stand_joints, mp):
     end_effector_angles = dict(zip(joints, theta))
 
     for joint, angle in end_effector_angles.iteritems():
-        angles[joint] = angle
+        angles[joint] = angle[0, 0]
 
     # update the angles of the standing leg because they might've been changed
     # by a balance controller
@@ -220,3 +217,4 @@ def testing(ip):
     target_pos = matrix([[1], [1], [1]])
 
     return get_jacobian("RLeg", angles, joint_trans)
+
