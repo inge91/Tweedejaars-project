@@ -36,7 +36,7 @@ Our research is concerned with making a dynamic, closed
 loop stabilised kick for the Nao robot. The Nao is a humanoid robot made by
 Aldebaran Robotics\footnote{http://www.aldebaran-robotics.com/en/}. It is used in
 the Stand Platform League of the
-Robocup\footnote{http://wiki.robocup.org/wiki/Standard\_Platform\_League}, an organisation which organizes football (soccer)
+RoboCup\footnote{http://wiki.robocup.org/wiki/Standard\_Platform\_League}, an organisation which organizes football (soccer)
 competitions for autonomous robots.
 
 Kicking, of course, is an important part of football, and thus a good kick is vital to achieving good results in the Robocup. There are essentially two ways of making a humanoid robot kick a ball:
@@ -433,12 +433,12 @@ the balance controllers from the start.
 \subsubsection{Contact point}
 The contact point is the point on the ball that has to be hit by the Nao to
 move it in the desired direction. \cite{Xu2010} uses the following
-calculationt to find this, which seems to work exactly as we would like:
+calculation to find this, which seems to work exactly as we would like:
 \begin{align*}
     \vec{c} - ( \vec{e} * r )
 \end{align*}
-where $\vec{c}$is the location of the center of mass of the ball, $r$ is the
-ball radius(in the case of the SPL balls this is 33.42 mm) and $\vec{e}$ is the
+where $\vec{c}$ is the location of the center of mass of the ball, $r$ is the
+ball radius (in the case of the SPL balls this is 33.42 mm) and $\vec{e}$ is the
 force destination (the direction of where we want the ball to end up in
 coordinates).
 
@@ -499,8 +499,7 @@ Finding the accuracy of a given retraction point is less straightforward. This
 problem can be seen as the closeness of a given point to the line, where the
 point consists of a possible retraction point and the line consits of the
 contact point and the destination point. See Figure \ref{fig:accuracy} for a
-visualisation of the problem. This idea makes for a basic linear algebra
-\footnote{The intuition behind this calculation can be found on http://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html }
+visualisation of the problem. This idea makes for a basic linear algebra\footnote{The intuition behind this calculation can be found on http://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html }
 problem that needs to be resolved.
 \begin{align*}
     d_a = \frac{(||(\vec{p^{xy}} - p_c^{xy}) \times (\vec{p^{xy}} -
@@ -526,7 +525,7 @@ make the value $d_r$ and $d_a$ more in the same range. The value $\delta$  could
 be experimented with to find the optimal result.Accuracy is more important than a big distance between ball and
 retraction point, something that will become evident in the results section.
 
-All possible positions $\vec{p}$ should be considerd to solve this equation. To
+All possible positions $\vec{p}$ should be considered to solve this equation. To
 determine what is possible the Nao is set in different positions and using a
 forward kinematics chain the end effector of each leg in world space coordinates
 can be retrieved. This way roughly all possible positions are set and can be
@@ -673,15 +672,15 @@ Another future improvement is dealing with the slowness of the current
 implementations for some of the calculations. For instance, making hundreds of 
 iterations with our current Inverse Kinematics solver can cost multiple
 seconds to terminate.
-This is not an option when the Nao has to perform a kick in a Robocup match
+This is not an option when the Nao has to perform a kick in a RoboCup match
 as timing is crucial. This
-can be easily solved by rewriting all our code into c++ instead of python (the
+can be easily solved by rewriting all our code into C++ instead of Python (the
 language we use now). Although it is not certaint yet how much this will
 increase the speed, it will indeed do so.
 
 \subsection{Making code run on the Nao and within the DNT code} 
 As of now the code has only been tested while running stand-alone from our computers, but
-for the Robocup competiton it will need to run on the Naos themselves, next to all
+for the RoboCup competitrion it will need to run on the Naos themselves, next to all
 other processes. Because we
 made sure our balancing system works time variant, as spoken of in our report, this
 will be less of a problem as no parameter tweaking is necessary when using the
