@@ -319,7 +319,8 @@ the required joint angles. This is known as \emph{inverse kinematics}. There is
 a number of potential solutions to this problem, for example: 
 \begin{itemize}
 \item analytically solve the inverse kinematics chain using goniometry (as done by \cite{Graf2009})
-\item use a hillclimbing algorithm to approach the desired location over a number of iterations
+\item use an iterative algorithm to approach the desired location over a number
+  of iterations (\cite{Buss2009})
 \end{itemize}
 
 We wound up going with an iterative, Jacobian-based solution as decribed by
