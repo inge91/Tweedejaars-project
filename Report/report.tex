@@ -377,7 +377,6 @@ of different stages, loosely based on the approach of \cite{Xu2010}.
     \item Initial pose
     \item Retraction point
     \item Contact point
-    \item Fitting a Bezier curve
 \end{itemize}
 
 For all these stages we assume we have knowledge about the coordinates of the
@@ -493,10 +492,6 @@ looped thorugh to find the point that maximizes above equation. By also
 retrieving the location of the standing leg we make sure that there is
 no overlap in the reachable space and the position of the other leg.
 
-\subsubsection{Making a kick using the Bezier curve}
-now that we have 2 points which the Nao should use in space to place a kick,
-making a kick withou
-
 \section{Experiments and Results}
 
 \subsection{Inverse kinematics}
@@ -545,20 +540,6 @@ In each case, the optimal value for $\lambda$ was 5, while $D_{max}$ was either
 course, three tests isn't enough to conclusively determine the optimal
 parameters, but they offer a nice starting point for further practical testing.
 
-\section{Required materials and support} 
-To find a solution to our problem statement we need a Nao to experiment on and a
-possible simulation environment for at home. All of these materials are
-available in the robolab.
-
-Furthermore, there are different papers concerned with the problems we are
-trying to tackle, but none of them cover the whole problem statement, and not
-all are specifically about the Nao. For example we found a paper about
-calculating the center of mass for robots with multiple joints\cite{Cotton2008} but not tailored
-to the connection of joints of a  Nao robot.The difficulty for us is to put all this
-information together and to make it work specifically on the Nao, and to
-document this process at the same time. Most of the problems have been covered
-in previous courses, but it still will require some insight in achieving our set
-goals.
 
 \section{Conclusion}
 \begin{itemize}
