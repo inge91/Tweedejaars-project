@@ -66,7 +66,12 @@ important ones
 
 
 \section{Motivation for this project} 
-While the Dutch Nao Team (the team that represents the Netherlands in the Standard Platform League of the Robocup) has achieved some degree of success with simple keyframe motions, they are clearly not optimal; a lot of time is wasted positioning the robot at just the right angle relative to kick the ball towards the goal. Furthermore, if the ball gets moved after the kicking motion has started, it's impossible for the robot to correct its kicking path. These are all problems that can be reduced with a dynamically generated motion, which is why we will attempt to create one. If we succeed in our endeavour, the resulting kick will be integrated in the Dutch Nao Team's codebase. 
+While the Dutch Nao Team\cite{DNT2012} (the team that represents the Netherlands
+in the Standard Platform League of the Robocup) has achieved some degree of
+success with simple keyframe motions, they are clearly not optimal; a lot of
+time is wasted positioning the robot at just the right angle relative to kick
+the ball towards the goal. Furthermore, if the ball gets moved after the kicking
+motion has started, it is impossible for the robot to correct its kicking path. These are all problems that can be reduced with a dynamically generated motion, which is why we will attempt to create one. If we succeed in our endeavour, the resulting kick will be integrated in the Dutch Nao Team's codebase.
 
 Here are some more reasons why a dynamic kick is to preferred above keyframe
 kicks.
@@ -74,7 +79,7 @@ kicks.
 \subsection{Stability in a match}
 Since there is more than one player on
 the field  chasing after the ball,
-there is lots of interference from pushing Naos while trying to perform a kick. Due to the
+lots of interference can be expected pushing other Naos while trying to perform a kick. Due to the
 instability of the Nao this results in falling down quite often, even more
 so when there is no compensation for it when executing a motion. A dynamic
 kick keeps track of how stable Naos current position is and compensates for
@@ -85,6 +90,10 @@ not as expected or even fail. Using this dynamic system the temperature of the
 joints can be used to prevent overheating. The executed kick will depend less
 on force so the robot will spare its joints.
 
+\subsection{Harder kicks and better stability}
+Being able to define when a kick is stable enough to execute we can make a
+trade-off between how far the ball is kicked and the stableness of the
+robot, resulting in harder kicks then when using keyframe motions.
 
 \subsection{Helping the Dutch Nao Team}
  Working on this project will help the Dutch Nao Team in their competition. The
@@ -95,15 +104,16 @@ This integration makes this project a valuable activity in the long run, and not
 just a one time experiment that will not be further developed.
 
 \section{Methodology}
-The task of kicking a ball requires a couple of things: We need to find a path
+The task of kicking a ball requires a couple of things: We need to plan a path
 for the foot to travel, then we need a way to calculate the joint angles
 corresponding to the required position of the foot (inverse kinematics), and all
 the while we have to make sure the robot doesn't fall over.
 
 \subsection{Automatic balancing during the kicking motion}
 The Nao should be balanced during its kick, regardless of the motion of the
-kicking leg. For this a center of mass-based approach is used along with a
-proportional controller (\emph{cite wikipedia or something here}).
+kicking leg. For this a center of mass-based approach (\cite{Xu2010}) is used
+along with a proportional
+controller\footnote{http://www.societyofrobots.com/programming\_PID.shtml}.
 
 \subsubsection{Center of mass and support polygon}
 This balancing approach requires knowledge of 2 concepts; the \emph{center of mass},
@@ -492,6 +502,7 @@ looped through to find the point that maximizes above equation. By also
 retrieving the location of the standing leg we make sure that there is
 no overlap in the reachable space and the position of the other leg.
 
+
 \section{Experiments and Results}
 
 \subsection{Inverse kinematics}
@@ -660,7 +671,7 @@ jittering and not end up in the same position as requested}, the position was po
 In the end this was not as reliable as hoped due to the same issues as spoken in
 the last section.
 
-\subsection{Making a look-up table using Forward Kinematics}
+\subsection{Making a lookup-table using Forward Kinematics}
 Because at the time we needed to make the inverse kinematics work we already
 implemented a working forward kinematics, we thought about using only the
 forward kinematics to make a look-up table of all the angle settings belonging
