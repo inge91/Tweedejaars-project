@@ -4,6 +4,7 @@
 \usepackage{enumerate}
 \usepackage{amsmath}
 \usepackage{graphicx}
+\usepackage{tikz}
 \usetheme{Warsaw}
 
 \AtBeginSection[]
@@ -74,8 +75,114 @@
 \section{Inverse Kinematics}
 
 \section{Trajectory Planning}
+\begin{frame}{The different stages of a kick}
+    A kick consists of multiple stages
+    \begin{itemize}
+        \item Initial Pose
+        \item Contact Point
+        \item Retraction Point
+    \end{itemize}
+    We assume that ball position is given relative to the foot and the direction
+    is given as a position in space.
+\end{frame}
+
+\begin{frame}{Initial Pose}
+    \begin{itemize}
+        \item The first step in making a kick
+        \item normalPose in which the center of mass balancer is used to find
+            the most balanced position
+    \end{itemize}
+
+    \begin{figure}[htbp]
+      \centering
+      \makebox[\textwidth] {
+        \includegraphics[width=0.3\textwidth]{pics/nao_initial2.jpg}
+      }
+      \caption{Initial position of the Nao with left leg as support leg.}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Contact Point}
+    \begin{itemize}
+        \item The position in space where the foot of the Nao should hit the ball
+    \end{itemize}
+
+    \begin{align*}
+        \vec{c} - ( \vec{e} * r )
+    \end{align*}
+\end{frame}
 
 
+\begin{frame}{Retraction Point} 
+    \begin{itemize}
+        \item      The retraction point is the farthest point from which the kick commences.
+        \item      Distance
+        \item      Accuracy
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Retraction Point: Calculating the distance} 
+    We favour the distance the most in $x$ and $y$ direction, while keeping the
+    $z$ artificially high
+        \begin{align}
+        d_r = \vec{e}^{x} * || \vec{p}_{c}^{x} \dot \vec{p}^{x} || + \vec{e}^y * ||\vec{p}_{c}^z
+            \dot \vec{p}^z|| * 0.3
+        \end{align}
+\end{frame}
+
+\begin{frame}{Retraction Point: Calculating the accuracy}
+    
+\begin{figure}
+  \resizebox{\textwidth}{!} {
+    \begin{tikzpicture}
+        \coordinate [label=left:$\vec{p_c}$] (A) at (-2.5,0.2);
+        \coordinate [label=right:$\vec{f_d}$] (B) at (5, 0 );
+        \coordinate [label=right:$d_a$] (F) at (-7, 1.25);
+        \coordinate [label=above:$\vec{c}$](C) at (0,0);
+        \coordinate (D) at (-2.5, 0);
+        \coordinate [label=left:$\vec{p}$] (E) at (-7, 2.5);
+        \draw[line width = 2][color = red] (0,0) circle (2.5cm);
+        \draw [style = thick][line width = 1.5][->](-8, 0) -- (B);
+        \draw[dashed] (E) -- (-7,0);
+        \foreach \point in {C,D,E}
+        \fill [black,opacity=1] (\point) circle (2pt);
+    \end{tikzpicture}
+    }
+    \label{fig:accuracy}
+\end{figure}    
+    \begin{align*}
+        d_a = \frac{||(\vec{p^{xy}} - p_c^{xy}) \times (\vec{p^{xy}} -
+        \vec{f_d})||}{\|\vec{f_d^{xy}}- \vec{p_c^{xy}}\|}
+    \end{align*}
+\end{frame}
+
+
+\begin{frame}{Retraction Point: Making the trade-off}
+\begin{align*}
+    \vec{p} = 1-\delta * d_r + \delta * \frac{100}{d_a}
+\end{align*}
+
+\begin{itemize}
+    \item $\delta$ chosen rather high
+    \item all points $\vec{p}$ are points in a range around the Naos leg in
+        the initialpose. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Results}
+\begin{figure}[htbp]
+  \centering
+  \makebox[\textwidth] {
+    \includegraphics[width=0.8\textwidth]{pics/retract.pdf}
+  }
+  \caption{Visualistation of relevance of all tried retraction point. The red
+      point is the finally used point. The red asterisk is the contact point. In
+      tis case the ball should be kicked straight forward.
+         }
+  \label{fig:retraction_plot1}
+\end{figure}
+\end{frame}
 \section{Conclusion and future works}
 
 \end{document}
