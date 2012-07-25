@@ -71,7 +71,7 @@ def find_point(ball_loc, direction, kick_positions, positions):
 
 
 # the function that evaluates the best possible retraction point
-def retractionPoint(ball_loc, point, direction, t, delta = 0.001 ):
+def retractionPoint(ball_loc, point, direction, t, delta = 0.999):
     """ball_loc is the location of the ball, direction is a vector in a direction to
     kick the ball to"""
     # ball radius is given in meters
@@ -96,11 +96,12 @@ def g(point, contact_point, force_direction, ball_loc, t):
     #    np.linalg.norm(force_direction[:2]))
     direction = force_direction
     force_direction = force_direction + contact_point
+    direction = force_direction
     distance = np.linalg.norm(np.cross(point[:2] - contact_point[:2], point[:2] -
         force_direction[:2], 0 , 0)) / np.linalg.norm(abs(force_direction[:2] -
             contact_point[:2]))
     #the smaller the distance, the bigger the number
-    distance = 0.1 / distance
+    distance = 100 / distance
 
     retract_distance_x = math.sqrt(np.vdot(contact_point[0] - point[0],
         contact_point[0] - point[0]))
