@@ -739,6 +739,24 @@ Using the angle of the \emph{AnkleRoll} and \emph{AnklePitch} in the initial
 pose deliverss a more natural position as can be seen in \ref{} 
 
 \section{Conclusion}
+Although the individual components mostly work as planned, integrating them all
+into an actual kick has proven harder than expected, which has left us unable to
+test the interactions between all of the components. For instance, using only the hip to
+compensate for balance is effective in the sense that it's good at balancing,
+but it results in poses where the kicking leg is unable to reach even near the
+ground. Using the ankle however works just as well for balance, and doesn't
+suffer from the same problem. Unfortunately, there was no time for further testing
+in this regard.
+
+Generation of the kick trajectory appears to work properly, although it hasn't
+been thoroughly tested (only in a few directions) due to time
+contraints. Similarly, there is no data regarding the strength or stability of
+the kick, simply because there is no final kick yet.
+
+In the end, we've ended up with a nice motion framework which needs a bit more
+work in order to have a completely functioning kick, which will hopefully function
+as a basis for further motion-related tasks for the Dutch Nao Team (such as a
+new walking motion).
 
 \subsection{The retractionpoint} 
 The above experimentations  with finding a retractionpoint while making a
