@@ -481,10 +481,9 @@ the size of the ball to hit and which way we want to kick the ball.
 
 \subsubsection{Initial pose}
 The first stage is the initial pose. The Nao is positions its center of mass on
-top of its standing leg and lowers his center of mass so as to get a more stable
-position while performing his kick. This stage still makes use of the  keyvalues as 
-it makes for a smoother transition to the kicking motion, without having to rely on 
-the balance controllers from the start. 
+top of its standing leg. This is done by setting the Nao in NormalPose (a
+keyframe motion made by the Dutch Nao Team) and
+turning on the CoM-balancer.
 
 \subsubsection{Contact point}
 The contact point is the point on the ball that has to be hit by the Nao to
@@ -514,10 +513,11 @@ the two.
 Firstly, to determine the point between the ball and a possible retraction point
 we use the following calculation: 
 
-\begin{align*}
+\begin{align}
 d_r = \vec{e}^{x} * || \vec{p}_{c}^{x} \dot \vec{p}^{x} || + \vec{e}^y * ||\vec{p}_{c}^z
     \dot \vec{p}^z|| * 0.3
-\end{align*}
+\ref{eq:distance}
+\end{align}
 
 Where $\vec{p_c}$ is the contact point where the ball should be hit,
 $\vec{p}$ is a possible retraction point, $\vec{e}$ is theunit vector pointing
@@ -686,9 +686,9 @@ the result as can be seen in \ref{fig:retraction_plot2}. It is the most
 accurate point given a list of possible elements. 
 
 Although there is another good point (at approximate (-60, -140)) it is nearly
-impossbile to get this value as the most optimal point. When lowering the
+impossbile to get this value as the chosen optimal point. When lowering the
 $\delta$ value even slightly it changes the distance drastically in the x
-direction.
+direction, making the trade-off possiblities less than imagined.
 
 \begin{figure}[htbp]
   \centering
@@ -702,11 +702,47 @@ direction.
   \label{fig:retraction_plot2}
 \end{figure}
 
-This gives the presumption that the calculations used work quite well with this
-value for $\delta$ but more experimentations are needed to be certain.
+Another visualisation can be seen in Figure  \ref{fig:retraction_plot3}. In this
+case the ball should be kicked straight ahead ( direction = $\begin{bmatrix} 1 \\  0 \\ 0 \end{bmatrix}$). All blue dots are evaluatedretraction points and the red stars are the points that are the most
+accurate(all have the same value). The data is set out over the $xy$ axis, which
+is the added length of the $x$ and $y$ direcition, the $z$ axis and the
+$distance$ is the distance as we measure it in \ref{eq:distance }  between contact point and the ball. The fact that sometimes multiple of the same $xy$ and $z$
+combinations have different distances to the contact point is to understand from
+the fact that although in the axis both the real value of x and y are added to
+eachother \ref{eq:distance} only considers the value of $x$ when the ball should go
+straight ahead.
+
+\begin{figure}[htbp]
+  \centering
+  \makebox[\textwidth] {
+    \includegraphics[width=1\textwidth]{pics/uglyplot.pdf}
+  }
+  \caption{
+         }
+  \label{fig:retraction_plot3}
+\end{figure}
+
+\subsection{Integration of the balancers with the kick}
+Because of the limited ranges of both legs when it comes to reaching a ball we
+would like the Nao to stand straight as much as possible while performing a kick. 
+When executing the initial pose we use the CoM balancer to seek the most
+balanced position, but it makes a lot of difference as to which joints in the
+support leg are used for balance. At first we experimented  with the
+\emph{HipRoll} and \emph{HipPitch} to move to the most stable position. This
+however made for quite an unnatural pose.\ref{} 
+
+Using the angle of the \emph{AnkleRoll} and \emph{AnklePitch} in the initial
+pose deliverss a more natural position as can be seen in \ref{} 
 
 \section{Conclusion}
 
+\subsection{The retractionpoint} 
+The above experimentations  with finding a retractionpoint while making a
+trade-off between accuracy and distance seems to conclude that the retraction calculation
+works as was expected for the basic cases. Due to time constraints, and the fact
+that less straightforward kicks are hard to visualise on a graph there are still
+cases left out, but it already makes for a succesful kick in the most basic of
+situations.
 
 \section{Discussion}
 Although the problem of making a dynamic kick has been solved by various teams
