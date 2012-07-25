@@ -7,6 +7,7 @@
 \usepackage{placeins}
 \usepackage{algpseudocode}
 \usepackage{algorithm}
+\usepackage{subfigure}
 
 \begin{document}
 
@@ -708,7 +709,7 @@ Another visualisation can be seen in Figure  \ref{fig:retraction_plot3}. In this
 case the ball should be kicked straight ahead ( direction = $\begin{bmatrix} 1 \\  0 \\ 0 \end{bmatrix}$). All blue dots are evaluatedretraction points and the red stars are the points that are the most
 accurate(all have the same value). The data is set out over the $xy$ axis, which
 is the added length of the $x$ and $y$ direcition, the $z$ axis and the
-$distance$ is the distance as we measure it in \ref{eq:distance }  between contact point and the ball. The fact that sometimes multiple of the same $xy$ and $z$
+$distance$ is the distance as we measure it in \ref{eq:distance}  between contact point and the ball. The fact that sometimes multiple of the same $xy$ and $z$
 combinations have different distances to the contact point is to understand from
 the fact that although in the axis both the real value of x and y are added to
 eachother \ref{eq:distance} only considers the value of $x$ when the ball should go
@@ -731,10 +732,29 @@ When executing the initial pose we use the CoM balancer to seek the most
 balanced position, but it makes a lot of difference as to which joints in the
 support leg are used for balance. At first we experimented  with the
 \emph{HipRoll} and \emph{HipPitch} to move to the most stable position. This
-however made for quite an unnatural pose.\ref{} 
+however made for quite an unnatural pose, as you can see in Figure
+\ref{fig:subfig}. Because executing a kick only uses the kicking leg, it can
+reach less of the relevant places. 
 
+\begin{figure}[ht]
+\centering
+
+\subfigure[Using the \emph{HipRoll} and \emph{HipPitch} to balance the Nao]{
+   \includegraphics[width = 0.4 \textwidth] {pics/nao_initial1.jpg}
+   \label{fig:subfig1}
+ }
+
+ \subfigure[Using the \emph{AnklePitch} and \emph{AnkleRoll} to balance the Nao]{
+   \includegraphics[width = 0.4 \textwidth] {pics/nao_initial2.jpg}
+   \label{fig:subfig2}
+ }
+
+\label{myfigure}
+\caption{Experimentation with the influence of joint choice on the balancer}
+\end{figure}
 Using the angle of the \emph{AnkleRoll} and \emph{AnklePitch} in the initial
-pose deliverss a more natural position as can be seen in \ref{} 
+pose delivers a more natural position as seen in Figure \ref{fig:subfig2},
+which makes it a better deicision for the initial pose. 
 
 \section{Conclusion}
 
@@ -814,7 +834,6 @@ To determine the range of the legs we took the Nao by hand and set the legs in
 the most stretched positions and used \emph{getPosition} to retrieve the
 maximum and minimum $x$ ,$y$ and $z$ values.  These were taken as absolute
 ranges relative to a starting position; the DNT-normalpose.
-
 In the end this approach didn't work as making a request for the current
 position as well as setting a new position in this coordinate frame was not
 reliable enough. It seemed that the sensor values used to find these positions
