@@ -84,7 +84,7 @@ which give a constant reading of the current pressure on each of the sensors.
 
 Figure \ref{fig:hardware} shows the way in which the coordinate system works that we
 apply in our report. The x-axis point to the fron of the Nao, while the y-axis
-points to the side and the z-axis upwards. All mentions of these eaxis in this
+points to the side and the z-axis upwards. All mentions of these axis in this
 report will be around this same coordinate frame.
 
 
@@ -95,7 +95,9 @@ in the Standard Platform League of the Robocup) has achieved some degree of
 success with simple keyframe motions, they are clearly not optimal; a lot of
 time is wasted positioning the robot at just the right angle relative to kick
 the ball towards the goal. Furthermore, if the ball gets moved after the kicking
-motion has started, it is impossible for the robot to correct its kicking path. These are all problems that can be reduced with a dynamically generated motion, which is why we will attempt to create one. If we succeed in our endeavour, the resulting kick will be integrated in the Dutch Nao Team's codebase.
+motion has started, it is impossible for the robot to correct its kicking path.
+These are all problems that can be reduced with a dynamically generated motion,
+which is why we attempted to create one. 
 
 Here are some more reasons why a dynamic kick is to preferred above keyframe
 kicks.
@@ -103,7 +105,7 @@ kicks.
 \subsection{Stability in a match}
 Since there is more than one player on
 the field  chasing after the ball,
-lots of interference can be expected pushing other Naos while trying to perform a kick. Due to the
+lots of interference can be expected from pushing Naos while trying to perform a kick. Due to the
 instability of the Nao this results in falling down quite often, even more
 so when there is no compensation for it when executing a motion. A dynamic
 kick keeps track of how stable Naos current position is and compensates for
@@ -121,7 +123,8 @@ robot, resulting in harder kicks then when using keyframe motions.
 
 \subsection{Helping the Dutch Nao Team}
  Working on this project will help the Dutch Nao Team in their competition. The
-current keyframe motion used by DNT is very brittle, with our dynamic kick we will create a
+current keyframe motion used by DNT is very brittle, with our dynamic kick we
+create a
 more robust kick that can give our universities team a bigger chance of
 winning in competitions. 
 This integration makes this project a valuable activity in the long run, and not
@@ -171,7 +174,7 @@ The CoM is calculated relative to the standing leg's ankle joint, and we define
 the center of the support polygon to be ``about 3cm in front of that''. Thus the
 error-calculation becomes:
 \begin{align}
-  \begin{bmatrix} error_x \\ error_y \end{bmatrix} = \begin{bmatrix} 3 \\ 0 \end{bmatrix} - \vec{CoM_{xy}} \\
+  \begin{bmatrix} error_x \\ error_y \end{bmatrix} = \begin{bmatrix} 3 \\ 0 \end{bmatrix} - \vec{CoM_{xy}} 
 \end{align}
 The Z-axis is ignored, because the height is irrelevant in this case (the CoM
 balancer only accounts for gravity, not other phenomena such as momentum).
@@ -205,7 +208,7 @@ $\mathcal{O}(2^n)$ in amount of actuated joints.
 
 \subsection{Using force-sensitive resistors to keep balance}
 
-Although the balancing using the Center Of Mass allows a good conversion to a
+Although the Center Of Mass balancing allows for good convergence to a
 stable position, it does not react to external influences.
 Using the force-sensitive resistors under Nao's feet these external influences can be measured and neutralized.
 \begin{figure}[htb]
@@ -561,8 +564,8 @@ contact point and the destination point. See Figure \ref{fig:accuracy} for a
 visualisation of the problem. This idea makes for a basic linear algebra\footnote{The intuition behind this calculation can be found on http://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html }
 problem that needs to be resolved.
 \begin{align*}
-    d_a = \frac{||(\vec{p^{xy}} - p_c^{xy}) \times (\vec{p^{xy}} -
-    \vec{f_d})||}{\|\vec{f_d^{xy}}- \vec{p_c^{xy}}\|}
+    d_a = \frac{||(\vec{p}^{xy} -\vec{p_c}^{xy}) \times (\vec{p}^{xy} -
+    \vec{f_d}^{xy})||}{\|\vec{f_d}^{xy}- \vec{p_c}^{xy}\|}
 \end{align*}
 
 The distance to the line is only important in the $xy$ direction, but a cross

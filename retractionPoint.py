@@ -161,8 +161,10 @@ def test_retraction(ip, kicking_leg, direction, lambd=5, dmax=50):
     #time.sleep(3)
     joints = []
     angles = []
+    contact_point = np.matrix(contact_point).T
+    contact_point -=30
     angle_list = ik_jacobian.set_position(ip, kicking_leg,
-                                          np.matrix(contact_point).T,
+                                          contact_point,
                                           lambd=lambd, dmax=dmax)
     for joint in angle_list:
         joints = joints + [joint]

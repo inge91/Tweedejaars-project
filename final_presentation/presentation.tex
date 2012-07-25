@@ -5,6 +5,7 @@
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{tikz}
+\usepackage{subfigure}
 \usetheme{Warsaw}
 
 \AtBeginSection[]
@@ -40,6 +41,24 @@
     \item potentially harder
     \item supporting the Dutch Nao Team
   \end{itemize}
+\end{frame}
+
+\section{The Nao}
+\begin{frame}{The Nao}
+    \begin{itemize}
+        \item A 58 cm tall humanoid robot with 21 degrees of freedom
+        \item Made by Aldebaran Robotics and used in the SPL robosoccer league
+        \item Has foot sensors that are able to measure pressure
+        \item fixed coordinate system that we use
+    \end{itemize}
+
+    \begin{figure}[htb]
+        \centering
+        \includegraphics[scale=0.3]{pics/hardware_inertialunit.png}
+        \label{fig:hardware}
+        \caption{A schematic drawing of the Nao, showing his axis}
+    \end{figure}
+    
 \end{frame}
 
 \section{Balancing}
@@ -250,10 +269,10 @@ mass unto the ground lies within its support polygon
     }
     \label{fig:accuracy}
 \end{figure}    
-    \begin{align*}
-        d_a = \frac{||(\vec{p^{xy}} - p_c^{xy}) \times (\vec{p^{xy}} -
-        \vec{f_d})||}{\|\vec{f_d^{xy}}- \vec{p_c^{xy}}\|}
-    \end{align*}
+\begin{align*}
+    d_a = \frac{||(\vec{p}^{xy} -\vec{p_c}^{xy}) \times (\vec{p}^{xy} -
+    \vec{f_d}^{xy})||}{\|\vec{f_d}^{xy}- \vec{p_c}^{xy}\|}
+\end{align*}
 \end{frame}
 
 
@@ -283,5 +302,45 @@ mass unto the ground lies within its support polygon
 \end{figure}
 \end{frame}
 \section{Conclusion and future works}
+
+\begin{frame}{Results}
+
+\begin{figure}[htbp]
+  \centering
+  \makebox[\textwidth] {
+    \includegraphics[width=1\textwidth]{pics/retract3.pdf}
+  }
+  \caption{Visualistation of relevance of all tried retraction point. The red
+      point is the finally used point, the red asterisk is the contact point. 
+      In this case the ball is kicked with an 45 degree angle to the left.
+         }
+  \label{fig:retraction_plot2}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Results}
+    
+\begin{figure}[htbp]
+  \centering
+  \makebox[\textwidth] {
+    \includegraphics[width=1\textwidth]{pics/uglyplot.pdf}
+  }
+  \caption{
+         }
+  \label{fig:retraction_plot3}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Results}
+    \begin{figure}[h]
+        \subfigure{
+           \includegraphics[width = 0.4\textwidth] {pics/nao_initial1.jpg}
+         }
+         \subfigure{
+           \includegraphics[width = 0.4\textwidth] {pics/nao_initial2.jpg}
+         }
+    \end{figure}
+\end{frame}
 
 \end{document}
