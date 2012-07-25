@@ -66,7 +66,32 @@
 \end{frame}
 
 \subsection{Center of Mass Controller}
+\begin{frame}{Center of Mass}
+  \begin{block}{Balance}
+    A humanoid body is balanced when the projection of its center of
+mass unto the ground lies within its support polygon
+  \end{block}
+  Center of mass:
+  \begin{align*}
+    \frac{\sum_i \vec{c}_i m_i}{M}
+  \end{align*}
+  Support polygon:
+  \begin{itemize}
+    \item the convex hull of the contact points with the ground
+    \item in case of a robot standing on one leg: the center of its foot
+  \end{itemize}
+\end{frame}
 
+\begin{frame}{P-Controller}
+  \begin{itemize}
+    \item CoM calculated through forward kinematics
+    \item Uses a simple P-Controller
+    \begin{itemize}
+      \item seperate for the forwards and sideways directions
+    \end{itemize}
+    \item Actuation in ankle pitch and roll
+  \end{itemize}
+\end{frame}
 
 % Richard, geef het een leuke titel
 \subsection{Foot-sensor thing}
