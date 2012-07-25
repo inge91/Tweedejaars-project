@@ -204,14 +204,14 @@ $\mathcal{O}(2^n)$ in amount of actuated joints.
 
 \subsection{Using force-sensitive resistors to keep balance}
 
-Although balancing using the Center Of Mass allows a good conversion to a
+Although the balancing using the Center Of Mass allows a good conversion to a
 stable position, it does not react to external influences.
-Using the force-sensitive resistors under Naos feet these external influences can be measured and neutralized.
-\begin{figure}[htb] 
+Using the force-sensitive resistors under Nao's feet these external influences can be measured and neutralized.
+\begin{figure}[htb]
 	\centering
 	\includegraphics[scale=0.75]{pics/naosfeet.jpg}
 	\label{fig:fsr_plot}
-	\caption{The force-sensitive resistors under Nao's feet}
+	\caption{The force-sensitive resistors}
 \end{figure}\\
 The foot of the support leg will be divided into four sections (Front, Left, Right and Back). 
 \begin{itemize}
@@ -226,7 +226,7 @@ Where $s$ is the smoothing parameter and $t$ is the present time.
 
 The Proportional-Derivative controller (PD-controller) is a special case of the
 Proportional-Integral-Derivative controller (PID controller) where the integral
-term (I) is not used.  The PD-controller has 2 terms the proportional (P) and
+term (I) is not used.  The PD-controller has 2 terms, the proportional (P) and
 the derivative (D) term. The response of each term can be tweaked using their own tweaking parameter, the proportional gain $K_p$ and the derivative gain $K_d$. \\
 The proportional term is given by:
 \[
@@ -240,70 +240,78 @@ The Hip Pitch is used to compensate for the error in the $x$ direction (Front
 and Back) while the Hip Roll compensates for the error in the $y$ direction (Right and Left).
 The angle offsets for the hip joints are calculated by
 \begin{itemize}
-    \item $P_{out} x = (Front_t - Back_t) * K_p$
-    \item $P_{out} y = (Right_t - Left_t) * K_p$
-    \item $D_{out} x = \frac{Front_t - Back_t}{timeTaken}K_d$
-    \item $D_{out} y = \frac{Right_t - Left_t}{timeTaken}K_d$
+    \item $e(t)_x = (Front_t - Back_t)$
+    \item $e(t)_y = (Right_t - Left_t)$
+    \item $P_{out} x = e(t)_xK_p$
+    \item $P_{out} y = e(t)_yK_p$
+    \item $D_{out} x = \frac{e(t)_x - e(t-1)_x}{timeTaken}K_d$
+    \item $D_{out} y = \frac{e(t)_y - e(t-1)_y}{timeTaken}K_d$
     \item  $Offset$ $Hip$ $Pitch$ $= P_{out}x + D_{out}x$ 
     \item $Offset$ $Hip$ $Roll$ $=  P_{out}y + D_{out}y$ 
 \end{itemize}
+Where $timeTaken = time_t - time_{t-1}$(the time taken between the current and previous execution).\\\\
+Using an error band to allow a range of stable points and therefore better conversion. Without this range the robot would diverge and finally fall due to the oscillation. When the error is within this range it will be set to 0, this allows the robot to converge to a stable position. Due to the robots build the forward and sideways stabilization act differently, separate error bands for x and y are therefore needed. The function of the proportional term becomes;
 Where $timeTaken = time_t - time_{t-1}$(the time taken between the current and previous execution) .\\\\
 Using an error band to allow a range of stable points and therefore better
 conversion. Without this range the robot would diverge and finally fall due to
 the oscillation. When the error is within this range it will be set to 0, this
 allows the robot to converge to a stable position. Due to the robots build the
 forward and sideways stabilization act differently, different error bands are
-needed for either side. The function of the proportional term becomes
+needed for either side. The function of the proportional term becomes;
 \[
   P_{out}x = \left\{ 
   \begin{array}{l l}
-     (Front_t - Back_t)K_p& \quad \text{if $Thres_{min X} < (Front_t - Back_t) < Thres_{max X}$}\\ 
+     e(t)_xK_p& \quad \text{if $e(t)_x < Thres_{min X}$ or $e(t)_x > Thres_{max X}$}\\ 
      0& \quad \text{Otherwise}\\
   \end{array} \right.
 \]
 \[
   P_{out}y = \left\{ 
   \begin{array}{l l}
-     (Right_t - Left_t)K_p& \quad \text{if $Thres_{min Y} < (Front_t - Back_t) < Thres_{max Y}$}\\ 
+      e(t)_yK_p& \quad \text{if $e(t)_y < Thres_{min Y}$ or $e(t)_y > Thres_{max Y}$}\\ 
      0& \quad \text{Otherwise}\\
   \end{array} \right.
 \]
 Where $Thres_{min}$ is the lower bound of the error band and $Thres_{max}$ is the upper bound
 and $K_p$ is the  first tweak parameter of the PD-controller.\\
 $Thres_{min X} = -Thres_{max X}$ and
-$Thres_{min Y} = -Thres_{max Y}$
+$Thres_{min Y} = -Thres_{max Y}$.
 \[
   D_{out}x = \left\{ 
   \begin{array}{l l}
-      \frac{Front_t - Back_t}{timeTaken}K_d& \quad \text{if $Thres_{min X} < (Front_t - Back_t) < Thres_{max X}$}\\ 
+      \frac{e(t)_x - e(t-1)_x}{timeTaken}K_d& \quad \text{if $e(t)_x < Thres_{min X}$  or $e(t)_x > Thres_{max X}$}\\ 
      0& \quad \text{Otherwise}\\
   \end{array} \right.
 \]
 \[
   D_{out}y = \left\{ 
   \begin{array}{l l}
-     \frac{Right_t - Left_t}{timeTaken}K_d& \quad \text{if $Thres_{min Y} < (Front_t - Back_t) < Thres_{max Y}$}\\ 
+     \frac{ e(t)_y - e(t-1)_y}{timeTaken}K_d& \quad \text{if $e(t)_y < Thres_{min Y}$ or $e(t)_y > Thres_{max Y}$}\\ 
      0& \quad \text{Otherwise}\\
   \end{array} \right.
 \]
 
-\subsubsection{Sampling Rate Issues (needs work)}
+\subsubsection{Sampling Rate Issues}
 
-timing-independant compensation architectur¨
-time scaling, realtime conversion, instruction clock compensation
+When using the balancer as it is now, requires different parameters for every sampling rate.
+Since the sampling rate is determent by the available CPU power, a fix is needed that will added the sampling rate in the calculation.
+Doing this allows the same parameters to be used regardless of the background processes or CPU type.
+The follow fix is applied:
+\begin{itemize}
+	\item $Offset$ $Hip$ $Pitch$ $= (P_{out}x + D_{out}x) * timeTaken $ 
+	\item $Offset$ $Hip$ $Roll$ $=  (P_{out}y + D_{out}y) * timeTaken$ 
+\end{itemize}
+With this fix the angle offsets will be relative to $timeTaken$, giving a bigger offset when the time between the executions is larger and vice versa.
+This gives us a timing-independent compensation architecture which adapts to the available CPU power.
 
-Making the sensitivity and thresholds dynamic will allow keeping the power per second ratio and therefore making the script invariant to the CPU’s power availability.\\
-$K_p$, $K_d$, $Thres_{min X}$ and $Thres_{min Y}$ multiplied by $timeTaken$\\
-Giving an error at TimeTaken of n and an error of n/2 at TimeTaken/2 this linear relation allows us to adapt to any giving CPU power availability using the same parameters. 
-
-\subsection{The setup error}
+\subsubsection{The setup error}
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{pics/startupError.jpg}
 	\label{fig:startup_error_plot}
 	\caption{The startup error (needs new plot!)}
 \end{figure} 
-As the script runs the first measurements of TimeTaken are relative big in some cases even a factor 100 from the normal values as seen in Figure ~\ref{fig:startup_error_plot} . This big value will change the angles in such a way the robot will overshoot and possibly even fall.
+As the script runs the first measurements of TimeTaken are relative big in some cases even a factor 100 from the normal values as seen in Figure ~\ref{fig:startup_error_plot}. This big value will change the angles in such a way the robot will overshoot and possibly even fall.
 Therefore disregarding these values will be necessary, adding a low-pass filter to $\nabla TimeTaken$ allows finding these measurements. When the threshold of the low-pass filter has been exceeded the angle offsets will be set to 0, ignoring the large values.
 \[
   Offset Hip Pitch = \left\{ 
@@ -321,22 +329,6 @@ Therefore disregarding these values will be necessary, adding a low-pass filter 
   \end{array} \right.
 \]
 Where $Thres_{low-pass}$ is the threshold value for the low-pass filter.
-
-\subsubsection{Manual tuning  (weet nog niet of dit erin moet)}
-
-The parameters\\\\
-Increasing $s$ will cause blablabla\\
-$K_p$\\
-$K_d$\\
-$Thres_{max X}$\\
-$Thres_{max Y}$\\
-$Thres_{low-pass}$
-
-\subsubsection{Results}
-
-*picture from a Nao pushing the balancing Nao (the test environment)*\\\\
-*plot with balancer off*\\\\
-*plot with balancer on*
 
 \subsection{The kinematics problem}
 \label{sec:ik}
@@ -599,6 +591,18 @@ no overlap in the reachable space and the position of the other leg.
 
 
 \section{Experiments and Results}
+
+\subsection{Using force sensitive resistors for balancing}
+*picture from a Nao pushing the balancing Nao (the test environment)*\\\\
+*plot with balancer off*\\\\
+*plot with balancer on*\\\\
+As seen in the plots .....\\\\
+Due to Nao's build, sideways balancing is quite the challenge.
+The problem is that there aren't many stable poses in the sideways direction and even a small change will have a relative large influence on the sensor data.
+Due to this the sideways balancing tends to overshoot and then start to oscillate.
+Taking a low $K_p$ and $K_d$ values gives a long settling time but minimizes the overshoot.  
+The system now converges relative slow to a stable position but is still able to negate external influences, providing a more stable and reliable balancer. 
+
 \subsection{Inverse kinematics}
 \FloatBarrier
 Since our inverse kinematics solution relies on two parameters
