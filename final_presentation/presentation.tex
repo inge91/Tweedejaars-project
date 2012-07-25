@@ -1,0 +1,80 @@
+\documentclass{beamer}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{enumerate}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usetheme{Warsaw}
+
+\AtBeginSection[]
+{
+  \begin{frame}
+    \frametitle{Table of Contents}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\begin{document}
+\title{Designing a dynamic kick for a Nao robot}
+\author{Inge Becht \\ Maarten de Jonge \\ Richard Pronk}
+\institute{University of Amsterdam}
+\date{\today}
+
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\section{Goal}
+\begin{frame}{Goal}
+  \begin{itemize}
+    \item Creating a dynamic kick instead of a keyfrome motion
+    \item Handle external forces without falling
+  \end{itemize}
+  \pause
+  Benefits:
+  \begin{itemize}
+    \item more stable
+    \item omnidirectional
+    \item potentially harder
+    \item supporting the Dutch Nao Team
+  \end{itemize}
+\end{frame}
+
+\section{Balancing}
+\begin{frame}{Balancing}
+  Two components:
+  \begin{itemize}
+    \item staying balanced during kick trajectory
+    \item react to external forces
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Proportional-integral-derivative controller}
+  Both components use a variant of the PID controller:
+  \begin{align*}
+    out(t) = K_p e(t) + K_i \int_{0}^{t} e(\tau) d\tau + K_d \frac{d}{dt} e(t)
+  \end{align*}
+\end{frame}
+
+\begin{frame}{Stripping it down}
+  PD- and P-controller:
+  \begin{align*}
+    out(t) &= K_p e(t) + K_d \frac{d}{dt} e(t) \\
+    out(t) &= K_p e(t)
+  \end{align*}
+\end{frame}
+
+\subsection{Center of Mass Controller}
+
+
+% Richard, geef het een leuke titel
+\subsection{Foot-sensor thing}
+
+\section{Inverse Kinematics}
+
+\section{Trajectory Planning}
+
+\section{Conclusion and future works}
+
+\end{document}
