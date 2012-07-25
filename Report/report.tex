@@ -528,6 +528,7 @@ more imbalance and takes up more time. The retraction n the x and y direction
 however enable a more accurate and harder kick.
 
 \begin{figure}
+  \resizebox{\textwidth}{!} {
     \begin{tikzpicture}
         \coordinate [label=left:$\vec{p_c}$] (A) at (-2.5,0.2);
         \coordinate [label=right:$\vec{f_d}$] (B) at (5, 0 );
@@ -541,6 +542,7 @@ however enable a more accurate and harder kick.
         \foreach \point in {C,D,E}
         \fill [black,opacity=1] (\point) circle (2pt);
     \end{tikzpicture}
+    }
     \caption{Visualisation of the accuracy problem. \small{the contact point
             ($\vec{p_c}$) and the preferable force direction ($\vec{f_d}$) form a line
     in 3D space. A possible retraction point $\vec{p}$ can be somewhere around
