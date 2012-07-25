@@ -43,24 +43,6 @@
   \end{itemize}
 \end{frame}
 
-\section{The Nao}
-\begin{frame}{The Nao}
-    \begin{itemize}
-        \item A 58 cm tall humanoid robot with 21 degrees of freedom
-        \item Made by Aldebaran Robotics and used in the SPL robosoccer league
-        \item Has foot sensors that are able to measure pressure
-        \item fixed coordinate system that we use
-    \end{itemize}
-
-    \begin{figure}[htb]
-        \centering
-        \includegraphics[scale=0.3]{pics/hardware_inertialunit.png}
-        \label{fig:hardware}
-        \caption{A schematic drawing of the Nao, showing his axis}
-    \end{figure}
-    
-\end{frame}
-
 \section{Balancing}
 \begin{frame}{Balancing}
   Two components:
@@ -344,5 +326,20 @@ mass unto the ground lies within its support polygon
 \end{frame}
 \section{Conclusion and future works}
 
+\begin{frame}{Conclusion}
+  \begin{itemize}
+    \item Individual components are mostly working
+    \item Balancing works really well, especially when using the ankle joints
+    \item Not enough time to integrate everything into a proper kick
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Future works}
+  \begin{itemize}
+    \item fix the remaning issues
+    \item port everything to C++
+    \item integrate into Dutch Nao Team code
+  \end{itemize}
+\end{frame}
 
 \end{document}
