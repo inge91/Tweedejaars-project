@@ -97,6 +97,80 @@ mass unto the ground lies within its support polygon
 \subsection{Foot-sensor thing}
 
 \section{Inverse Kinematics}
+\begin{frame}{Introduction}
+  Forward kinematics: Given a set of joint angles, where are the end effectors?
+  
+  Inverse kinematics: Given desired locations for the end effectors, what is the
+  corresponding set of joint angles?
+\end{frame}
+
+\begin{frame}{Terminology}
+  Let:
+  \begin{itemize}
+  \item $\theta$ be a $1 \times n$ vector describing the angles of $n$ joints
+  \item $\vec{t}$ the vector containing the goal position for each end effector
+  \item $\vec{s}$ the vector of the end effectors' current positions
+  \item $\vec{e} = \vec{t} - \vec{s}$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Forwards and backwards}
+  Viewing end effector locations as a function of the joint angles, we want:
+  \begin{align*}
+    \vec{t} = \vec{s}(\theta)
+  \end{align*}
+
+  \begin{itemize}
+    \item not always solvable
+    \item can be approached iteratively
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Linear approximation}
+  \begin{itemize}
+  \item Use the first-order derivative of the end effector locations with
+    respect to the joint angles as a linear approximation
+  \item known as the \emph{Jacobian}
+  \end{itemize}
+  \begin{block}{The Jacobian}
+    \begin{align*}
+      J(\theta)_{i, j} &= \frac{\partial s_i}{\partial \theta_j} \\
+      \frac{\partial s_i}{\partial \theta_j} &= v_j \times (s_i - p_j)
+    \end{align*}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Iterative solution}
+  Linear approximation:
+  \begin{align*}
+    \Delta \vec{s} = J \Delta\theta
+  \end{align*}
+  We're interested in:
+  \begin{align*}
+    \Delta \vec{e} = J \Delta\theta
+  \end{align*}
+  and thus:
+  \begin{align*}
+    \Delta \theta = J^{-1} \vec{e}
+  \end{align*}
+  \pause
+  Because it's only a linear approximation, place an upper limit on the length
+  of $\vec{e}$.
+\end{frame}
+
+\begin{frame}{Inverting the Jacobian}
+  \begin{itemize}
+    \item Jacobian usually can't be inverted
+    \item In our case: $3\times4$ matrix
+  \end{itemize}
+  \pause
+  Three common methods of approximating the inverse:
+  \begin{itemize}
+    \item Jacobian transpose: $J^{-1} \approx \alpha J^T$
+    \item Moore-Penrose pseudoinverse: $J^{-1} approx J^{+}$
+    \item Damped Least Squares: $(J^T J  + \lambda^2 I)^1 J^T$
+  \end{itemize}
+\end{frame}
 
 \section{Trajectory Planning}
 
