@@ -244,8 +244,9 @@ mass unto the ground lies within its support polygon
     We favour the distance the most in $x$ and $y$ direction, while keeping the
     $z$ artificially high
         \begin{align}
-        d_r = \vec{e}^{x} * || \vec{p}_{c}^{x} \dot \vec{p}^{x} || + \vec{e}^y * ||\vec{p}_{c}^z
-            \dot \vec{p}^z|| * 0.3
+            d_r = \vec{e}^{x} * || \vec{p}^{x} -\vec{p}_{c}^{x}|| + \vec{e}^y *
+        ||\vec{p}^{y} - \vec{p}_{c}^y|| +  ||
+     \vec{p}^z - \vec{p}_{c}^z|| * 0.3
         \end{align}
 \end{frame}
 
@@ -301,7 +302,6 @@ mass unto the ground lies within its support polygon
   \label{fig:retraction_plot1}
 \end{figure}
 \end{frame}
-\section{Conclusion and future works}
 
 \begin{frame}{Results}
 
@@ -342,5 +342,7 @@ mass unto the ground lies within its support polygon
          }
     \end{figure}
 \end{frame}
+\section{Conclusion and future works}
+
 
 \end{document}
