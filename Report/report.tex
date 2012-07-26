@@ -834,32 +834,28 @@ porting everything to C++ seems like the best option.
 \appendix
 \section{Experimentations with solving the inverse kinematics problem.}
 \label{A}
-To solve this particular part of our problem we started out with some quite
-naive solutions until we just implemented an iterative solution.
-Here you find an overview of some of these experimentations and why we have
-abandoned them.
+Before we arrived at our final inverse kinematics solution, we tried a number of
+different (seemingly easier) options first.  This section details some of these
+experimentations and why we have abandoned them.
 
 \subsection{Using built-in functions}
-Aldebaran Robotics constructed functions that make it possible to by-pass having
-to write your own inverse kinematics solution. The function \emph{getPosition}
-make it possible to retrieve the position of an endeffector(like a leg) in
-different coordinate systems. The function  \emph{setPosition} made it possible
-to move to a position in this same coordinate system. The possible coordinate
-systems were space(where the origin was somewhere around the Nao), the torso
-and the last one between the legs. Because the torso coordinate system was
-dependent of the posture of the Nao as well as the coordinate system between
-the leg, we chose to work with the coordinate somewhere in space.
+The Naoqi framework running on the Nao robots offers a \emph{Cartesion Control
+API}\footnote{http://www.aldebaran-robotics.com/documentation/naoqi/motion/control-cartesian.html}
+which contains a number of inverse kinematics function for setting and
+requesting end effector locations in a specified coordinate system.  The
+possible coordinate systems were ``world'' (where the origin was somewhere
+arbitrarily around the Nao), the torso and one between the legs. Because both
+the torso coordinate system and the one between the legs are dependent of the
+posture of the Nao , we tried to work with the coordinate somewhere in space.
 To determine the range of the legs we took the Nao by hand and set the legs in
-the most stretched positions and used \emph{getPosition} to retrieve the
-maximum and minimum $x$ ,$y$ and $z$ values.  These were taken as absolute
-ranges relative to a starting position; the DNT-normalpose.
-In the end this approach didn't work as making a request for the current
-position as well as setting a new position in this coordinate frame was not
-reliable enough. It seemed that the sensor values used to find these positions
-weren't well enough to use for such an operation. Another big problem is that
-using the \emph{setPosition} function actuating is very slow, even on the
-fastest
-setting it would not make a powerful kick.
+the most stretched positions and retrieved the maximum
+and minimum $x$ ,$y$ and $z$ values.  These were taken as absolute ranges
+relative to a starting position. In the end this approach
+didn't work as making a request for the current position as well as setting a
+new position in this coordinate frame was not reliable enough. It seemed that
+the sensor values used to find these positions weren't well enough to use for
+such an operation. Another big problem is that actuation appeared to be quite
+slow; far too slow for a powerful football kick.
 
 \subsection{Using a simulator to find all possible positions}
 We also tried to use the \emph{setPosition} and \emph{getPositions} function in
