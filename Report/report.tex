@@ -530,11 +530,10 @@ Firstly, to determine the point between the ball and a possible retraction point
 we use the following calculation: 
 
 \begin{align}
-d_r = \vec{e}^{x} * || \vec{p}_{c}^{x} \dot \vec{p}^{x} || + \vec{e}^y * ||\vec{p}_{c}^z
-    \dot \vec{p}^z|| * 0.3
-\ref{eq:distance}
+    d_r = \vec{e}^{x} * || \vec{p}^{x} -\vec{p}_{c}^{x}|| + \vec{e}^y *
+||\vec{p}^{y} - \vec{p}_{c}^y|| +  ||
+\vec{p}^z - \vec{p}_{c}^z|| * 0.3
 \end{align}
-
 Where $\vec{p_c}$ is the contact point where the ball should be hit,
 $\vec{p}$ is a possible retraction point, $\vec{e}$ is theunit vector pointing
 to the desired desination and $\vec{d_r}$ the distance between both
@@ -601,12 +600,11 @@ retraction point, something that will become evident in the results section.
 
 All possible positions $\vec{p}$ should be considered to solve this equation. To
 determine what is possible the Nao is set in different positions and using a
-forward kinematics chain the end effector of each leg in world space coordinates
-can be retrieved. This way roughly all possible positions are set and can be
+forward kinematics chain the end effector of each leg where the origin is the
+supporting foot can be retrieved. This way roughly all possible positions are set and can be
 looped through to find the point that maximizes above equation. By also
 retrieving the location of the standing leg we make sure that there is
 no overlap in the reachable space and the position of the other leg.
-
 
 \section{Experiments and Results}
 
@@ -702,13 +700,13 @@ $\begin{bmatrix} 1 \\  0 \\ 0 \end{bmatrix}$ and a center of mass positioning of
 Another experiment shows the same idea but, instead of kicking straight ahead,
 the direction was 45 degrees to the left, or $\begin{bmatrix} \frac{1}{\sqrt{2}} \\
 \frac{1}{\sqrt{2}} \\ 0 \end{bmatrix}$. Using the same $\delta$ value as before gave us
-the result as can be seen in \ref{fig:retraction_plot2}. It is the most
+the result as can be seen in figure \ref{fig:retraction_plot2}. It is the most
 accurate point given a list of possible elements. 
 
 Although there is another good point (at approximate (-60, -140)) it is nearly
 impossbile to get this value as the chosen optimal point. When lowering the
 $\delta$ value even slightly it changes the distance drastically in the x
-direction, making the trade-off possiblities less than imagined.
+direction, making the trade-off less pronounced than imagined.
 
 \begin{figure}[htbp]
   \centering
@@ -722,14 +720,14 @@ direction, making the trade-off possiblities less than imagined.
   \label{fig:retraction_plot2}
 \end{figure}
 
-Another visualisation can be seen in Figure  \ref{fig:retraction_plot3}. In this
-case the ball should be kicked straight ahead ( direction = $\begin{bmatrix} 1 \\  0 \\ 0 \end{bmatrix}$). All blue dots are evaluatedretraction points and the red stars are the points that are the most
+Another visualisation can be seen in figure \ref{fig:retraction_plot3}. In this
+case the ball should be kicked straight ahead again ( direction = $\begin{bmatrix} 1 \\  0 \\ 0 \end{bmatrix}$). All blue dots are evaluatedretraction points and the red stars are the points that are the most
 accurate(all have the same value). The data is set out over the $xy$ axis, which
-is the added length of the $x$ and $y$ direcition, the $z$ axis and the
-$distance$ is the distance as we measure it in \ref{eq:distance}  between contact point and the ball. The fact that sometimes multiple of the same $xy$ and $z$
-combinations have different distances to the contact point is to understand from
-the fact that although in the axis both the real value of x and y are added to
-eachother \ref{eq:distance} only considers the value of $x$ when the ball should go
+is the added length of the $x$ and $y$ direction, the $z$ axis and the
+$distance$ is the distance as we measure it in \ref{eq:distance} between contact point and the ball. The fact that sometimes multiple of the same $xy$ and $z$
+combinations have different distances to the contact point is to be understoodd from
+the fact that although in the axis both the real value of $x$ and $y$ are added to
+eachother, equation \ref{eq:distance} only considers the value of $x$ when the ball should go
 straight ahead.
 
 \begin{figure}[htbp]
@@ -742,7 +740,7 @@ straight ahead.
   \label{fig:retraction_plot3}
 \end{figure}
 
-\subsection{Integration of the balancers with the kick}
+\subsection{Integration of the Center of Mass balancers with the kick}
 Because of the limited ranges of both legs when it comes to reaching a ball we
 would like the Nao to stand straight as much as possible while performing a kick. 
 When executing the initial pose we use the CoM balancer to seek the most
