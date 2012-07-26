@@ -479,7 +479,7 @@ ball in some coordinate system relative to the Nao or a fixed point in space,
 the size of the ball to hit and which way we want to kick the ball.
 
 \subsubsection{Initial pose}
-The first stage is the initial pose. The Nao is positions its center of mass on
+The first stage is the initial pose. The Nao positions its center of mass on
 top of its standing leg. This is done by setting the Nao in NormalPose (a
 keyframe motion made by the Dutch Nao Team) and
 turning on the CoM-balancer.
@@ -494,7 +494,7 @@ calculation to find this, which seems to work exactly as we would like:
 where $\vec{c}$ is the location of the center of mass of the ball, $r$ is the
 ball radius (in the case of the SPL balls this is 33.42 mm) and $\vec{e}$ is the
 force destination (the direction of where we want the ball to end up in
-coordinates).
+coordinates). 
 
 
 \subsubsection{Retraction point}
@@ -516,14 +516,15 @@ we use the following calculation:
     d_r = \vec{e}^{x} * || \vec{p}^{x} -\vec{p}_{c}^{x}|| + \vec{e}^y *
 ||\vec{p}^{y} - \vec{p}_{c}^y|| +  ||
 \vec{p}^z - \vec{p}_{c}^z|| * 0.3
+\label{eq:distance}
 \end{align}
 Where $\vec{p_c}$ is the contact point where the ball should be hit,
-$\vec{p}$ is a possible retraction point, $\vec{e}$ is theunit vector pointing
+$\vec{p}$ is a possible retraction point, $\vec{e}$ is the unit vector pointing
 to the desired desination and $\vec{d_r}$ the distance between both
-points. The reason the ${xy}$ dimensions get more weight is because heightening
-the feet for a bigger distance of the retraction is less desirable as it creates
-more imbalance and takes up more time. The retraction n the x and y direction
-however enable a more accurate and harder kick.
+points. The importance of the $x$ and $y$ distance between the contact point and a possible
+retraction point relies on how much of the unit vector points to that direction.
+The $z$ is held artificially high so that the leg will never be stretched to the
+ground.
 
 \begin{figure}
   \resizebox{\textwidth}{!} {
@@ -563,7 +564,7 @@ problem that needs to be resolved.
 \end{align*}
 
 The distance to the line is only important in the $xy$ direction, but a cross
-product can only be taken in 3d space so this is solved by taking the $xy$
+product can only be taken in 3D so this is solved by taking the $xy$
 values from the original points in space but adding a 0 value in the z
 direction.
 Now that we have a way to calculate both the distance to the contact point and
@@ -657,7 +658,7 @@ parameters, but they offer a nice starting point for further practical testing.
   \makebox[\textwidth] {
     \includegraphics[width=1\textwidth]{pics/retract.pdf}
   }
-  \caption{Visualistation of relevance of all tried retraction point. The red
+  \caption{Visualistation of relevance of all tried retraction points. The red
       point is the finally used point. The red asterisk is the contact point. In
       tis case the ball should be kicked straight forward.
          }
@@ -681,7 +682,8 @@ $\begin{bmatrix} 1 \\  0 \\ 0 \end{bmatrix}$ and a center of mass positioning of
     the one with the biggest distance to the contact point gets chosen.
 
 Another experiment shows the same idea but, instead of kicking straight ahead,
-the direction was 45 degrees to the left, or $\begin{bmatrix} \frac{1}{\sqrt{2}} \\
+the direction was with an angle to the left, more precise with  $\vec{e} =
+\begin{bmatrix} \frac{1}{\sqrt{2}}\\
 \frac{1}{\sqrt{2}} \\ 0 \end{bmatrix}$. Using the same $\delta$ value as before gave us
 the result as can be seen in figure \ref{fig:retraction_plot2}. It is the most
 accurate point given a list of possible elements. 
@@ -696,19 +698,19 @@ direction, making the trade-off less pronounced than imagined.
   \makebox[\textwidth] {
     \includegraphics[width=1\textwidth]{pics/retract3.pdf}
   }
-  \caption{Visualistation of relevance of all tried retraction point. The red
+  \caption{Visualistation of relevance of all tried retraction points. The red
       point is the finally used point, the red asterisk is the contact point. 
-      In this case the ball is kicked with an 45 degree angle to the left.
+      In this case the ball is kicked with an angle.
          }
   \label{fig:retraction_plot2}
 \end{figure}
 
 Another visualisation can be seen in figure \ref{fig:retraction_plot3}. In this
-case the ball should be kicked straight ahead again ( direction = $\begin{bmatrix} 1 \\  0 \\ 0 \end{bmatrix}$). All blue dots are evaluatedretraction points and the red stars are the points that are the most
+case the ball should be kicked straight ahead again ( direction = $\begin{bmatrix} 1 \\  0 \\ 0 \end{bmatrix}$). All blue dots are evaluated retraction points and the red stars are the points that are the most
 accurate(all have the same value). The data is set out over the $xy$ axis, which
 is the added length of the $x$ and $y$ direction, the $z$ axis and the
 $distance$ is the distance as we measure it in \ref{eq:distance} between contact point and the ball. The fact that sometimes multiple of the same $xy$ and $z$
-combinations have different distances to the contact point is to be understoodd from
+combinations have different distances to the contact point is to be understood from
 the fact that although in the axis both the real value of $x$ and $y$ are added to
 eachother, equation \ref{eq:distance} only considers the value of $x$ when the ball should go
 straight ahead.
@@ -723,6 +725,8 @@ straight ahead.
   \label{fig:retraction_plot3}
 \end{figure}
 
+\FloatBarrier
+
 \subsection{Integration of the Center of Mass balancers with the kick}
 Because of the limited ranges of both legs when it comes to reaching a ball we
 would like the Nao to stand straight as much as possible while performing a kick. 
@@ -731,7 +735,7 @@ balanced position, but it makes a lot of difference as to which joints in the
 support leg are used for balance. At first we experimented  with the
 \emph{HipRoll} and \emph{HipPitch} to move to the most stable position. This
 however made for quite an unnatural pose, as you can see in Figure
-\ref{fig:subfig}. Because executing a kick only uses the kicking leg, it can
+\ref{fig:subfig1}. Because executing a kick only uses the kicking leg, it can
 reach less of the relevant places. 
 
 \begin{figure}[ht]
@@ -750,6 +754,7 @@ reach less of the relevant places.
 \label{myfigure}
 \caption{Experimentation with the influence of joint choice on the balancer}
 \end{figure}
+\FloatBarrier
 Using the angle of the \emph{AnkleRoll} and \emph{AnklePitch} in the initial
 pose delivers a more natural position as seen in Figure \ref{fig:subfig2},
 which makes it a better deicision for the initial pose. 
@@ -769,30 +774,26 @@ been thoroughly tested (only in a few directions) due to time
 contraints. Similarly, there is no data regarding the strength or stability of
 the kick, simply because there is no final kick yet.
 
+The balancing system seems to work quite well and has been quite vigorously
+tested. Still interferences from the side stay problematic, but only playing a
+real math with the balancing turned on will show if it will work decent enough.
+
 In the end, we've ended up with a nice motion framework which needs a bit more
 work in order to have a completely functioning kick, which will hopefully function
 as a basis for further motion-related tasks for the Dutch Nao Team (such as a
 new walking motion).
 
-\subsection{The retractionpoint} 
-The above experimentations  with finding a retractionpoint while making a
-trade-off between accuracy and distance seems to conclude that the retraction calculation
-works as was expected for the basic cases. Due to time constraints, and the fact
-that less straightforward kicks are hard to visualise on a graph there are still
-cases left out, but it already makes for a succesful kick in the most basic of
-situations.
-
-\section{Discussion}
-Although the problem of making a dynamic kick has been solved by various teams
-in the Standard Platform League already (citations, citations), there are various solutions to our
-problems that we have not yet encountered in other papers. For instance the idea
-of making a proportinal controller based on the Center of Mass is one that is
-implemeneted often, but making a search space through which to find the optimal
-position is not one we have encountered but works great.
-
-It comes to show that although our problem initially looked as if it would be a
-straight path we have been able to give it our own interpretation which only
-gives the 
+%\section{Discussion}
+%Although the problem of making a dynamic kick has been solved by various teams
+%in the Standard Platform League already (citations, citations), there are various solutions to our
+%problems that we have not yet encountered in other papers. For instance the idea
+%of making a proportinal controller based on the Center of Mass is one that is
+%implemeneted often, but making a search space through which to find the optimal
+%position is not one we have encountered.  The same with using a
+%dampened least squares solution for solving the inverse kintematics.
+%
+%It comes to show that although our problem initially looked as if it would be a
+%straight path that would lead us 
 
 \section{Future works}
 Now that all sub problems of making a dynamic kick seem to be solved succesfully, there are still some future improvements we would like to work on.
