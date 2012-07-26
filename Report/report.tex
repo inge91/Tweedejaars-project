@@ -269,8 +269,6 @@ The angle offsets for the hip joints are calculated by
     \item $Offset$ $Hip$ $Roll$ $=  P_{out}y + D_{out}y$ 
 \end{itemize}
 Where $timeTaken = time_t - time_{t-1}$(the time taken between the current and previous execution).\\\\
-Using an error band to allow a range of stable points and therefore better conversion. Without this range the robot would diverge and finally fall due to the oscillation. When the error is within this range it will be set to 0, this allows the robot to converge to a stable position. Due to the robots build the forward and sideways stabilization act differently, separate error bands for x and y are therefore needed. The function of the proportional term becomes;
-Where $timeTaken = time_t - time_{t-1}$(the time taken between the current and previous execution) .\\\\
 Using an error band to allow a range of stable points and therefore better
 conversion. Without this range the robot would diverge and finally fall due to
 the oscillation. When the error is within this range it will be set to 0, this
