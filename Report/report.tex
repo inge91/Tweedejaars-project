@@ -273,7 +273,7 @@ needed for either side. The function of the proportional term becomes;
      0& \quad \text{Otherwise}\\
   \end{array} \right.
 \]
-Where $Thres_{min}$ is the lower bound of the error band and $Thres_{max}$ is the upper bound
+Where $Thres_{min}$ is the lower bound of the error band, $Thres_{max}$ is the upper bound
 and $K_p$ is the  first tweak parameter of the PD-controller.\\
 $Thres_{min X} = -Thres_{max X}$ and
 $Thres_{min Y} = -Thres_{max Y}$.
@@ -302,22 +302,17 @@ The follow fix is applied:
 	\item $Offset$ $Hip$ $Pitch$ $= (P_{out}x + D_{out}x) * timeTaken $ 
 	\item $Offset$ $Hip$ $Roll$ $=  (P_{out}y + D_{out}y) * timeTaken$ 
 \end{itemize}
-With this fix the angle offsets will be relative to $timeTaken$, giving a bigger offset when the time between the executions is larger and vice versa.
-This gives us a timing-independent compensation architecture which adapts to the available CPU power.
+With this fix the angle offsets will be relative to $timeTaken$, giving a bigger offset when the time between the executions is larger and vice versa. This gives us a timing-independent compensation architecture which adapts to the available CPU power.
 
 \subsubsection{The setup error}
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=\linewidth]{pics/startupError.jpg}
-	\label{fig:startup_error_plot}
-	\caption{The startup error (needs new plot!)}
-\end{figure} 
-As the script runs the first measurements of TimeTaken are relative big in some cases even a factor 100 from the normal values as seen in Figure ~\ref{fig:startup_error_plot}. This big value will change the angles in such a way the robot will overshoot and possibly even fall.
+
+As the script runs the first measurements of TimeTaken are relative big in some cases even a factor 100 from the normal value.
+This big value will change the angles in such a way the robot will overshoot and possibly even fall.
 Therefore disregarding these values will be necessary, adding a low-pass filter to $\nabla TimeTaken$ allows finding these measurements. When the threshold of the low-pass filter has been exceeded the angle offsets will be set to 0, ignoring the large values.
 \[
   Offset Hip Pitch = \left\{ 
   \begin{array}{l l}
-     P_{out}x + D_{out}x& \quad \text{if $\nabla TimeTaken < Thres_{low-pass}$}\\ 
+     (P_{out}x + D_{out}x)  * timeTaken& \quad \text{if $\nabla TimeTaken < Thres_{low-pass}$}\\ 
     0 & \quad \text{Otherwise}\\
   \end{array} \right.
 \]
@@ -325,7 +320,7 @@ Therefore disregarding these values will be necessary, adding a low-pass filter 
 \[
   Offset Hip Roll = \left\{ 
   \begin{array}{l l}
-     P_{out}y + D_{out}y& \quad \text{if $\nabla TimeTaken < Thres_{low-pass}$}\\ 
+     (P_{out}y + D_{out}y)  * timeTaken& \quad \text{if $\nabla TimeTaken < Thres_{low-pass}$}\\ 
     0 & \quad \text{Otherwise}\\
   \end{array} \right.
 \]
