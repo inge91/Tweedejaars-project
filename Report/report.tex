@@ -609,16 +609,38 @@ no overlap in the reachable space and the position of the other leg.
 \section{Experiments and Results}
 
 \subsection{Using force sensitive resistors for balancing}
-*picture from a Nao pushing the balancing Nao (the test environment)*\\\\
-*plot with balancer off*\\\\
-*plot with balancer on*\\\\
-As seen in the plots .....\\\\
-Due to Nao's build, sideways balancing is quite the challenge.
+\begin{figure}[htbp]
+  \centering
+  \makebox[\textwidth] {
+    \includegraphics[scale = 0.1]{pics/nao_pushing_side}
+  }
+  \caption{Nao (right) pushing the other Nao (left) in the sideways (y) direction}
+  \label{fig:pushing}
+\end{figure}
+\begin{figure}[htbp]
+  \centering
+  \makebox[\textwidth] {
+    \includegraphics[scale = 0.7]{pics/y_without_balance}
+  }
+  \caption{With the balancer turned off (The Nao falls at 22 seconds)}
+  \label{fig:pushing1}
+\end{figure}
+\begin{figure}[htbp]
+  \centering
+  \makebox[\textwidth] {
+    \includegraphics[scale = 0.6]{pics/y_with_balance}
+  }
+  \caption{With the balancer turned on (The Nao falls at 104 seconds)}
+  \label{fig:pushing2}
+\end{figure}
+Since balancing in the y direction is the biggest challenge to stabilize we used another Nao to push the balancing Nao in this direction (see  Figure \ref{fig:pushing}).
+We ran the script twice, one time with the balancer on and the second time where the offsets of the angles where forced to 0  (keeping the plotting function but killing the balance system)\\\\
+As seen in the plots (Figure \ref{fig:pushing1} and Figure \ref{fig:pushing2}), using the balancer helps to stay up longer (twice as long) but still can't fully handle the external influences from the pushing Nao.
 The problem is that there aren't many stable poses in the sideways direction and even a small change will have a relative large influence on the sensor data.
 Due to this the sideways balancing tends to overshoot and then start to oscillate.
 Taking a low $K_p$ and $K_d$ values gives a long settling time but minimizes the overshoot.  
 The system now converges relative slow to a stable position but is still able to negate external influences, providing a more stable and reliable balancer. 
-
+\FloatBarrier
 \subsection{Inverse kinematics}
 \FloatBarrier
 Since our inverse kinematics solution relies on two parameters
@@ -843,57 +865,48 @@ porting everything to C++ seems like the best option.
 \appendix
 \section{Experimentations with solving the inverse kinematics problem.}
 \label{A}
-To solve this particular part of our problem we started out with some quite
-naive solutions until we just implemented an iterative solution.
-Here you find an overview of some of these experimentations and why we have
-abandoned them.
+Before we arrived at our final inverse kinematics solution, we tried a number of
+different (seemingly easier) options first.  This section details some of these
+experimentations and why we have abandoned them.
 
 \subsection{Using built-in functions}
-Aldebaran Robotics constructed functions that make it possible to by-pass having
-to write your own inverse kinematics solution. The function \emph{getPosition}
-make it possible to retrieve the position of an endeffector(like a leg) in
-different coordinate systems. The function  \emph{setPosition} made it possible
-to move to a position in this same coordinate system. The possible coordinate
-systems were space(where the origin was somewhere around the Nao), the torso
-and the last one between the legs. Because the torso coordinate system was
-dependent of the posture of the Nao as well as the coordinate system between
-the leg, we chose to work with the coordinate somewhere in space.
+The Naoqi framework running on the Nao robots offers a \emph{Cartesion Control
+API}\footnote{http://www.aldebaran-robotics.com/documentation/naoqi/motion/control-cartesian.html}
+which contains a number of inverse kinematics function for setting and
+requesting end effector locations in a specified coordinate system.  The
+possible coordinate systems were ``world'' (where the origin was somewhere
+arbitrarily around the Nao), the torso and one between the legs. Because both
+the torso coordinate system and the one between the legs are dependent of the
+posture of the Nao , we tried to work with the coordinate somewhere in space.
 To determine the range of the legs we took the Nao by hand and set the legs in
-the most stretched positions and used \emph{getPosition} to retrieve the
-maximum and minimum $x$ ,$y$ and $z$ values.  These were taken as absolute
-ranges relative to a starting position; the DNT-normalpose.
-In the end this approach didn't work as making a request for the current
-position as well as setting a new position in this coordinate frame was not
-reliable enough. It seemed that the sensor values used to find these positions
-weren't well enough to use for such an operation. Another big problem is that
-using the \emph{setPosition} function actuating is very slow, even on the
-fastest
-setting it would not make a powerful kick.
+the most stretched positions and retrieved the maximum
+and minimum $x$ ,$y$ and $z$ values.  These were taken as absolute ranges
+relative to a starting position. In the end this approach
+didn't work as making a request for the current position as well as setting a
+new position in this coordinate frame was not reliable enough. It seemed that
+the sensor values used to find these positions weren't well enough to use for
+such an operation. Another big problem is that actuation appeared to be quite
+slow; far too slow for a powerful football kick.
 
-\subsection{Using a simulator to find all possible positions}
-We also tried to use the \emph{setPosition} and \emph{getPositions} function in
+\subsection{Using a simulator to find all reachable positions}
+We also tried to use the Cartesion Control API in
 a simulated environment\footnote{The environment used can be found on
-http://www.nao.sandern.com}. This time we wanted to get a big table with all
-reachablee positions for the leg. We used \emph{setPosition}to set the leg
-somewhere in space and if the setposition was the same as \emph{getPosition}
-gave back\footnote{\emph{setPosition} always gives back a position but does not
-work when the position is out of range for the end-effector. It will start
-jittering and not end up in the same position as requested}, the position was possible and was written to file.
+http://www.nao.sandern.com} to obtain a table containing all reachable locations
+of a given leg, within a certain resolution.
+Throughout a given range of world positions, the Nao was made to move its foot
+there, after which the position of the foot was requested to see if the position
+had been reaches.
 In the end this was not as reliable as hoped due to the same issues as spoken in
 the last section.
 
 \subsection{Making a lookup-table using Forward Kinematics}
-Because at the time we needed to make the inverse kinematics work we already
-implemented a working forward kinematics, we thought about using only the
-forward kinematics to make a look-up table of all the angle settings belonging
-to a position (relative to the support leg, as the way our forward kinematics
-works). Now by working through all ranges of angles in the kicking leg with a
-decent step size we could make a dictionary of all positions and their angles. 
+Because we already had a workable solution for forward kinematics, we thought
+about creating a lookup table by iterating through a collection of joint angles
+and saving them in a hashmap along with the corresponding end effector position.
 Integrating this using the balancing system however became a bit harder because
-we needed to track the position of the hip angles(these are used for changing
-the pose of the Nao) in the supporting leg, and in the end constructing the
-inverse kinematics ourselves was an easier solution, and in the end constructing
-the inverse kinematics ourselves was an easier solution.
+we needed to track the position of the hip angles (these were, at the time used
+for changing the pose of the Nao) in the support leg, and in the end
+constructing the inverse kinematics ourselves was an easier solution.
 
 \bibliographystyle{plain}
 \bibliography{library}
