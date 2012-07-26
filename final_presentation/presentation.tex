@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 \usepackage{tikz}
 \usetheme{Warsaw}
+\usepackage{wrapfig}
 
 \AtBeginSection[]
 {
@@ -29,17 +30,37 @@
 \section{Goal}
 \begin{frame}{Goal}
   \begin{itemize}
-    \item Creating a dynamic kick instead of a keyfrome motion
+    \item Creating a dynamic kick instead of a key-frame motion
     \item Handle external forces without falling
   \end{itemize}
   \pause
   Benefits:
   \begin{itemize}
     \item more stable
-    \item omnidirectional
+    \item omni-directional
     \item potentially harder
     \item supporting the Dutch Nao Team
   \end{itemize}
+\end{frame}
+
+\section{About Nao}
+\begin{frame}{About Nao}
+\begin{columns}[T]
+    \begin{column}{.5\textwidth}
+	\vspace{20 mm}
+	\begin{itemize}
+		\item Build-in functions
+	   	\item 8 force sensitive resistors
+		\item The coordinate space
+	\end{itemize}	
+    \end{column}
+    \begin{column}{.5\textwidth}
+
+% Your image included here
+    \includegraphics[scale=0.5]{pics/hardware_inertialunit.png}
+
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \section{Balancing}
@@ -94,8 +115,106 @@ mass unto the ground lies within its support polygon
   \end{itemize}
 \end{frame}
 
-% Richard, geef het een leuke titel
-\subsection{Foot-sensor thing}
+\subsection{Using the force sensitive resistors}
+\begin{frame}{Grouping the sensors}
+\begin{figure}[htb]
+	\centering
+	\includegraphics[scale=0.45]{pics/naosfeet.jpg}
+	\label{fig:fsr_plot}
+\end{figure}
+\begin{itemize}
+    \item $Front_t = (1-s) * Front_{t-1} + s * (LFsrFL + LFsrFR)$
+    \item $Left_t = (1-s) * Left_{t-1} + s *(LFsrFL + LFsrRL)$
+    \item $Right_t = (1-s) * Right_{t-1} + s *(LFsrFR + LFsrRR)$
+    \item $Back_t = (1-s) * Back_{t-1} + s *(LFsrRL + LFsrRR)$ 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Using a PD controller to calculate the angle offsets}
+Error is calculated by:
+\begin{itemize}
+    \item $e(t)_x = (Front_t - Back_t)$
+    \item $e(t)_y = (Right_t - Left_t)$
+\end{itemize}
+The PD controller:
+\begin{itemize}
+    \item $P_{out} x = e(t)_xK_p$
+    \item $P_{out} y = e(t)_yK_p$
+    \item $D_{out} x = \frac{e(t)_x - e(t-1)_x}{timeTaken}K_d$
+    \item $D_{out} y = \frac{e(t)_y - e(t-1)_y}{timeTaken}K_d$
+\end{itemize}
+The angle offsets:
+\begin{itemize}
+    \item  $Offset$ $Hip$ $Pitch$ $= P_{out}x + D_{out}x$ 
+    \item $Offset$ $Hip$ $Roll$ $=  P_{out}y + D_{out}y$ 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Error band}
+\begin{itemize} 
+   \item Allows conversion
+   \item Less overshoot
+   \item Smaller chance of oscillation
+\end{itemize}
+\vspace{10 mm}
+\[
+  P_{out}x = \left\{ 
+  \begin{array}{l l}
+     e(t)_xK_p& \quad \text{if $e(t)_x < Thres_{min X}$ or $e(t)_x > Thres_{max X}$}\\ 
+     0& \quad \text{Otherwise}\\
+  \end{array} \right.
+\]
+\vspace{2 mm}
+same for $P_{out}y$, $D_{out}x$ and $D_{out}y$.
+\end{frame}
+
+\begin{frame}
+\centering
+ \includegraphics[scale=0.5]{pics/back_balanceon_X.png}
+\end{frame}
+
+\begin{frame}{Sampling rate issues}
+Sampling rate is determined by the CPU power availability.
+Parameters are dependent on the sampling rate. 
+\vspace{5 mm}
+\begin{itemize}
+	\item $Offset$ $Hip$ $Pitch$ $= (P_{out}x + D_{out}x) * timeTaken $ 
+	\item $Offset$ $Hip$ $Roll$ $=  (P_{out}y + D_{out}y) * timeTaken$ 
+\end{itemize}
+\vspace{5 mm}
+As timeTaken increases so does the angle offsets in a linear way.
+\end{frame}
+
+
+
+\begin{frame}{Startup error}
+\begin{itemize}
+\item Big sample rate differences during startup
+\item Low pass filter
+\vspace{5 mm}
+\end{itemize}
+\footnotesize
+\[
+  Offset Hip Pitch = \left\{ 
+  \begin{array}{l l}
+     (P_{out}x + D_{out}x) * timeTaken& \quad \text{if $\nabla TimeTaken < Thres_{low-pass}$}\\ 
+    0 & \quad \text{Otherwise}\\
+  \end{array} \right.
+\]
+
+\[
+  Offset Hip Roll = \left\{ 
+  \begin{array}{l l}
+     (P_{out}y + D_{out}y) * timeTaken& \quad \text{if $\nabla TimeTaken < Thres_{low-pass}$}\\ 
+    0 & \quad \text{Otherwise}\\
+  \end{array} \right.
+\]
+\normalsize
+\end{frame}
+
+\begin{frame}{Movie}
+
+\end{frame}
 
 \section{Inverse Kinematics}
 \begin{frame}{Introduction}
