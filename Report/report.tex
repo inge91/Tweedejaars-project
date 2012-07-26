@@ -875,17 +875,13 @@ In the end this was not as reliable as hoped due to the same issues as spoken in
 the last section.
 
 \subsection{Making a lookup-table using Forward Kinematics}
-Because at the time we needed to make the inverse kinematics work we already
-implemented a working forward kinematics, we thought about using only the
-forward kinematics to make a look-up table of all the angle settings belonging
-to a position (relative to the support leg, as the way our forward kinematics
-works). Now by working through all ranges of angles in the kicking leg with a
-decent step size we could make a dictionary of all positions and their angles. 
+Because we already had a workable solution for forward kinematics, we thought
+about creating a lookup table by iterating through a collection of joint angles
+and saving them in a hashmap along with the corresponding end effector position.
 Integrating this using the balancing system however became a bit harder because
-we needed to track the position of the hip angles(these are used for changing
-the pose of the Nao) in the supporting leg, and in the end constructing the
-inverse kinematics ourselves was an easier solution, and in the end constructing
-the inverse kinematics ourselves was an easier solution.
+we needed to track the position of the hip angles (these were, at the time used
+for changing the pose of the Nao) in the support leg, and in the end
+constructing the inverse kinematics ourselves was an easier solution.
 
 \bibliographystyle{plain}
 \bibliography{library}
