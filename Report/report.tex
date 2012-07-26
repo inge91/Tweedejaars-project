@@ -54,12 +54,29 @@ is the subject of this paper. Furthermore, we implement in this dynamic kick a
 balance system so that we get a more stable kick that is able to adapt itself to
 outside disturbances.
 
+\section{Related Works}
+Seeing as the Nao robots were introduced to the Standard Platform League (SPL)
+of the RoboCup in 2007, this is of course is not the first attempt at making a
+kicking motion for them. Notable publications in this area by other SPL teams
+are by team B-Human (\cite{Muller2011}) and Nao Team Humboldt (\cite{Xu2010}).
+
+Another possible approach to kick generation is through machine learning, as
+done by \cite{Meijer2012}.
+
+A related, and very common task in humanoid robotics, is the creation of a
+walking gait. This shares a number of important subproblems with the task of
+kicking; most notably, balancing and inverse kinematics. The B-Human team
+released an important paper in 2009 featuring not only a walk, but also a
+complete analytical inverse kinematics solution (\cite{Graf2009}). Further
+techniques for balancing are proposed by \cite{Strom2010}, \cite{Graf2010} and
+\cite{Alcaraz-Jimenez2012}.
+
 \section{Basic information about the Nao}
 The Nao is a 58 cm high humanoid robot with total 21 degrees of freedom developed by Aldebaran Robotics. The Nao
 is equipped with all kinds of hardware that can be used to solve our problem
 statement. Here we will discuss the most
 important elements of the Nao that are useful for understanding the report. All
-experiments have been conducted on a Robocup Nao Version 3.3 H21
+experiments have been conducted on a Robocup Nao Version 3.3 H21.
 
 \subsection{Foot sensors} 
 \begin{figure}[htb]
@@ -145,7 +162,7 @@ controller\footnote{http://www.societyofrobots.com/programming\_PID.shtml}.
 \subsubsection{Center of mass and support polygon}
 This balancing approach requires knowledge of 2 concepts; the \emph{center of mass},
 and the \emph{support polygon}. The center of mass (\emph{CoM}) is the weighted average
-location of the Nao’s mass, while the support polygon is the location on the
+location of the Nao's mass, while the support polygon is the location on the
 floor over which the center of mass must be located to achieve stability. In the
 case of a robot standing on the ground, the support polygon is the convex hull
 of the feet touching the ground. Because the CoM is only used in conjuction with
@@ -154,14 +171,14 @@ robot will only be balancing on one foot, the support polygon can be simplified
 to be a single point slightly in front of the location of the support leg's ankle
 joint.
 
-The center of mass is a bit more complex to calculate. It's defined as the sum
-of each component’s \emph{centroid} (its own center of mass) multiplied by its
-mass, divided by the total weight (equation \ref{eq:CoM}). This of course
+The center of mass is defined as the sum of each component's
+\emph{centroid} (its own center of mass) multiplied by its mass,
+divided by the total weight (equation \ref{eq:CoM}). This of course
 requires each centroid to be described in the same coordinate system.
 \begin{align}
   \frac{\sum_i \vec{c}_i m_i} {m}        \label{eq:CoM}
 \end{align}
-In the Nao’s documentation, each component's centroid is described relative to
+In the Nao's documentation, each component's centroid is described relative to
 its own coordinate system, and offsets are included to convert between adjacent
 components’ coordinate systems. To handle this, we construct a chain of
 transformations to walk through each component while calculating the center of
@@ -176,15 +193,15 @@ error-calculation becomes:
 \begin{align}
   \begin{bmatrix} error_x \\ error_y \end{bmatrix} = \begin{bmatrix} 3 \\ 0 \end{bmatrix} - \vec{CoM_{xy}} 
 \end{align}
-The Z-axis is ignored, because the height is irrelevant in this case (the CoM
+The $z$-axis is ignored, because the height is irrelevant in this case (the CoM
 balancer only accounts for gravity, not other phenomena such as momentum).
 
 The proportional control equation with two arbitrary \emph{gain} parameters is
 shown in \ref{eq:pcontrolx} and \ref{eq:pcontroly}. The use of a different gain
 parameter for the x- and y-directions allows compensation for the fact that the
 Nao's feet (and really, feet in general) are rather elongated in the forward
-direction, making them far more stable to forces along the x-axis as opposed to
-the y-axis.
+direction, making them far more stable to forces along the $x$-axis as opposed to
+the $y$-axis.
 \begin{align}
   P_{out_{x}} = gain_x * error_x        \label{eq:pcontrolx} \\
   P_{out_{y}} = gain_y * error_y        \label{eq:pcontroly}
@@ -192,13 +209,11 @@ the y-axis.
 The value of $P_{out_{x}}$ is inverted when balancing on the left leg because of
 the direction the joint rotates.
 
-Actuation is achieved solely through the hip's pitch and roll of the support
-leg. Even though there are possible poses which are impossible to correct with
-only the hip, these poses are very unlikely to ever occur during any intended motion.
-The rotation angles are obtained by searching through the set
+Actuation is achieved solely through the ankle's pitch and roll of the support
+leg. The rotation angles are obtained by searching through the set
 \begin{align*}
-  \{ (\theta_{pitch}, \theta_{roll}) \mid \theta_{pitch} \in (0, P_{out_{x}}),
-  \theta_{roll} \in (0, P_{out_{y}}) \}
+  \{ (\theta_{pitch}, \theta_{roll}) \mid \theta_{pitch} \in \{0, P_{out_{x}}\},
+  \theta_{roll} \in \{0, P_{out_{y}}\} \}
 \end{align*}
 and selecting the pair of angles with the largest reduction in error. This
 avoids situations where both components of the actuation interfere with
@@ -343,7 +358,7 @@ a number of potential solutions to this problem, for example:
 
 We wound up going with an iterative, Jacobian-based solution as decribed by
 \cite{Meredith2004} and \cite{Buss2009}. To see a short summary of other
-experimentations, see \ref{A}.
+experimentations, see appendix \ref{A}.
 
 \subsubsection{Problem specification and terminology}
 Let:
@@ -404,7 +419,7 @@ we're looking for is:
 Since the Jacobian will generally not be invertable, its inverse will
 have to be approximated. Some methods of approximation include the
 Jacobian transpose method, the Moore-Penrose pseudo-inverse, and the
-Levenberg-Marquardt dampened least squares method (see \cite{Buss2009}).
+Levenberg-Marquardt damped least squares method (see \cite{Buss2009}).
 
 \subsubsection{The algorithm}
 We opted to go for a 3-dimensional positioning, without regards for the rotation
@@ -413,9 +428,10 @@ ankle joint is taken as end-effector, the ankle itself has no influence on the
 location. This leaves us with 4 joints; the pitch, roll and yaw of the hip,
 along with the knee's pitch.
 
-The joints tend to behave erratically when a target location is far away. This
-is counteracted by moving the target closer if the distance exceeds a certain
-threshold. This is done according to (\ref{eq:clampmag}).
+Because the Jacobian only gives a linear approximation, the joints
+tend to behave erratically when a target location is far away. This is
+counteracted by moving the target closer if the distance exceeds a
+certain threshold. This is done according to (\ref{eq:clampmag}).
 \begin{align}
   \vec{e} = \begin{cases}
     \vec{t} - \vec{s} & \text{if } ||\vec{t} - \vec{s}|| < D_{max} \\
@@ -479,7 +495,7 @@ ball in some coordinate system relative to the Nao or a fixed point in space,
 the size of the ball to hit and which way we want to kick the ball.
 
 \subsubsection{Initial pose}
-The first stage is the initial pose. The Nao is positions its center of mass on
+The first stage is the initial pose. The Nao positions its center of mass on
 top of its standing leg. This is done by setting the Nao in NormalPose (a
 keyframe motion made by the Dutch Nao Team) and
 turning on the CoM-balancer.
@@ -494,7 +510,7 @@ calculation to find this, which seems to work exactly as we would like:
 where $\vec{c}$ is the location of the center of mass of the ball, $r$ is the
 ball radius (in the case of the SPL balls this is 33.42 mm) and $\vec{e}$ is the
 force destination (the direction of where we want the ball to end up in
-coordinates).
+coordinates). 
 
 
 \subsubsection{Retraction point}
@@ -513,18 +529,18 @@ Firstly, to determine the point between the ball and a possible retraction point
 we use the following calculation: 
 
 \begin{align}
-d_r = \vec{e}^{x} * || \vec{p}_{c}^{x} \dot \vec{p}^{x} || + \vec{e}^y * ||\vec{p}_{c}^z
-    \dot \vec{p}^z|| * 0.3
-\ref{eq:distance}
+    d_r = \vec{e}^{x} * || \vec{p}^{x} -\vec{p}_{c}^{x}|| + \vec{e}^y *
+||\vec{p}^{y} - \vec{p}_{c}^y|| +  ||
+\vec{p}^z - \vec{p}_{c}^z|| * 0.3
+\label{eq:distance}
 \end{align}
-
 Where $\vec{p_c}$ is the contact point where the ball should be hit,
-$\vec{p}$ is a possible retraction point, $\vec{e}$ is theunit vector pointing
+$\vec{p}$ is a possible retraction point, $\vec{e}$ is the unit vector pointing
 to the desired desination and $\vec{d_r}$ the distance between both
-points. The reason the ${xy}$ dimensions get more weight is because heightening
-the feet for a bigger distance of the retraction is less desirable as it creates
-more imbalance and takes up more time. The retraction n the x and y direction
-however enable a more accurate and harder kick.
+points. The importance of the $x$ and $y$ distance between the contact point and a possible
+retraction point relies on how much of the unit vector points to that direction.
+The $z$ is held artificially high so that the leg will never be stretched to the
+ground.
 
 \begin{figure}
   \resizebox{\textwidth}{!} {
@@ -564,7 +580,7 @@ problem that needs to be resolved.
 \end{align*}
 
 The distance to the line is only important in the $xy$ direction, but a cross
-product can only be taken in 3d space so this is solved by taking the $xy$
+product can only be taken in 3D so this is solved by taking the $xy$
 values from the original points in space but adding a 0 value in the z
 direction.
 Now that we have a way to calculate both the distance to the contact point and
@@ -584,12 +600,11 @@ retraction point, something that will become evident in the results section.
 
 All possible positions $\vec{p}$ should be considered to solve this equation. To
 determine what is possible the Nao is set in different positions and using a
-forward kinematics chain the end effector of each leg in world space coordinates
-can be retrieved. This way roughly all possible positions are set and can be
+forward kinematics chain the end effector of each leg where the origin is the
+supporting foot can be retrieved. This way roughly all possible positions are set and can be
 looped through to find the point that maximizes above equation. By also
 retrieving the location of the standing leg we make sure that there is
 no overlap in the reachable space and the position of the other leg.
-
 
 \section{Experiments and Results}
 
@@ -681,7 +696,7 @@ parameters, but they offer a nice starting point for further practical testing.
   \makebox[\textwidth] {
     \includegraphics[width=1\textwidth]{pics/retract.pdf}
   }
-  \caption{Visualistation of relevance of all tried retraction point. The red
+  \caption{Visualistation of relevance of all tried retraction points. The red
       point is the finally used point. The red asterisk is the contact point. In
       tis case the ball should be kicked straight forward.
          }
@@ -705,36 +720,37 @@ $\begin{bmatrix} 1 \\  0 \\ 0 \end{bmatrix}$ and a center of mass positioning of
     the one with the biggest distance to the contact point gets chosen.
 
 Another experiment shows the same idea but, instead of kicking straight ahead,
-the direction was 45 degrees to the left, or $\begin{bmatrix} \frac{1}{\sqrt{2}} \\
+the direction was with an angle to the left, more precise with  $\vec{e} =
+\begin{bmatrix} \frac{1}{\sqrt{2}}\\
 \frac{1}{\sqrt{2}} \\ 0 \end{bmatrix}$. Using the same $\delta$ value as before gave us
-the result as can be seen in \ref{fig:retraction_plot2}. It is the most
+the result as can be seen in figure \ref{fig:retraction_plot2}. It is the most
 accurate point given a list of possible elements. 
 
 Although there is another good point (at approximate (-60, -140)) it is nearly
 impossbile to get this value as the chosen optimal point. When lowering the
 $\delta$ value even slightly it changes the distance drastically in the x
-direction, making the trade-off possiblities less than imagined.
+direction, making the trade-off less pronounced than imagined.
 
 \begin{figure}[htbp]
   \centering
   \makebox[\textwidth] {
     \includegraphics[width=1\textwidth]{pics/retract3.pdf}
   }
-  \caption{Visualistation of relevance of all tried retraction point. The red
+  \caption{Visualistation of relevance of all tried retraction points. The red
       point is the finally used point, the red asterisk is the contact point. 
-      In this case the ball is kicked with an 45 degree angle to the left.
+      In this case the ball is kicked with an angle.
          }
   \label{fig:retraction_plot2}
 \end{figure}
 
-Another visualisation can be seen in Figure  \ref{fig:retraction_plot3}. In this
-case the ball should be kicked straight ahead ( direction = $\begin{bmatrix} 1 \\  0 \\ 0 \end{bmatrix}$). All blue dots are evaluatedretraction points and the red stars are the points that are the most
+Another visualisation can be seen in figure \ref{fig:retraction_plot3}. In this
+case the ball should be kicked straight ahead again ( direction = $\begin{bmatrix} 1 \\  0 \\ 0 \end{bmatrix}$). All blue dots are evaluated retraction points and the red stars are the points that are the most
 accurate(all have the same value). The data is set out over the $xy$ axis, which
-is the added length of the $x$ and $y$ direcition, the $z$ axis and the
-$distance$ is the distance as we measure it in \ref{eq:distance}  between contact point and the ball. The fact that sometimes multiple of the same $xy$ and $z$
-combinations have different distances to the contact point is to understand from
-the fact that although in the axis both the real value of x and y are added to
-eachother \ref{eq:distance} only considers the value of $x$ when the ball should go
+is the added length of the $x$ and $y$ direction, the $z$ axis and the
+$distance$ is the distance as we measure it in \ref{eq:distance} between contact point and the ball. The fact that sometimes multiple of the same $xy$ and $z$
+combinations have different distances to the contact point is to be understood from
+the fact that although in the axis both the real value of $x$ and $y$ are added to
+eachother, equation \ref{eq:distance} only considers the value of $x$ when the ball should go
 straight ahead.
 
 \begin{figure}[htbp]
@@ -747,7 +763,9 @@ straight ahead.
   \label{fig:retraction_plot3}
 \end{figure}
 
-\subsection{Integration of the balancers with the kick}
+\FloatBarrier
+
+\subsection{Integration of the Center of Mass balancers with the kick}
 Because of the limited ranges of both legs when it comes to reaching a ball we
 would like the Nao to stand straight as much as possible while performing a kick. 
 When executing the initial pose we use the CoM balancer to seek the most
@@ -755,7 +773,7 @@ balanced position, but it makes a lot of difference as to which joints in the
 support leg are used for balance. At first we experimented  with the
 \emph{HipRoll} and \emph{HipPitch} to move to the most stable position. This
 however made for quite an unnatural pose, as you can see in Figure
-\ref{fig:subfig}. Because executing a kick only uses the kicking leg, it can
+\ref{fig:subfig1}. Because executing a kick only uses the kicking leg, it can
 reach less of the relevant places. 
 
 \begin{figure}[ht]
@@ -779,19 +797,24 @@ pose delivers a more natural position as seen in Figure \ref{fig:subfig2},
 which makes it a better deicision for the initial pose. 
 
 \section{Conclusion}
-Although the individual components mostly work as planned, integrating them all
-into an actual kick has proven harder than expected, which has left us unable to
-test the interactions between all of the components. For instance, using only the hip to
-compensate for balance is effective in the sense that it's good at balancing,
-but it results in poses where the kicking leg is unable to reach even near the
-ground. Using the ankle however works just as well for balance, and doesn't
-suffer from the same problem. Unfortunately, there was no time for further testing
-in this regard.
+Although the individual components mostly work as planned, integrating
+them all into an actual kick has proven harder than expected, which
+has left us unable to test the interactions between all of the
+components. For instance, using only the hip to compensate for balance
+is effective in the sense that it's good at balancing, but it results
+in poses where the kicking leg is unable to reach even near the
+ground. Using the ankle however works just as well for balance, and
+doesn't suffer from the same problem. Unfortunately, there was no time
+for further testing in this regard.
 
 Generation of the kick trajectory appears to work properly, although it hasn't
 been thoroughly tested (only in a few directions) due to time
 contraints. Similarly, there is no data regarding the strength or stability of
 the kick, simply because there is no final kick yet.
+
+The balancing system seems to work quite well and has been quite vigorously
+tested. Still interferences from the side stay problematic, but only playing a
+real math with the balancing turned on will show if it will work decent enough.
 
 In the end, we've ended up with a nice motion framework which needs a bit more
 work in order to have a completely functioning kick, which will hopefully function
@@ -799,12 +822,12 @@ as a basis for further motion-related tasks for the Dutch Nao Team (such as a
 new walking motion).
 
 \subsection{The retractionpoint} 
-The above experimentations  with finding a retractionpoint while making a
-trade-off between accuracy and distance seems to conclude that the retraction calculation
-works as was expected for the basic cases. Due to time constraints, and the fact
-that less straightforward kicks are hard to visualise on a graph there are still
-cases left out, but it already makes for a succesful kick in the most basic of
-situations.
+The above experimentations with finding a retractionpoint while making
+a trade-off between accuracy and distance seems to conclude that the
+retraction calculation works as was expected for the basic cases. Due
+to time constraints, and the fact that less straightforward kicks are
+hard to visualise on a graph there are still cases left out, but it
+already makes for a succesful kick in the most basic of situations.
 
 \section{Discussion}
 Although the problem of making a dynamic kick has been solved by various teams
@@ -827,85 +850,60 @@ was something we wanted to complete by the time this project ended, but in
 hindsight was a little too advanced for the limited
 timeframe. Nevertheless, we were still  able to find
 solutions to every problem and can take our time to combine both controllers
-and the kicking motion to get a dynamic kick.
+and the kicking motion into a worthy final result.
 
-\subsection{Optimizing the code to run in C++}
-Another future improvement is dealing with the slowness of the current
-implementations for some of the calculations. For instance, making hundreds of 
-iterations with our current Inverse Kinematics solver can cost multiple
-seconds to terminate.
-This is not an option when the Nao has to perform a kick in a RoboCup match
-as timing is crucial. This
-can be easily solved by rewriting all our code into C++ instead of Python (the
-language we use now). Although it is not certaint yet how much this will
-increase the speed, it will indeed do so.
-
-\subsection{Making code run on the Nao and within the DNT code} 
-As of now the code has only been tested while running stand-alone from our computers, but
-for the RoboCup competitrion it will need to run on the Naos themselves, next to all
-other processes. Because we
-made sure our balancing system works time variant, as spoken of in our report, this
-will be less of a problem as no parameter tweaking is necessary when using the
-code in different circumstances. It will even be futureproof for possible new
-Naotypes.
-
-Finally, if our kick seems to be sufficiently working we can integrate it as a
-module into the current Dutch Nao Team code as to replace the hardcoded kicks.
+\subsection{Porting everything to C++}
+Many components were written in Python to aid in rapid prototyping, with help
+from the Numpy module to allow for acceptable speeds. This works decently, but
+we unfortunately don't have a way of running Numpy on our robots. Seeing as the
+Dutch Nao Team plans on switching to C++ for their codebase in the near future,
+porting everything to C++ seems like the best option.
 
 \appendix
 \section{Experimentations with solving the inverse kinematics problem.}
 \label{A}
-To solve this particular part of our problem we started out with some quite
-naive solutions until we just implemented an iterative solution.
-Here you find an overview of some of these experimentations and why we have
-abandoned them.
+Before we arrived at our final inverse kinematics solution, we tried a number of
+different (seemingly easier) options first.  This section details some of these
+experimentations and why we have abandoned them.
 
 \subsection{Using built-in functions}
-Aldebaran Robotics constructed functions that make it possible to by-pass having
-to write your own inverse kinematics solution. The function \emph{getPosition}
-make it possible to retrieve the position of an endeffector(like a leg) in
-different coordinate systems. The function  \emph{setPosition} made it possible
-to move to a position in this same coordinate system. The possible coordinate
-systems were space(where the origin was somewhere around the Nao), the torso
-and the last one between the legs. Because the torso coordinate system was
-dependent of the posture of the Nao as well as the coordinate system between
-the leg, we chose to work with the coordinate somewhere in space.
+The Naoqi framework running on the Nao robots offers a \emph{Cartesion Control
+API}\footnote{http://www.aldebaran-robotics.com/documentation/naoqi/motion/control-cartesian.html}
+which contains a number of inverse kinematics function for setting and
+requesting end effector locations in a specified coordinate system.  The
+possible coordinate systems were ``world'' (where the origin was somewhere
+arbitrarily around the Nao), the torso and one between the legs. Because both
+the torso coordinate system and the one between the legs are dependent of the
+posture of the Nao , we tried to work with the coordinate somewhere in space.
 To determine the range of the legs we took the Nao by hand and set the legs in
-the most stretched positions and used \emph{getPosition} to retrieve the
-maximum and minimum $x$ ,$y$ and $z$ values.  These were taken as absolute
-ranges relative to a starting position; the DNT-normalpose.
-In the end this approach didn't work as making a request for the current
-position as well as setting a new position in this coordinate frame was not
-reliable enough. It seemed that the sensor values used to find these positions
-weren't well enough to use for such an operation. Another big problem is that
-using the \emph{setPosition} function actuating is very slow, even on the
-fastest
-setting it would not make a powerful kick.
+the most stretched positions and retrieved the maximum
+and minimum $x$ ,$y$ and $z$ values.  These were taken as absolute ranges
+relative to a starting position. In the end this approach
+didn't work as making a request for the current position as well as setting a
+new position in this coordinate frame was not reliable enough. It seemed that
+the sensor values used to find these positions weren't well enough to use for
+such an operation. Another big problem is that actuation appeared to be quite
+slow; far too slow for a powerful football kick.
 
-\subsection{Using a simulator to find all possible positions}
-We also tried to use the \emph{setPosition} and \emph{getPositions} function in
+\subsection{Using a simulator to find all reachable positions}
+We also tried to use the Cartesion Control API in
 a simulated environment\footnote{The environment used can be found on
-http://www.nao.sandern.com}. This time we wanted to get a big table with all
-reachablee positions for the leg. We used \emph{setPosition}to set the leg
-somewhere in space and if the setposition was the same as \emph{getPosition}
-gave back\footnote{\emph{setPosition} always gives back a position but does not
-work when the position is out of range for the end-effector. It will start
-jittering and not end up in the same position as requested}, the position was possible and was written to file.
+http://www.nao.sandern.com} to obtain a table containing all reachable locations
+of a given leg, within a certain resolution.
+Throughout a given range of world positions, the Nao was made to move its foot
+there, after which the position of the foot was requested to see if the position
+had been reaches.
 In the end this was not as reliable as hoped due to the same issues as spoken in
 the last section.
 
 \subsection{Making a lookup-table using Forward Kinematics}
-Because at the time we needed to make the inverse kinematics work we already
-implemented a working forward kinematics, we thought about using only the
-forward kinematics to make a look-up table of all the angle settings belonging
-to a position (relative to the support leg, as the way our forward kinematics
-works). Now by working through all ranges of angles in the kicking leg with a
-decent step size we could make a dictionary of all positions and their angles. 
+Because we already had a workable solution for forward kinematics, we thought
+about creating a lookup table by iterating through a collection of joint angles
+and saving them in a hashmap along with the corresponding end effector position.
 Integrating this using the balancing system however became a bit harder because
-we needed to track the position of the hip angles(these are used for changing
-the pose of the Nao) in the supporting leg, and in the end constructing the
-inverse kinematics ourselves was an easier solution, and in the end constructing
-the inverse kinematics ourselves was an easier solution.
+we needed to track the position of the hip angles (these were, at the time used
+for changing the pose of the Nao) in the support leg, and in the end
+constructing the inverse kinematics ourselves was an easier solution.
 
 \bibliographystyle{plain}
 \bibliography{library}
