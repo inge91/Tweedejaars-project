@@ -15,7 +15,7 @@
 \newcommand{\bvect}[1] {\begin{bmatrix} #1 \end{bmatrix}}
 \newcommand{\pvect}[1] {\begin{pmatrix} #1 \end{pmatrix}}
 
-\title{Designing a Dynamic Kick for the Nao Robot}
+\title{A Dynamic Kick for the Nao Robot}
 \author{ Inge Becht \\ 
          Maarten de Jonge \\ 
          Richard Pronk \\\\
@@ -36,31 +36,31 @@
 
 \section{Introduction} 
 Our research is concerned with making a dynamic, closed
-loop stabilised kick for the Nao robot. The Nao is a humanoid robot made by
+loop, stabilized kick for the Nao robot. The Nao is a humanoid robot made by
 Aldebaran Robotics\footnote{http://www.aldebaran-robotics.com/en/}. It is used in
-the Stand Platform League of the
-RoboCup\footnote{http://wiki.robocup.org/wiki/Standard\_Platform\_League}, an organisation which organizes football (soccer)
+the Standard Platform League of the
+RoboCup\footnote{http://wiki.robocup.org/wiki/Standard\_Platform\_League}, an organization which organizes football (soccer)
 competitions for autonomous robots.
 
-Kicking, of course, is an important part of football, and thus a good kick is vital to achieving good results in the Robocup. There are essentially two ways of making a humanoid robot kick a ball:
+Kicking, of course, is an important part of football, and thus a good kick is vital to achieving good results in the RoboCup. There are essentially two ways of making a humanoid robot kick a ball:
 \begin{enumerate}
   \item Positioning the robot in a specific place relative to the ball, then
       executing a manually specified series of movements to kick the ball
-  \item Using the location of the ball, and the direction you want the ball to
-      go to dynamically determine a trajectory for the robot to move
+  \item Using the location of the ball and the direction you want the ball to
+      go to dynamically determine a trajectory for the robot to follow
 \end{enumerate}
 The first one is referred to as a \emph{keyframe motion}, while the second one
-is the subject of this paper. Furthermore, we implement in this dynamic kick a
-balance system so that we get a more stable kick that is able to adapt itself to
-outside disturbances.
+is the subject of this paper. In addition to just making a dynamic kick which
+only balances its own trajectory, it was also attempt to negate external forces
+from other robots.
 
 \section{Related Works}
 Seeing as the Nao robots were introduced to the Standard Platform League (SPL)
-of the RoboCup in 2007, this is of course is not the first attempt at making a
+of the RoboCup in 2007, this of course is not the first attempt at making a
 kicking motion for them. Notable publications in this area by other SPL teams
-are by team B-Human (\cite{Muller2011}) and Nao Team Humboldt (\cite{Xu2010}).
+include team B-Human (\cite{Muller2011}) and Nao Team Humboldt (\cite{Xu2010}).
 
-Another possible approach to kick generation is through machine learning, as
+One possible approach to kick generation is through machine learning, as
 done by \cite{Meijer2012}.
 
 A related, and very common task in humanoid robotics, is the creation of a
@@ -72,18 +72,18 @@ techniques for balancing are proposed by \cite{Strom2010}, \cite{Graf2010} and
 \cite{Alcaraz-Jimenez2012}.
 
 \section{Basic information about the Nao}
-The Nao is a 58 cm high humanoid robot with total 21 degrees of freedom developed by Aldebaran Robotics. The Nao
-is equipped with all kinds of hardware that can be used to solve our problem
-statement. Here we will discuss the most
+The Nao is a 58 cm high humanoid robot with a total of 21 degrees of freedom developed by Aldebaran Robotics. The Nao
+is equipped with all kinds of hardware that can be used to solve our problem. Here we will discuss the most
 important elements of the Nao that are useful for understanding the report. All
-experiments have been conducted on a Robocup Nao Version 3.3 H21.
+experiments have been conducted on a RoboCup Nao Version 3.3 H21.
 
 \subsection{Foot sensors} 
 \begin{figure}[htb]
 	\centering
 	\includegraphics[scale=0.75]{pics/naosfeet.jpg}
 	\label{fig:fsr_plot2}
-	\caption{The force-sensitive resistors under Nao's feet}
+    \caption{The force-sensitive resistors under Nao's feet (courtesy of
+    Aldebaran Robotics)}
 \end{figure}
 There are different hardware implementations for the
 Nao that can be used to figure out how stable it is in its current position. The one we use in this
@@ -96,7 +96,8 @@ which give a constant reading of the current pressure on each of the sensors.
 	\centering
 	\includegraphics[scale=0.6]{pics/hardware_inertialunit.png}
 	\label{fig:hardware}
-	\caption{A schematic drawing of the Nao, showing his axis}
+    \caption{A schematic drawing of the Nao, showing his axis (courtesy of
+    Aldebaran Robotics)}
 \end{figure}
 
 Figure \ref{fig:hardware} shows the way in which the coordinate system works that we
@@ -108,16 +109,14 @@ report will be around this same coordinate frame.
 
 \section{Motivation for this project} 
 While the Dutch Nao Team\cite{DNT2012} (the team that represents the Netherlands
-in the Standard Platform League of the Robocup) has achieved some degree of
+in the Standard Platform League of the RoboCup) has achieved some degree of
 success with simple keyframe motions, they are clearly not optimal; a lot of
 time is wasted positioning the robot at just the right angle relative to kick
 the ball towards the goal. Furthermore, if the ball gets moved after the kicking
 motion has started, it is impossible for the robot to correct its kicking path.
 These are all problems that can be reduced with a dynamically generated motion,
-which is why we attempted to create one. 
+which is why we attempt to create one. 
 
-Here are some more reasons why a dynamic kick is to preferred above keyframe
-kicks.
 
 \subsection{Stability in a match}
 Since there is more than one player on
@@ -128,11 +127,6 @@ so when there is no compensation for it when executing a motion. A dynamic
 kick keeps track of how stable Naos current position is and compensates for
 outside disturbances while kicking. 
 
-Overheating is also a problem for Naos. When this occurs the joints will perform
-not as expected or even fail. Using this dynamic system the temperature of the
-joints can be used to prevent overheating. The executed kick will depend less
-on force so the robot will spare its joints.
-
 \subsection{Harder kicks and better stability}
 Being able to define when a kick is stable enough to execute we can make a
 trade-off between how far the ball is kicked and the stableness of the
@@ -140,12 +134,12 @@ robot, resulting in harder kicks then when using keyframe motions.
 
 \subsection{Helping the Dutch Nao Team}
  Working on this project will help the Dutch Nao Team in their competition. The
-current keyframe motion used by DNT is very brittle, with our dynamic kick we
+current keyframe motion used by DNT is very brittle. With our dynamic kick we
 create a
 more robust kick that can give our universities team a bigger chance of
 winning in competitions. 
 This integration makes this project a valuable activity in the long run, and not
-just a one time experiment that will not be further developed.
+just a one time experiment that would not be further developed.
 
 \section{Methodology}
 The task of kicking a ball requires a couple of things: We need to plan a path
@@ -188,7 +182,7 @@ mass of the entire robot.
 The goal of the proportional controller (\emph{P-controller}) is to keep the
 CoM as close as possible to the center of the support polygon at all times.
 The CoM is calculated relative to the standing leg's ankle joint, and we define
-the center of the support polygon to be ``about 3cm in front of that''. Thus the
+the center of the support polygon to be ``about 3 cm in front of that''. Thus the
 error-calculation becomes:
 \begin{align}
   \begin{bmatrix} error_x \\ error_y \end{bmatrix} = \begin{bmatrix} 3 \\ 0 \end{bmatrix} - \vec{CoM_{xy}} 
@@ -197,7 +191,7 @@ The $z$-axis is ignored, because the height is irrelevant in this case (the CoM
 balancer only accounts for gravity, not other phenomena such as momentum).
 
 The proportional control equation with two arbitrary \emph{gain} parameters is
-shown in \ref{eq:pcontrolx} and \ref{eq:pcontroly}. The use of a different gain
+shown in (\ref{eq:pcontrolx}) and (\ref{eq:pcontroly}). The use of a different gain
 parameter for the x- and y-directions allows compensation for the fact that the
 Nao's feet (and really, feet in general) are rather elongated in the forward
 direction, making them far more stable to forces along the $x$-axis as opposed to
@@ -223,9 +217,9 @@ $\mathcal{O}(2^n)$ in amount of actuated joints.
 
 \subsection{Using force-sensitive resistors to keep balance}
 
-Although the Center Of Mass balancing allows for good convergence to a
+Although the CoM-based balancing allows for good convergence to a
 stable position, it does not react to external influences.
-Using the force-sensitive resistors under Nao's feet these external influences can be measured and neutralized.
+Using the force-sensitive resistors under Nao's feet, these external influences can be measured and neutralized.
 \begin{figure}[htb]
 	\centering
 	\includegraphics[scale=0.75]{pics/naosfeet.jpg}
@@ -255,8 +249,9 @@ and the derivative term is given by:
 \[
 D_{out}  = K_d\frac{d}{dt}e(t)
 \]
-The Hip Pitch is used to compensate for the error in the $x$ direction (Front
-and Back) while the Hip Roll compensates for the error in the $y$ direction (Right and Left).
+The hip pitch is used to compensate for the error in the $x$ direction ($Front$
+and $Back$) while the hip roll compensates for the error in the $y$ direction
+($Right$ and $Left$).
 The angle offsets for the hip joints are calculated by
 \begin{itemize}
     \item $e(t)_x = (Front_t - Back_t)$
@@ -268,13 +263,14 @@ The angle offsets for the hip joints are calculated by
     \item  $Offset$ $Hip$ $Pitch$ $= P_{out}x + D_{out}x$ 
     \item $Offset$ $Hip$ $Roll$ $=  P_{out}y + D_{out}y$ 
 \end{itemize}
-Where $timeTaken = time_t - time_{t-1}$(the time taken between the current and previous execution).\\\\
-Using an error band to allow a range of stable points and therefore better
-conversion. Without this range the robot would diverge and finally fall due to
-the oscillation. When the error is within this range it will be set to 0, this
-allows the robot to converge to a stable position. Due to the robots build the
+Where $timeTaken = time_t - time_{t-1}$(the time taken between the current and previous execution).
+
+Using an error band allows for a range of stable points and therefore better
+convergence. Without this range the robot would diverge and finally fall due to
+oscillation. When the error is within this range it will be set to 0, this
+allows the robot to converge to a stable position. Due to the robot's build the
 forward and sideways stabilization act differently, different error bands are
-needed for either side. The function of the proportional term becomes;
+needed for either side. The function of the proportional term becomes:
 \[
   P_{out}x = \left\{ 
   \begin{array}{l l}
@@ -310,7 +306,7 @@ $Thres_{min Y} = -Thres_{max Y}$.
 
 \subsubsection{Sampling Rate Issues}
 
-When using the balancer as it is now, requires different parameters for every sampling rate.
+Using the balancer as it is now requires different parameters for every sampling rate.
 Since the sampling rate is determent by the available CPU power, a fix is needed that will added the sampling rate in the calculation.
 Doing this allows the same parameters to be used regardless of the background processes or CPU type.
 The follow fix is applied:
@@ -322,21 +318,22 @@ With this fix the angle offsets will be relative to $timeTaken$, giving a bigger
 
 \subsubsection{The setup error}
 
-As the script runs the first measurements of TimeTaken are relative big in some cases even a factor 100 from the normal value.
+As the script runs the first measurements of $timeTaken$ are relative big in some cases even a factor 100 from the normal value.
 This big value will change the angles in such a way the robot will overshoot and possibly even fall.
-Therefore disregarding these values will be necessary, adding a low-pass filter to $\nabla TimeTaken$ allows finding these measurements. When the threshold of the low-pass filter has been exceeded the angle offsets will be set to 0, ignoring the large values.
+Therefore disregarding these values will be necessary, adding a low-pass filter
+to $\Delta timeTaken$ allows finding these measurements. When the threshold of the low-pass filter has been exceeded the angle offsets will be set to 0, ignoring the large values.
 \[
-  Offset Hip Pitch = \left\{ 
+  Offset hip pitch = \left\{ 
   \begin{array}{l l}
-     (P_{out}x + D_{out}x)  * timeTaken& \quad \text{if $\nabla TimeTaken < Thres_{low-pass}$}\\ 
+     (P_{out}x + D_{out}x)  * timeTaken& \quad \text{if $\Delta timeTaken < Thres_{low-pass}$}\\ 
     0 & \quad \text{Otherwise}\\
   \end{array} \right.
 \]
 
 \[
-  Offset Hip Roll = \left\{ 
+  Offset hip roll = \left\{ 
   \begin{array}{l l}
-     (P_{out}y + D_{out}y)  * timeTaken& \quad \text{if $\nabla TimeTaken < Thres_{low-pass}$}\\ 
+     (P_{out}y + D_{out}y)  * timeTaken& \quad \text{if $\Delta timeTaken < Thres_{low-pass}$}\\ 
     0 & \quad \text{Otherwise}\\
   \end{array} \right.
 \]
@@ -631,7 +628,7 @@ no overlap in the reachable space and the position of the other leg.
   \caption{With the balancer turned on (The Nao falls at 104 seconds)}
   \label{fig:pushing2}
 \end{figure}
-Since balancing in the y direction is the biggest challenge to stabilize we used another Nao to push the balancing Nao in this direction (see  Figure \ref{fig:pushing}).
+Since balancing in the $y$ direction is the biggest challenge to stabilize we used another Nao to push the balancing Nao in this direction (see  Figure \ref{fig:pushing}).
 We ran the script twice, one time with the balancer on and the second time where the offsets of the angles where forced to 0  (keeping the plotting function but killing the balance system)\\\\
 As seen in the plots (Figure \ref{fig:pushing1} and Figure \ref{fig:pushing2}), using the balancer helps to stay up longer (twice as long) but still can't fully handle the external influences from the pushing Nao.
 The problem is that there aren't many stable poses in the sideways direction and even a small change will have a relative large influence on the sensor data.
