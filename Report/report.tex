@@ -513,11 +513,10 @@ Firstly, to determine the point between the ball and a possible retraction point
 we use the following calculation: 
 
 \begin{align}
-d_r = \vec{e}^{x} * || \vec{p}_{c}^{x} \dot \vec{p}^{x} || + \vec{e}^y * ||\vec{p}_{c}^z
-    \dot \vec{p}^z|| * 0.3
-\ref{eq:distance}
+    d_r = \vec{e}^{x} * || \vec{p}^{x} -\vec{p}_{c}^{x}|| + \vec{e}^y *
+||\vec{p}^{y} - \vec{p}_{c}^y|| +  ||
+\vec{p}^z - \vec{p}_{c}^z|| * 0.3
 \end{align}
-
 Where $\vec{p_c}$ is the contact point where the ball should be hit,
 $\vec{p}$ is a possible retraction point, $\vec{e}$ is theunit vector pointing
 to the desired desination and $\vec{d_r}$ the distance between both
