@@ -54,12 +54,29 @@ is the subject of this paper. Furthermore, we implement in this dynamic kick a
 balance system so that we get a more stable kick that is able to adapt itself to
 outside disturbances.
 
+\section{Related Works}
+Seeing as the Nao robots were introduced to the Standard Platform League (SPL)
+of the RoboCup in 2007, this is of course is not the first attempt at making a
+kicking motion for them. Notable publications in this area by other SPL teams
+are by team B-Human (\cite{Muller2011}) and Nao Team Humboldt (\cite{Xu2010}).
+
+Another possible approach to kick generation is through machine learning, as
+done by \cite{Meijer2012}.
+
+A related, and very common task in humanoid robotics, is the creation of a
+walking gait. This shares a number of important subproblems with the task of
+kicking; most notably, balancing and inverse kinematics. The B-Human team
+released an important paper in 2009 featuring not only a walk, but also a
+complete analytical inverse kinematics solution (\cite{Graf2009}). Further
+techniques for balancing are proposed by \cite{Strom2010}, \cite{Graf2010} and
+\cite{Alcaraz-Jimenez2012}.
+
 \section{Basic information about the Nao}
 The Nao is a 58 cm high humanoid robot with total 21 degrees of freedom developed by Aldebaran Robotics. The Nao
 is equipped with all kinds of hardware that can be used to solve our problem
 statement. Here we will discuss the most
 important elements of the Nao that are useful for understanding the report. All
-experiments have been conducted on a Robocup Nao Version 3.3 H21
+experiments have been conducted on a Robocup Nao Version 3.3 H21.
 
 \subsection{Foot sensors} 
 \begin{figure}[htb]
