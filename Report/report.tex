@@ -863,15 +863,14 @@ the sensor values used to find these positions weren't well enough to use for
 such an operation. Another big problem is that actuation appeared to be quite
 slow; far too slow for a powerful football kick.
 
-\subsection{Using a simulator to find all possible positions}
-We also tried to use the \emph{setPosition} and \emph{getPositions} function in
+\subsection{Using a simulator to find all reachable positions}
+We also tried to use the Cartesion Control API in
 a simulated environment\footnote{The environment used can be found on
-http://www.nao.sandern.com}. This time we wanted to get a big table with all
-reachablee positions for the leg. We used \emph{setPosition}to set the leg
-somewhere in space and if the setposition was the same as \emph{getPosition}
-gave back\footnote{\emph{setPosition} always gives back a position but does not
-work when the position is out of range for the end-effector. It will start
-jittering and not end up in the same position as requested}, the position was possible and was written to file.
+http://www.nao.sandern.com} to obtain a table containing all reachable locations
+of a given leg, within a certain resolution.
+Throughout a given range of world positions, the Nao was made to move its foot
+there, after which the position of the foot was requested to see if the position
+had been reaches.
 In the end this was not as reliable as hoped due to the same issues as spoken in
 the last section.
 
