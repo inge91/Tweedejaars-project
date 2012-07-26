@@ -583,12 +583,11 @@ retraction point, something that will become evident in the results section.
 
 All possible positions $\vec{p}$ should be considered to solve this equation. To
 determine what is possible the Nao is set in different positions and using a
-forward kinematics chain the end effector of each leg in world space coordinates
-can be retrieved. This way roughly all possible positions are set and can be
+forward kinematics chain the end effector of each leg where the origin is the
+supporting foot can be retrieved. This way roughly all possible positions are set and can be
 looped through to find the point that maximizes above equation. By also
 retrieving the location of the standing leg we make sure that there is
 no overlap in the reachable space and the position of the other leg.
-
 
 \section{Experiments and Results}
 
