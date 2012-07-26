@@ -594,16 +594,38 @@ no overlap in the reachable space and the position of the other leg.
 \section{Experiments and Results}
 
 \subsection{Using force sensitive resistors for balancing}
-*picture from a Nao pushing the balancing Nao (the test environment)*\\\\
-*plot with balancer off*\\\\
-*plot with balancer on*\\\\
-As seen in the plots .....\\\\
-Due to Nao's build, sideways balancing is quite the challenge.
+\begin{figure}[htbp]
+  \centering
+  \makebox[\textwidth] {
+    \includegraphics[scale = 0.1]{pics/nao_pushing_side}
+  }
+  \caption{Nao (right) pushing the other Nao (left) in the sideways (y) direction}
+  \label{fig:pushing}
+\end{figure}
+\begin{figure}[htbp]
+  \centering
+  \makebox[\textwidth] {
+    \includegraphics[scale = 0.7]{pics/y_without_balance}
+  }
+  \caption{With the balancer turned off (The Nao falls at 22 seconds)}
+  \label{fig:pushing1}
+\end{figure}
+\begin{figure}[htbp]
+  \centering
+  \makebox[\textwidth] {
+    \includegraphics[scale = 0.6]{pics/y_with_balance}
+  }
+  \caption{With the balancer turned on (The Nao falls at 104 seconds)}
+  \label{fig:pushing2}
+\end{figure}
+Since balancing in the y direction is the biggest challenge to stabilize we used another Nao to push the balancing Nao in this direction (see  Figure \ref{fig:pushing}).
+We ran the script twice, one time with the balancer on and the second time where the offsets of the angles where forced to 0  (keeping the plotting function but killing the balance system)\\\\
+As seen in the plots (Figure \ref{fig:pushing1} and Figure \ref{fig:pushing2}), using the balancer helps to stay up longer (twice as long) but still can't fully handle the external influences from the pushing Nao.
 The problem is that there aren't many stable poses in the sideways direction and even a small change will have a relative large influence on the sensor data.
 Due to this the sideways balancing tends to overshoot and then start to oscillate.
 Taking a low $K_p$ and $K_d$ values gives a long settling time but minimizes the overshoot.  
 The system now converges relative slow to a stable position but is still able to negate external influences, providing a more stable and reliable balancer. 
-
+\FloatBarrier
 \subsection{Inverse kinematics}
 \FloatBarrier
 Since our inverse kinematics solution relies on two parameters
