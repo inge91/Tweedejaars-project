@@ -4,14 +4,14 @@
 #include <string>
 #include <map>
 #include <vector>
-
-#include <boost/numeric/ublas/matrix.hpp>
+#include <eigen2/Eigen/Core>
 #include <alproxies/almotionproxy.h>
 
-using namespace std;
-using boost::numeric::ublas::matrix;
+USING_PART_OF_NAMESPACE_EIGEN
 
-typedef map<string, matrix<double> > joint_loc_map;
+using namespace std;
+
+typedef map<string, Vector4d> joint_loc_map;
 
 /**
  * Handles both forward and inverse kinematics for a Nao robot.
@@ -87,7 +87,7 @@ class Kinematics
          * specified if the "online" parameter is true.
          * @return The center of mass of the robot given as a vector.
          */
-    matrix<double> get_CoM(BodyPart leg, bool online=true,
+    Vector4d get_CoM(BodyPart leg, bool online=true,
                            const map<string, double> &joint_dict=map<string, double>());
 
     private:
@@ -103,7 +103,7 @@ class Kinematics
          * @param joint_dict A map of joint names and their angle. Only needs to be
          * specified if the "online" parameter is true.
          */
-        void locs_from_torso(matrix<double> T, BodyPart part,
+        void locs_from_torso(Matrix4d T, BodyPart part,
                 joint_loc_map &joint_locs,
                 bool online=true,
                 const map<string, double> &joint_dict=map<string, double>());
@@ -120,7 +120,7 @@ class Kinematics
          * specified if the "online" parameter is true.
          * @return A 4x4 homogeneous rotation matrix.
          */
-        matrix<double> rotation_matrix(string joint, int towards_torso,
+        Matrix4d rotation_matrix(string joint, int towards_torso,
                 bool online=true,
                 const map<string, double> &joint_dict=map<string, double>());
 
@@ -131,7 +131,7 @@ class Kinematics
          * @param current The current joint.
          * @return A 4x4 homogenous translation matrix.
          */
-        matrix<double>translation_matrix(string previous, string current);
+        Matrix4d translation_matrix(string previous, string current);
         
         /**
          * Utility function: converts a 2-dimensional vector to a matrix.
@@ -139,7 +139,7 @@ class Kinematics
          * @param vec A 2-dimensional vector.
          * @return A matrix.
          */
-        static matrix<double> vec_to_mat(vector<vector<double> > vec);
+        static MatrixXd vec_to_mat(vector<vector<double> > vec);
 
         /**
          * Utility function: checks if a string contains a certain substring.

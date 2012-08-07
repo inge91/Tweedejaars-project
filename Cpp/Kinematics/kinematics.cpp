@@ -1,5 +1,4 @@
 #include <iostream>
-#include <boost/numeric/ublas/io.hpp>
 #include <alerror/alerror.h>
 #include <cmath>
 #include <functional>
@@ -7,10 +6,6 @@
 #include "kinematics.h"
 
 using namespace std;
-using boost::numeric::ublas::matrix;
-using boost::numeric::ublas::prod;
-using boost::numeric::ublas::identity_matrix;
-using boost::numeric::ublas::trans;
 
 Kinematics::Kinematics(string ip_address) :
     m_motion_proxy(ip_address, 9559)
@@ -38,7 +33,7 @@ joint_loc_map Kinematics::get_locations_dict(BodyPart leg, bool online,
     joint_loc_map joint_locs;
 
     // initial transformation matrix
-    matrix<double> T = identity_matrix<double>(4, 4);
+    Matrix4d T = Matrix4d::Identity();
 
     // loop through every element except the first,
     // along with its previous element
@@ -50,12 +45,13 @@ joint_loc_map Kinematics::get_locations_dict(BodyPart leg, bool online,
         int towards_torso = jointOffsets[pair<string, string>(previous, current)].second;
         towards_torso *= -1;
 
-        T = prod(T, translation_matrix(previous, current));
-        T = prod(T, rotation_matrix(current, towards_torso, online, joint_dict));
+        T *= translation_matrix(previous, current);
+        T *= rotation_matrix(current, towards_torso, online, joint_dict);
 
         // add joint location
-        vector<vector<double> > origin = { {0}, {0}, {0}, {1} };
-        joint_locs[current] = prod(T, vec_to_mat(origin));
+        Vector4d origin;
+        origin << 0, 0, 0, 1;
+        joint_locs[current] = T * origin;
     }
 
     // now calculate the all other branches from the torso
@@ -68,7 +64,7 @@ joint_loc_map Kinematics::get_locations_dict(BodyPart leg, bool online,
     return joint_locs;
 }
 
-matrix<double> Kinematics::get_CoM(BodyPart leg,
+Vector4d Kinematics::get_CoM(BodyPart leg,
                              bool online,
                              const map<string, double> &joint_dict)
 {
@@ -82,13 +78,13 @@ matrix<double> Kinematics::get_CoM(BodyPart leg,
     }
 
     // calculating CoM
-    vector<vector<double> > origin = { {0}, {0}, {0}, {1} };
-    matrix<double> com = vec_to_mat(origin);
+    Vector4d com;
+    com << 0, 0, 0, 1;
 
     string joint;
-    matrix<double> joint_loc;
+    Vector4d joint_loc;
     vector<double> centroid_vec;
-    matrix<double> centroid(4, 1);
+    Vector4d centroid(4, 1);
     double mass;
     for (auto &p : joint_locs) {
         joint = p.first;
@@ -96,8 +92,9 @@ matrix<double> Kinematics::get_CoM(BodyPart leg,
         pair<vector<double>, double> com_mass = jointCOM[joint];
         centroid_vec = com_mass.first;  mass = com_mass.second;
 
-        centroid(0, 0) = centroid_vec[0]; centroid(1, 0) = centroid_vec[1];
-        centroid(2, 0) = centroid_vec[2];
+        centroid(0) = centroid_vec[0];
+        centroid(1) = centroid_vec[1];
+        centroid(2) = centroid_vec[2];
 
         joint_loc += centroid;
         com += (mass * joint_loc) / total_mass;
@@ -107,7 +104,7 @@ matrix<double> Kinematics::get_CoM(BodyPart leg,
 }
 
 
-void Kinematics::locs_from_torso(matrix<double> T, BodyPart part,
+void Kinematics::locs_from_torso(Matrix4d T, BodyPart part,
                                    joint_loc_map &joint_locs,
                                    bool online,
                                    const map<string, double> &joint_dict)
@@ -138,16 +135,18 @@ void Kinematics::locs_from_torso(matrix<double> T, BodyPart part,
         int towards_torso = jointOffsets[pair<string, string>(previous, current)].second;
         towards_torso *= -1;
 
-        T = prod(T, translation_matrix(previous, current));
-        T = prod(T, rotation_matrix(current, towards_torso, online, joint_dict));
+        T *= translation_matrix(previous, current);
+        T *= rotation_matrix(current, towards_torso, online, joint_dict);
 
         // add joint location
-        vector<vector<double> > origin = { {0}, {0}, {0}, {1} };
-        joint_locs[current] = prod(T, vec_to_mat(origin));
+        Vector4d origin;
+        origin << 0, 0, 0, 1;
+
+        joint_locs[current] = T * origin;
     }
 }
 
-matrix<double> Kinematics::translation_matrix(string previous, string current)
+Matrix4d Kinematics::translation_matrix(string previous, string current)
 {
     // get the x, y and z offset values
     vector<double> offsets;
@@ -162,18 +161,16 @@ matrix<double> Kinematics::translation_matrix(string previous, string current)
     }
 
     // create the translation matrix
-    vector<vector<double> > mat =
-    {
-        {1, 0, 0, offsets[0]},
-        {0, 1, 0, offsets[1]},
-        {0, 0, 1, offsets[2]},
-        {0, 0, 0,          1}
-    };
+    Matrix4d mat;
+    mat << 1, 0, 0, offsets[0],
+           0, 1, 0, offsets[1],
+           0, 0, 1, offsets[2],
+           0, 0, 0, 1;
 
-    return vec_to_mat(mat);
+    return mat;
 }
 
-matrix<double> Kinematics::rotation_matrix(string joint, int towards_torso,
+Matrix4d Kinematics::rotation_matrix(string joint, int towards_torso,
                                              bool online,
                                              const map<string, double> &joint_dict)
 {
@@ -189,78 +186,62 @@ matrix<double> Kinematics::rotation_matrix(string joint, int towards_torso,
     if (joint != "Torso")
         angle = get_angles(joint) * towards_torso;
 
+    Matrix4d rot_matrix;
+
     /* special case for the HipYawPitch
        it's split up evenly between a Yaw and a Pitch component
      */
-    matrix<double> rot_matrix;
     if (contains(joint, "YawPitch")) {
         double h_angle = angle / 2.0;
 
-        vector<vector<double> > yaw_component =
-        {
-            {cos(h_angle), -sin(h_angle), 0, 0},
-            {sin(h_angle), cos(h_angle),  0, 0},
-            {0,            0,             1, 0},
-            {0,            0,             0, 1}
-        };
+        Matrix4d yaw_component;
+        Matrix4d pitch_component;
 
-        vector<vector<double> > pitch_component =
-        {
-            {cos(h_angle),  0, sin(h_angle), 0},
-            {0,             1, 0,            0},
-            {-sin(h_angle), 0, cos(h_angle), 0},
-            {0,             0, 0,            1}
-        };
+        yaw_component <<
+            cos(h_angle), -sin(h_angle), 0, 0,
+            sin(h_angle), cos(h_angle),  0, 0,
+            0,            0,             1, 0,
+            0,            0,             0, 1;
 
-        rot_matrix = prod(vec_to_mat(yaw_component),  vec_to_mat(pitch_component));
+        pitch_component <<
+            cos(h_angle),  0, sin(h_angle), 0,
+            0,             1, 0,            0,
+            -sin(h_angle), 0, cos(h_angle), 0,
+            0,             0, 0,            1;
+
+        rot_matrix = yaw_component * pitch_component;
     }
 
     else if (contains(joint, "Roll")) {
-        vector<vector<double> > rotation =
-        {
-            {1, 0,          0,           0},
-            {0, cos(angle), -sin(angle), 0},
-            {0, sin(angle), cos(angle),  0},
-            {0, 0,          0,           1}
-        };
-
-        rot_matrix = vec_to_mat(rotation);
+        rot_matrix <<
+            1, 0,          0,           0,
+            0, cos(angle), -sin(angle), 0,
+            0, sin(angle), cos(angle),  0,
+            0, 0,          0,           1;
     }
 
     else if (contains(joint, "Pitch")) {
-        vector<vector<double> > rotation =
-        {
-            {cos(angle),  0, sin(angle), 0},
-            {0,           1, 0,          0},
-            {-sin(angle), 0, cos(angle), 0},
-            {0,           0, 0,          1}
-        };
-
-        rot_matrix = vec_to_mat(rotation);
+        rot_matrix <<
+            cos(angle),  0, sin(angle), 0,
+            0,           1, 0,          0,
+            -sin(angle), 0, cos(angle), 0,
+            0,           0, 0,          1;
     }
 
     else if (contains(joint, "Yaw")) {
-        vector<vector<double> > rotation =
-        {
-            {cos(angle), -sin(angle), 0, 0},
-            {sin(angle), cos(angle),  0, 0},
-            {0,          0,           1, 0},
-            {0,          0,           0, 1}
-        };
-
-        rot_matrix = vec_to_mat(rotation);
+        rot_matrix <<
+            cos(angle), -sin(angle), 0, 0,
+            sin(angle), cos(angle),  0, 0,
+            0,          0,           1, 0,
+            0,          0,           0, 1;
     }
 
     else if (contains(joint, "Torso")) {
-        vector<vector<double> > rotation =
-        {
-            {1, 0, 0, 0},
-            {0, 1, 0, 0},
-            {0, 0, 1, 0},
-            {0, 0, 0, 1}
-        };
-
-        rot_matrix = vec_to_mat(rotation);
+        rot_matrix <<
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1;
     }
 
     return rot_matrix;
@@ -274,9 +255,9 @@ bool Kinematics::contains(string str, string substr)
         return false;
 }
 
-matrix<double> Kinematics::vec_to_mat(vector<vector<double> > vec)
+MatrixXd Kinematics::vec_to_mat(vector<vector<double> > vec)
 {
-    matrix<double> mat(vec.size(), vec[0].size());
+    MatrixXd mat(static_cast<int>(vec.size()), static_cast<int>(vec[0].size()));
 
     for (unsigned i = 0; i < vec.size(); ++i) {
         for (unsigned j = 0; j < vec[0].size(); ++j) {

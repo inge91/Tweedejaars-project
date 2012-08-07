@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 2.8)
 project(Kinematics)
 
 find_package(qibuild)
-find_package(boost COMPONENTS numeric REQUIRED)
 
 add_definitions("-std=c++0x")
 
