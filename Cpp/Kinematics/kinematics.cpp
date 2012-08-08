@@ -5,6 +5,11 @@
 
 #include "kinematics.h"
 
+#include <eigen2/Eigen/Eigen>
+#include <eigen2/Eigen/Geometry>
+
+using Eigen::EigenSolver;
+
 using namespace std;
 
 Kinematics::Kinematics(string ip_address) :
@@ -13,6 +18,21 @@ Kinematics::Kinematics(string ip_address) :
 }
 
 joint_loc_map Kinematics::get_locations_dict(BodyPart leg, bool online,
+                                             const map<string, double> &joint_dict)
+{
+    map<string, Matrix4d> transformations = get_transformations_dict(leg, online,
+                                                                     joint_dict);
+    joint_loc_map locations;
+
+    Vector4d origin; origin << 0, 0, 0, 1;
+    for (pair<string, Matrix4d> p : transformations) {
+        locations[p.first] = p.second * origin;
+    }
+
+    return locations;
+}
+
+map<string, Matrix4d> Kinematics::get_transformations_dict(BodyPart leg, bool online,
                                                const map<string, double> &joint_dict)
 {
     vector<string> left_path = {"None", "LAnkleRoll", "LAnklePitch", "LKneePitch", "LHipPitch",
@@ -30,7 +50,7 @@ joint_loc_map Kinematics::get_locations_dict(BodyPart leg, bool online,
             break;
     }
 
-    joint_loc_map joint_locs;
+    map<string, Matrix4d> joint_locs;
 
     // initial transformation matrix
     Matrix4d T = Matrix4d::Identity();
@@ -51,7 +71,7 @@ joint_loc_map Kinematics::get_locations_dict(BodyPart leg, bool online,
         // add joint location
         Vector4d origin;
         origin << 0, 0, 0, 1;
-        joint_locs[current] = T * origin;
+        joint_locs[current] = T;
     }
 
     // now calculate the all other branches from the torso
@@ -64,48 +84,8 @@ joint_loc_map Kinematics::get_locations_dict(BodyPart leg, bool online,
     return joint_locs;
 }
 
-Vector4d Kinematics::get_CoM(BodyPart leg,
-                             bool online,
-                             const map<string, double> &joint_dict)
-{
-    joint_loc_map joint_locs = get_locations_dict(leg, online, joint_dict);
-
-    // calculating total mass
-    double total_mass = 0;
-
-    for (auto &jcom : jointCOM) {
-        total_mass += jcom.second.second;
-    }
-
-    // calculating CoM
-    Vector4d com;
-    com << 0, 0, 0, 1;
-
-    string joint;
-    Vector4d joint_loc;
-    vector<double> centroid_vec;
-    Vector4d centroid(4, 1);
-    double mass;
-    for (auto &p : joint_locs) {
-        joint = p.first;
-        joint_loc = p.second;
-        pair<vector<double>, double> com_mass = jointCOM[joint];
-        centroid_vec = com_mass.first;  mass = com_mass.second;
-
-        centroid(0) = centroid_vec[0];
-        centroid(1) = centroid_vec[1];
-        centroid(2) = centroid_vec[2];
-
-        joint_loc += centroid;
-        com += (mass * joint_loc) / total_mass;
-    }
-
-    return com;
-}
-
-
 void Kinematics::locs_from_torso(Matrix4d T, BodyPart part,
-                                   joint_loc_map &joint_locs,
+                                   map<string, Matrix4d> &joint_locs,
                                    bool online,
                                    const map<string, double> &joint_dict)
 {
@@ -142,7 +122,7 @@ void Kinematics::locs_from_torso(Matrix4d T, BodyPart part,
         Vector4d origin;
         origin << 0, 0, 0, 1;
 
-        joint_locs[current] = T * origin;
+        joint_locs[current] = T;
     }
 }
 
@@ -255,17 +235,85 @@ bool Kinematics::contains(string str, string substr)
         return false;
 }
 
-MatrixXd Kinematics::vec_to_mat(vector<vector<double> > vec)
+MatrixXd Kinematics::get_jacobian(BodyPart leg,
+                                  map<string, double> &joint_angles,
+                                  map<string, Matrix4d> &joint_trans)
 {
-    MatrixXd mat(static_cast<int>(vec.size()), static_cast<int>(vec[0].size()));
+    vector<string> joints = {"HipYawPitch", "HipRoll", "HipPitch", "KneePitch"};
+    vector<string> end_effectors;
 
-    for (unsigned i = 0; i < vec.size(); ++i) {
-        for (unsigned j = 0; j < vec[0].size(); ++j) {
-            mat(i, j) = vec[i][j];
+    switch (leg) {
+    case LLEG:
+        for (string &j : joints)
+            j.insert(j.begin(), 'L');
+        end_effectors.push_back("LAnkleRoll");
+        break;
+
+    case RLEG:
+        for (string &j : joints)
+            j.insert(j.begin(), 'R');
+        end_effectors.push_back("RAnkleRoll");
+        break;
+    }
+
+    int k = end_effectors.size();
+    int n = joints.size();
+
+    MatrixXd J(3*k, n);
+
+    // some variables for use during the loop
+    Vector4d origin; origin << 0, 0, 0, 1;
+    Vector3d v, s, p, cross_prod;
+    Vector4d s4, p4;
+
+    // filling the Jacobian
+    for (int i = 0; i < 3*k; i += 3) {
+        for (int j = 0; j < n; ++j) {
+            string joint = joints[j];
+            string end_effector = end_effectors[(i < 3) ? i : i - (2*(i/3))];
+
+            v = rotation_axis(joint_trans[joint]);
+
+            s4 = joint_trans[end_effector] * origin;
+            s = s4.start(3);
+
+            p4 = joint_trans[joint] * origin;
+            p = p4.start(3);
+
+            cross_prod = v.transpose().cross( (s - p).transpose() );
+
+            J(i,   j) = cross_prod(0);
+            J(i+1, j) = cross_prod(1);
+            J(i+2, j) = cross_prod(2);
         }
     }
 
-    return mat;
+    return J;
+}
+
+Vector3d Kinematics::rotation_axis(Matrix4d transformation)
+{
+    Matrix3d rotation = transformation.block(0, 0, 3, 3);
+
+    // getting the nullspace
+    EigenSolver<Matrix3d> eigensolver(rotation);
+    EigenSolver<Matrix3d>::EigenvalueType eigenValues;
+    EigenSolver<Matrix3d>::EigenvectorType eigenVectors;
+    Vector3d nullspace;
+
+    eigenValues = eigensolver.eigenvalues();
+    eigenVectors =  eigensolver.eigenvectors();
+
+    // the axis of rotation is equivalent to the nullspace of the rotation matrix,
+    // which can be found by searching for an eigenvector with the corresponding
+    // eigenvalue of 1
+    for (unsigned i = 0; i < eigenValues.size(); ++i) {
+        if (eigenValues(i).real() == 1) {
+            nullspace = eigenVectors.col(i).real();
+        }
+    }
+
+    return nullspace;
 }
 
 map<pair<string, string>, pair<vector<double>, double> > Kinematics::jointOffsets =
@@ -325,3 +373,15 @@ map<pair<string, string>, pair<vector<double>, double> > Kinematics::jointOffset
     { {"None", "LAnkleRoll"}                , {{0.0, 0.0, 0.0}, 1}},
     { {"LAnkleRoll", "None"}                , {{0.0, 0.0, 0.0}, -1}}
 };
+
+int main()
+{
+    Kinematics k("0.0.0.0");
+    Matrix4d trans;
+    trans << cos(1.5), -sin(1.5), 0, 0,
+             sin(1.5), cos(1.5), 0, 0,
+             0, 0, 1, 0,
+             0, 0, 0, 1;
+
+    k.rotation_axis(trans);
+}
