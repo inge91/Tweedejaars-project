@@ -12,8 +12,8 @@ using Eigen::EigenSolver;
 
 using namespace std;
 
-Kinematics::Kinematics(string ip_address) :
-    m_motion_proxy(ip_address, 9559)
+Kinematics::Kinematics(string ip_address)
+    : m_motion_proxy(ip_address, 9559)
 {
 }
 
@@ -316,6 +316,131 @@ Vector3d Kinematics::rotation_axis(Matrix4d transformation)
     return nullspace;
 }
 
+map<string, double> Kinematics::approach_position(BodyPart leg,
+                                                  Vector3d target,
+                                                  int lambda,
+                                                  int max_iter)
+{
+    // setting up some variable lists
+    vector<string> kick_joints = {"HipYawPitch", "HipRoll", "HipPitch", "KneePitch"};
+    vector<string> stand_joints = {"HipYawPitch", "HipRoll", "HipPitch", "KneePitch"};
+
+    vector<string> rest_of_body = {"HeadPitch", "HeadYaw", "LShoulderPitch",
+                                   "LShoulderRoll", "LElbowYaw", "LElbowRoll",
+                                   "RShoulderPitch", "RShoulderRoll", "RElbowYaw",
+                                   "RElbowRoll", "LAnkleRoll", "LAnklePitch",
+                                   "RAnklePitch", "RAnkleRoll"};
+
+    for (string &joint : kick_joints)
+        joint.insert(joint.begin(), leg == RLEG ? 'R' : 'L');
+    for (string &joint : stand_joints)
+        joint.insert(joint.begin(), leg == RLEG ? 'L' : 'R');
+
+    string end_effector = (leg == LLEG) ? "LAnkleRoll" : "RAnkleRoll";
+    BodyPart stand_leg = (leg == LLEG) ? RLEG : LLEG;
+
+    // initial angles
+    map<string, double> angles;
+    for (string &joint : kick_joints)
+      angles[joint] = m_motion_proxy.getAngles(joint, true)[0];
+    for (string &joint : stand_joints)
+      angles[joint] = m_motion_proxy.getAngles(joint, true)[0];
+    for (string &joint : rest_of_body)
+      angles[joint] = m_motion_proxy.getAngles(joint, true)[0];
+
+    // put the angles into vector-form as needed by the algorithm
+    VectorXd theta(kick_joints.size());
+    for (unsigned i = 0; i < kick_joints.size(); ++i)
+        theta(i) = angles[kick_joints[i]];
+
+    // save the best result in case the algorithm does not terminate before the
+    // maximum number of iterations
+    VectorXd best_theta;
+    int best_error = 99999;
+
+    Vector4d origin; origin << 0, 0, 0, 1;
+    // main loop
+    for (int i = 0; i < max_iter; ++i) {
+        map<string, Matrix4d> joint_trans;
+        Vector3d dX;
+        MatrixXd J, Jt;
+        VectorXd d_theta;
+
+        joint_trans = get_transformations_dict(stand_leg, false, angles);
+
+        // difference between goal position and end-effector
+        dX = target - (joint_trans[end_effector] * origin).start(3);
+
+        int error = dX.norm();
+        cout << "Error: " << error << endl; // debug
+
+        if (error < best_error) {
+            best_error = error;
+            best_theta = theta;
+        }
+
+        // target basically reached
+        if (best_error < 15)
+            break;
+
+        J = get_jacobian(leg, angles, joint_trans);
+
+        // Levenberg-Marquardt method to approximate the inverse of the Jacobian
+        Jt = J.transpose();
+        d_theta = (Jt * ((J * Jt) + (pow(lambda, 2) * Matrix3d::Identity())).inverse()) * dX;
+
+        // update theta and the joint angle dictionary
+        update_theta(theta, d_theta, kick_joints, leg);
+        update_angles(angles, kick_joints, theta, stand_joints);
+    }
+
+    // put the found angles into a dictionary shape
+    map<string, double> result_dict;
+
+    for (unsigned i = 0; i < kick_joints.size(); ++i)
+        result_dict[kick_joints[i]] = theta(i);
+
+    return result_dict;
+}
+
+void Kinematics::update_theta(VectorXd &theta,
+                              VectorXd d_theta,
+                              vector<string> kick_joints,
+                              BodyPart leg)
+{
+    // update the angles
+    theta += d_theta;
+
+    // check the boundaries
+    for (unsigned i = 0; i < kick_joints.size(); ++i) {
+        double min, max, angle;
+        string joint = kick_joints[i];
+        min = joint_constraints[joint].first;
+        max = joint_constraints[joint].second;
+
+        angle = theta(i);
+
+        if (angle < min)
+            theta(i) = min;
+        else if (angle > max)
+            theta(i) = max;
+    }
+}
+
+void Kinematics::update_angles(map<string, double> &angles,
+                               vector<string> joints,
+                               VectorXd theta,
+                               vector<string> stand_joints)
+{
+    for (unsigned i = 0; i < joints.size(); ++i)
+        angles[joints[i]] = theta(i);
+
+    // update the angles of the standing leg because they might've been changed
+    // by a balance controller
+    for (unsigned i = 0; i < stand_joints.size(); ++i)
+        angles[stand_joints[i]] = m_motion_proxy.getAngles(stand_joints[i], true)[0];
+}
+
 map<pair<string, string>, pair<vector<double>, double> > Kinematics::jointOffsets =
 {
     { {"Torso", "HeadYaw"},             { {0.0, 0.0, 126.50}, -1 } },
@@ -374,14 +499,29 @@ map<pair<string, string>, pair<vector<double>, double> > Kinematics::jointOffset
     { {"LAnkleRoll", "None"}                , {{0.0, 0.0, 0.0}, -1}}
 };
 
+map<string, pair<double, double> > Kinematics::joint_constraints =
+{
+    {"LHipYawPitch", {-1.145303, 0.740810}},
+    {"LHipRoll", 	{-0.379472, 0.790477}},
+    {"LHipPitch",	{-1.773912, 0.484090}},
+    {"LKneePitch",	{-0.092346, 2.112528}},
+    {"LAnklePitch",  {-1.189516, 0.922747}},
+    {"LAnkleRoll",   {-0.397880, 0.769001}},
+
+    {"RHipYawPitch", {-1.145303, 0.740810}},
+    {"RHipRoll", 	{-0.738231, 0.414754}},
+    {"RHipPitch",	{-1.772308, 0.485624}},
+    {"RKneePitch",	{-0.103083, 2.120198}},
+    {"RAnklePitch",  {-1.186448, 0.932056}},
+    {"RAnkleRoll",   {-0.785875, 0.388676}}
+};
+
 int main()
 {
     Kinematics k("0.0.0.0");
-    Matrix4d trans;
-    trans << cos(1.5), -sin(1.5), 0, 0,
-             sin(1.5), cos(1.5), 0, 0,
-             0, 0, 1, 0,
-             0, 0, 0, 1;
 
-    k.rotation_axis(trans);
+    Vector3d target;
+    target << 100, -100, 5;
+
+    k.approach_position(Kinematics::RLEG, target, 5, 300);
 }

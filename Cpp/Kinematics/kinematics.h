@@ -51,6 +51,11 @@ class Kinematics
          */
         static map<string, pair<vector<double>, double> > jointCOM;
 
+        /**
+         * A map of joints and their valid range of angles.
+         */
+        static map<string, pair<double, double> > joint_constraints;
+
     private:
         /**
          * An ALMotion proxy
@@ -93,6 +98,21 @@ class Kinematics
          */
         map<string, Matrix4d> get_transformations_dict(BodyPart leg, bool online=true,
                 const map<string, double> &joint_dict=map<string, double>());
+
+        /**
+         * Uses an iteratives inverse kinematics solution to approach a given
+         * location with a certain end-effector.
+         *
+         * @param leg The leg to actuate.
+         * @param target The target position of the actuated leg, expressed
+         * relative to the other leg.
+         * @param lambda Dampening parameter for damped least squares method.
+         * @param max_iter Maximum number of iterations to use.
+         */
+        map<string, double> approach_position(BodyPart leg,
+                                              Vector3d target,
+                                              int lambda=5,
+                                              int max_iter=100);
 
     private:
         /**
@@ -159,7 +179,6 @@ class Kinematics
                               map<string, double> &joint_angles,
                               map<string, Matrix4d> &joint_trans);
 
-        public: // debug
         /**
          * Returns the axis of rotation of the given homogeneous transformation
          * matrix.
@@ -168,6 +187,33 @@ class Kinematics
          * @return A 3x1 unit vector.
          */
         Vector3d rotation_axis(Matrix4d transformation);
+
+        /**
+         * Updates theta vector, respecting each joint's angle constraints.
+         *
+         * @param theta The initial value of theta.
+         * @param d_theta The offsets to be added to theta.
+         * @param leg The kicking leg.
+         * @return Updates theta in place.
+         */
+        void update_theta(VectorXd &theta,
+                          VectorXd d_theta,
+                          vector<string> kick_joints,
+                          BodyPart leg);
+
+        /**
+         * Updates a map of angles with new values.
+         *
+         * @param angles A map of <string, double> pairs of joint angles
+         * @param joints A list of joint names
+         * @param theta A vector of joint angles in the same order as "joints"
+         * @param stand_joints The joints of the support leg.
+         * @return Updates angle in place.
+         */
+        void update_angles(map<string, double> &angles,
+                           vector<string> joints,
+                           VectorXd theta,
+                           vector<string> stand_joints);
 };
 
 #endif
