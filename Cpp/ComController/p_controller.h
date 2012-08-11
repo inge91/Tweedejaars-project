@@ -3,7 +3,7 @@
 
 #include <string>
 #include <map>
-#include <eigen2/Eigen/Core>
+#include <Eigen/Core>
 #include <alproxies/almotionproxy.h>
 #include "kinematics.h"
 

@@ -5,8 +5,8 @@
 
 #include "kinematics.h"
 
-#include <eigen2/Eigen/Eigen>
-#include <eigen2/Eigen/Geometry>
+#include <Eigen/Eigen>
+#include <Eigen/Geometry>
 
 using Eigen::EigenSolver;
 

@@ -10,6 +10,6 @@ add_definitions("-std=c++0x")
 qi_create_lib(kinematics SHARED
     kinematics.cpp)
 
-qi_use_lib(kinematics ALCOMMON)
+qi_use_lib(kinematics ALCOMMON eigen)
 
 qi_stage_lib(kinematics)

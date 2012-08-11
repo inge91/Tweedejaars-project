@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 #include <vector>
-#include <eigen2/Eigen/Core>
+#include <Eigen/Core>
 #include <alproxies/almotionproxy.h>
 
 USING_PART_OF_NAMESPACE_EIGEN
