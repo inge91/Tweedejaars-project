@@ -5,6 +5,7 @@
 #include <map>
 #include <eigen2/Eigen/Core>
 #include <alproxies/almotionproxy.h>
+#include "kinematics.h"
 
 using namespace std;
 USING_PART_OF_NAMESPACE_EIGEN
@@ -14,7 +15,7 @@ class PController
 /* methods */
 public:
     // constructor
-    PController(string standing_leg, string ip,
+    PController(Kinematics::BodyPart standing_leg, string ip,
                 double gain=0.0005,
                 double threshold=5);
 
@@ -31,8 +32,8 @@ public:
 private:
     AL::ALMotionProxy m_mp;
     string m_leg_prefix;
-    string m_leg;
-    Kinematics m_kinematcs;
+    Kinematics::BodyPart m_leg;
+    Kinematics m_kinematics;
     double m_gain;
     double m_threshold;
 };

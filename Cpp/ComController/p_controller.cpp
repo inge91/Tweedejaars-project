@@ -10,12 +10,12 @@
 using namespace std;
 USING_PART_OF_NAMESPACE_EIGEN
 
-PController::PController(string standing_leg, string ip,
+PController::PController(Kinematics::BodyPart standing_leg, string ip,
                          double gain,
                          double threshold) :
     m_kinematics(ip), m_mp(ip, 9559)
 {
-    m_leg_prefix = standing_leg == "LLeg" ? "L" : "R";
+    m_leg_prefix = standing_leg == Kinematics::LLEG ? "L" : "R";
     m_leg = standing_leg;
     m_gain = gain;
     m_threshold = threshold;
@@ -25,7 +25,7 @@ void PController::run()
 {
     // main loop
     while (true) {
-        pair<double, double> error = this->error(m_com.get_CoM(m_leg));
+        pair<double, double> error = this->error(m_kinematics.get_CoM(m_leg));
         double error_x = error.first;
         double error_y = error.second;
 
@@ -52,8 +52,8 @@ void PController::run()
         double best_pangle = 0;
         double best_rangle = 0;
         double best_com_error = 999;
-        vector<double> pitch_range = {0, p_out_x * (m_leg == "LLeg" ? -1 : 1)};
-        vector<double> roll_range = {0, p_out_y * (m_leg == "LLeg" ? 1 : 1)};
+        vector<double> pitch_range = {0, p_out_x * (m_leg == Kinematics::LLEG ? -1 : 1)};
+        vector<double> roll_range = {0, p_out_y * (m_leg == Kinematics::LLEG ? 1 : 1)};
 
         for (double &pitch_angle : pitch_range) {
             for (double &roll_angle : roll_range) {
@@ -61,7 +61,7 @@ void PController::run()
                 js[m_leg_prefix + "HipRoll"] += roll_angle;
                 js[m_leg_prefix + "HipPitch"] += pitch_angle;
 
-                pair<double, double> com_err = this->error(m_com.get_CoM(m_leg, false, js));
+                pair<double, double> com_err = this->error(m_kinematics.get_CoM(m_leg, false, js));
                 double abs_err = abs(com_err.first) + abs(com_err.second);
 
                 if (abs_err < best_com_error) {
@@ -100,6 +100,5 @@ vector<string> PController::joints =
 
 int main(int argc, char *argv[])
 {
-    PController cont(argv[1], argv[2], atof(argv[3]), atof(argv[4]));
-    cont.run();
+    cout << "It's working!" << endl;
 }
