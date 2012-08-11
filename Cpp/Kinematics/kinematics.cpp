@@ -403,6 +403,25 @@ map<string, double> Kinematics::approach_position(BodyPart leg,
     return result_dict;
 }
 
+map<string, double> Kinematics::change_position(BodyPart leg,
+                                                Vector3d offset,
+                                                int lambda,
+                                                int max_iter)
+{
+    BodyPart support_leg = (leg == RLEG) ? LLEG : RLEG;
+    joint_loc_map joint_locs = get_locations_dict(support_leg);
+
+    Vector3d current_loc, target;
+    if (leg == LLEG)
+        current_loc = joint_locs["LAnkleRoll"].start(3);
+    else
+        current_loc = joint_locs["RAnkleRoll"].start(3);
+
+    target = current_loc + offset;
+
+    return approach_position(leg, target, lambda, max_iter);
+}
+
 void Kinematics::update_theta(VectorXd &theta,
                               VectorXd d_theta,
                               vector<string> kick_joints,

@@ -108,11 +108,28 @@ class Kinematics
          * relative to the other leg.
          * @param lambda Dampening parameter for damped least squares method.
          * @param max_iter Maximum number of iterations to use.
+         * @return A map of joints and their calculated angle.
          */
         map<string, double> approach_position(BodyPart leg,
                                               Vector3d target,
                                               int lambda=5,
                                               int max_iter=100);
+
+        /**
+         * Same as "approach_position", but with the target relative to the current
+         * position.
+         *
+         * @param leg The leg to actuate.
+         * @param target The target position of the actuated leg, expressed
+         * relative to the other leg.
+         * @param lambda Dampening parameter for damped least squares method.
+         * @param max_iter Maximum number of iterations to use.
+         * @return A map of joints and their calculated angle.
+         */
+        map<string, double> change_position(BodyPart leg,
+                                            Vector3d offset,
+                                            int lambda=5,
+                                            int max_iter=100);
 
     private:
         /**
