@@ -1,0 +1,4 @@
+<worktree>
+  <project src="Kinematics" />
+  <project src="." />
+</worktree>
