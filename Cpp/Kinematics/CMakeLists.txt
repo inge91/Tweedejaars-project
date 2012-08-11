@@ -7,5 +7,7 @@ add_definitions("-std=c++0x")
 
 # Create a executable named Kinematics
 # with the source file: main.cpp
-qi_create_bin(kinematics kinematics.cpp)
+qi_create_lib(kinematics kinematics.cpp)
 qi_use_lib(kinematics ALCOMMON)
+
+qi_stage_lib(kinematics)

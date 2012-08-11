@@ -4,15 +4,16 @@
 #include <vector>
 #include <map>
 #include <cmath>
-#include <boost/numeric/ublas/matrix.hpp>
+
+#include "kinematics.h"
 
 using namespace std;
-using boost::numeric::ublas::matrix;
+USING_PART_OF_NAMESPACE_EIGEN
 
 PController::PController(string standing_leg, string ip,
                          double gain,
                          double threshold) :
-    m_com(ip, 9559), m_mp(ip, 9559)
+    m_kinematics(ip), m_mp(ip, 9559)
 {
     m_leg_prefix = standing_leg == "LLeg" ? "L" : "R";
     m_leg = standing_leg;
@@ -77,20 +78,14 @@ void PController::run()
     }
 }
 
-pair<double, double> PController::error(matrix<double> com_loc)
+pair<double, double> PController::error(Vector4d com_loc)
 {
-    vector<vector<double> > polygon_v =
-    {
-        {3},
-        {0},
-        {0},
-        {1}
-    };
+    Vector4d polygon;
+    polygon << 3, 0, 0, 1;
 
-    matrix<double> polygon = CenterOfMass::vec_to_mat(polygon_v);
-    matrix<double> diff = polygon - com_loc;
+    Vector4d diff = polygon - com_loc;
 
-    return pair<double, double>(diff(0, 0), diff(1, 0));
+    return pair<double, double>(diff(0), diff(1));
 }
 
 vector<string> PController::joints =

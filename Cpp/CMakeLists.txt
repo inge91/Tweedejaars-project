@@ -5,3 +5,6 @@ find_package(qibuild)
 
 include_directories("${PROJECT_SOURCE_DIR}/Kinematics")
 add_subdirectory(Kinematics)
+
+include_directories("${PROJECT_SOURCE_DIR}/ComController")
+add_subdirectory(ComController)
