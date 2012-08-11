@@ -4,17 +4,18 @@
 #include <vector>
 #include <map>
 #include <cmath>
-#include <boost/numeric/ublas/matrix.hpp>
+
+#include "kinematics.h"
 
 using namespace std;
-using boost::numeric::ublas::matrix;
+USING_PART_OF_NAMESPACE_EIGEN
 
-PController::PController(string standing_leg, string ip,
+PController::PController(Kinematics::BodyPart standing_leg, string ip,
                          double gain,
                          double threshold) :
-    m_com(ip, 9559), m_mp(ip, 9559)
+    m_kinematics(ip), m_mp(ip, 9559)
 {
-    m_leg_prefix = standing_leg == "LLeg" ? "L" : "R";
+    m_leg_prefix = standing_leg == Kinematics::LLEG ? "L" : "R";
     m_leg = standing_leg;
     m_gain = gain;
     m_threshold = threshold;
@@ -24,7 +25,7 @@ void PController::run()
 {
     // main loop
     while (true) {
-        pair<double, double> error = this->error(m_com.get_CoM(m_leg));
+        pair<double, double> error = this->error(m_kinematics.get_CoM(m_leg));
         double error_x = error.first;
         double error_y = error.second;
 
@@ -51,8 +52,8 @@ void PController::run()
         double best_pangle = 0;
         double best_rangle = 0;
         double best_com_error = 999;
-        vector<double> pitch_range = {0, p_out_x * (m_leg == "LLeg" ? -1 : 1)};
-        vector<double> roll_range = {0, p_out_y * (m_leg == "LLeg" ? 1 : 1)};
+        vector<double> pitch_range = {0, p_out_x * (m_leg == Kinematics::LLEG ? -1 : 1)};
+        vector<double> roll_range = {0, p_out_y * (m_leg == Kinematics::LLEG ? 1 : 1)};
 
         for (double &pitch_angle : pitch_range) {
             for (double &roll_angle : roll_range) {
@@ -60,7 +61,7 @@ void PController::run()
                 js[m_leg_prefix + "HipRoll"] += roll_angle;
                 js[m_leg_prefix + "HipPitch"] += pitch_angle;
 
-                pair<double, double> com_err = this->error(m_com.get_CoM(m_leg, false, js));
+                pair<double, double> com_err = this->error(m_kinematics.get_CoM(m_leg, false, js));
                 double abs_err = abs(com_err.first) + abs(com_err.second);
 
                 if (abs_err < best_com_error) {
@@ -77,20 +78,14 @@ void PController::run()
     }
 }
 
-pair<double, double> PController::error(matrix<double> com_loc)
+pair<double, double> PController::error(Vector4d com_loc)
 {
-    vector<vector<double> > polygon_v =
-    {
-        {3},
-        {0},
-        {0},
-        {1}
-    };
+    Vector4d polygon;
+    polygon << 3, 0, 0, 1;
 
-    matrix<double> polygon = CenterOfMass::vec_to_mat(polygon_v);
-    matrix<double> diff = polygon - com_loc;
+    Vector4d diff = polygon - com_loc;
 
-    return pair<double, double>(diff(0, 0), diff(1, 0));
+    return pair<double, double>(diff(0), diff(1));
 }
 
 vector<string> PController::joints =
@@ -105,6 +100,5 @@ vector<string> PController::joints =
 
 int main(int argc, char *argv[])
 {
-    PController cont(argv[1], argv[2], atof(argv[3]), atof(argv[4]));
-    cont.run();
+    cout << "It's working!" << endl;
 }
