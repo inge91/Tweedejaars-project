@@ -32,6 +32,46 @@ joint_loc_map Kinematics::get_locations_dict(BodyPart leg, bool online,
     return locations;
 }
 
+Vector4d Kinematics::get_CoM(BodyPart leg, bool online,
+                             const map<string, double> &joint_dict)
+{
+    joint_loc_map joint_locs = get_locations_dict(leg, online, joint_dict);
+
+    // calculating total mass
+    double total_mass = 0;
+
+    for (auto &jcom : jointCOM) {
+        total_mass += jcom.second.second;
+    }
+
+    // calculating CoM
+    Vector4d com;
+    com << 0, 0, 0, 1;
+
+    string joint;
+    Vector4d joint_loc;
+    vector<double> centroid_vec;
+    Vector4d centroid;
+    double mass;
+    for (auto &p : joint_locs) {
+        joint = p.first;
+        joint_loc = p.second;
+        pair<vector<double>, double> com_mass = jointCOM[joint];
+        centroid_vec = com_mass.first;
+        mass = com_mass.second;
+
+        centroid(0) = centroid_vec[0];
+        centroid(1) = centroid_vec[1];
+        centroid(2) = centroid_vec[2];
+        centroid(3) = 1;
+
+        joint_loc += centroid;
+        com += (mass * joint_loc) / total_mass;
+    }
+
+    return com;
+}
+
 map<string, Matrix4d> Kinematics::get_transformations_dict(BodyPart leg, bool online,
                                                const map<string, double> &joint_dict)
 {
@@ -533,6 +573,33 @@ map<string, pair<double, double> > Kinematics::joint_constraints =
     {"RKneePitch",	{-0.103083, 2.120198}},
     {"RAnklePitch",  {-1.186448, 0.932056}},
     {"RAnkleRoll",   {-0.785875, 0.388676}}
+};
+
+map<string, pair<vector<double>, double> > Kinematics::jointCOM =
+{
+    {"RAnkleRoll",       { {25.40, -3.32, -32.41}, 0.16175}},
+    {"LAnkleRoll",       { {25.40,  3.32, -32.41},  0.16175}},
+    {"RAnklePitch",      { {1.42,   -0.28,  6.38},  0.13892}},
+    {"LAnklePitch",      { {1.42,   0.28,  6.38},  0.13892}},
+    {"RKneePitch",       { {4.22,   -2.52, -48.68},  0.25191}},
+    {"LKneePitch",       { {4.22,   2.52, -48.68},  0.25191}},
+    {"RHipPitch",        { {1.32,   -2.35, -53.52},  0.39421}},
+    {"LHipPitch",        { {1.32,   2.35, -53.52},  0.39421}},
+    {"RHipRoll",         { {-16.49, -0.29, -4.75},  0.13530}},
+    {"LHipRoll",         { {-16.49, 0.29, -4.75},  0.13530}},
+    {"RHipYawPitch",     { {-7.66,  12.00,  27.17}, 0.07117}},
+    {"LHipYawPitch",     { {-7.66,  -12.00,  27.17}, 0.07117}},
+    {"RElbowRoll",       { {65.36,  -0.34, -0.02},  0.18500}},
+    {"LElbowRoll",       { {65.36,  0.34, -0.02},  0.18500}},
+    {"RElbowYaw",        { {-25.60,  0.01, -0.19},  0.05971}},
+    {"LElbowYaw",        { {-25.60, - 0.01, -0.19},  0.05971}},
+    {"RShoulderRoll",    { {18.85,  -5.77,  0.65},  0.12309}},
+    {"LShoulderRoll",    { {18.85,  5.77,  0.65},  0.12309}},
+    {"RShoulderPitch",   { {-1.78,  24.96,  0.18},  0.06996}},
+    {"LShoulderPitch",   { {-1.78,  -24.96,  0.18},  0.06996}},
+    {"HeadYaw",          { {-0.02,  0.17,  -25.56},  0.05930}},
+    {"Torso",            { {-4.15,  0.07,   42.58},   1.03948}},
+    {"HeadPitch",        { {1.20,  -0.84,   53.53},  0.52065}}
 };
 
 int main()

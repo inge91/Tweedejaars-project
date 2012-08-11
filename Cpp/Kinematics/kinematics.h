@@ -100,6 +100,21 @@ class Kinematics
                 const map<string, double> &joint_dict=map<string, double>());
 
         /**
+         * Returns the center of mass location of the robot relative to the given
+         * support leg.
+         *
+         * @param leg The leg whose ankle is used as origin of the coordinate system.
+         * @param online Whether the calculation is done online (using the current
+         * pose of the Nao) or offline using a specified map of joint angles.
+         * @param joint_dict A map of joint names and their angle. Only needs to be
+         * specified if the "online" parameter is true.
+         *
+         * @return A 4-dimensional homogeneous vector representing the CoM location.
+         */
+        Vector4d get_CoM(BodyPart leg, bool online=true,
+                         const map<string, double> &joint_dict=map<string, double>());
+
+        /**
          * Uses an iteratives inverse kinematics solution to approach a given
          * location with a certain end-effector.
          *
