@@ -601,13 +601,3 @@ map<string, pair<vector<double>, double> > Kinematics::jointCOM =
     {"Torso",            { {-4.15,  0.07,   42.58},   1.03948}},
     {"HeadPitch",        { {1.20,  -0.84,   53.53},  0.52065}}
 };
-
-int main()
-{
-    Kinematics k("0.0.0.0");
-
-    Vector3d target;
-    target << 100, -100, 5;
-
-    k.approach_position(Kinematics::RLEG, target, 5, 300);
-}
