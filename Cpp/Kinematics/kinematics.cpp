@@ -412,7 +412,7 @@ map<string, double> Kinematics::approach_position(BodyPart leg,
         dX = target - (joint_trans[end_effector] * origin).start(3);
 
         int error = dX.norm();
-        cout << "Error: " << error << endl; // debug
+        // cout << "Error: " << error << endl; // debug
 
         if (error < best_error) {
             best_error = error;
