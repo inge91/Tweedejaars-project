@@ -2,4 +2,5 @@
   <project src="Kinematics" />
   <project src="ComController" />
   <project src="." />
+  <project src="Kinematics_SWIG" />
 </worktree>
