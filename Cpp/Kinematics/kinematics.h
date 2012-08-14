@@ -128,7 +128,8 @@ class Kinematics
         map<string, double> approach_position(BodyPart leg,
                                               Vector3d target,
                                               int lambda=5,
-                                              int max_iter=100);
+                                              int max_iter=100,
+					      int dmax=50);
 
         /**
          * Same as "approach_position", but with the target relative to the current
@@ -144,7 +145,8 @@ class Kinematics
         map<string, double> change_position(BodyPart leg,
                                             Vector3d offset,
                                             int lambda=5,
-                                            int max_iter=100);
+                                            int max_iter=100,
+					    int dmax=50);
 
     private:
         /**

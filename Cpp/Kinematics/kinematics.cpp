@@ -359,7 +359,8 @@ Vector3d Kinematics::rotation_axis(Matrix4d transformation)
 map<string, double> Kinematics::approach_position(BodyPart leg,
                                                   Vector3d target,
                                                   int lambda,
-                                                  int max_iter)
+                                                  int max_iter,
+						  int dmax)
 {
     // setting up some variable lists
     vector<string> kick_joints = {"HipYawPitch", "HipRoll", "HipPitch", "KneePitch"};
@@ -424,6 +425,8 @@ map<string, double> Kinematics::approach_position(BodyPart leg,
             break;
 
         J = get_jacobian(leg, angles, joint_trans);
+	if (dX.norm() >= dmax)
+	  dX = dmax * (dX / dX.norm());
 
         // Levenberg-Marquardt method to approximate the inverse of the Jacobian
         Jt = J.transpose();
@@ -446,7 +449,8 @@ map<string, double> Kinematics::approach_position(BodyPart leg,
 map<string, double> Kinematics::change_position(BodyPart leg,
                                                 Vector3d offset,
                                                 int lambda,
-                                                int max_iter)
+                                                int max_iter,
+						int dmax)
 {
     BodyPart support_leg = (leg == RLEG) ? LLEG : RLEG;
     joint_loc_map joint_locs = get_locations_dict(support_leg);
@@ -459,7 +463,7 @@ map<string, double> Kinematics::change_position(BodyPart leg,
 
     target = current_loc + offset;
 
-    return approach_position(leg, target, lambda, max_iter);
+    return approach_position(leg, target, lambda, max_iter, dmax);
 }
 
 void Kinematics::update_theta(VectorXd &theta,
