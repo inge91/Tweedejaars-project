@@ -58,8 +58,8 @@ void PController::run()
         for (double &pitch_angle : pitch_range) {
             for (double &roll_angle : roll_range) {
                 map<string, double> js(cur_joints);
-                js[m_leg_prefix + "HipRoll"] += roll_angle;
-                js[m_leg_prefix + "HipPitch"] += pitch_angle;
+                js[m_leg_prefix + "AnkleRoll"] += roll_angle;
+                js[m_leg_prefix + "AnklePitch"] += pitch_angle;
 
                 pair<double, double> com_err = this->error(m_kinematics.get_CoM(m_leg, false, js));
                 double abs_err = abs(com_err.first) + abs(com_err.second);
@@ -73,8 +73,8 @@ void PController::run()
         }
 
         // actuate!
-        m_mp.changeAngles(m_leg_prefix + "HipRoll", best_rangle, 1);
-        m_mp.changeAngles(m_leg_prefix + "HipPitch", best_pangle, 1);
+        m_mp.changeAngles(m_leg_prefix + "AnkleRoll", best_rangle, 1);
+        m_mp.changeAngles(m_leg_prefix + "AnklePitch", best_pangle, 1);
     }
 }
 
