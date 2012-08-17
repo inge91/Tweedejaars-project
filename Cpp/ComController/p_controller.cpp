@@ -4,6 +4,8 @@
 #include <vector>
 #include <map>
 #include <cmath>
+#include <cstdlib>
+#include <string>
 
 #include "kinematics.h"
 
@@ -100,5 +102,18 @@ vector<string> PController::joints =
 
 int main(int argc, char *argv[])
 {
-    cout << "It's working!" << endl;
+    string leg = string(argv[1]);
+    Kinematics::BodyPart bpart_leg;
+
+    string ip = string(argv[2]);
+    char *gain = argv[3];
+    char *threshold = argv[4];
+
+    if (leg == "LLeg")
+        bpart_leg = Kinematics::LLEG;
+    else
+        bpart_leg = Kinematics::RLEG;
+
+    PController p(bpart_leg, ip, strtod(gain, 0), strtod(threshold, 0));
+    p.run();
 }
