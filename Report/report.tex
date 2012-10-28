@@ -75,7 +75,7 @@ techniques for balancing are proposed by \cite{Strom2010}, \cite{Graf2010} and
 The Nao is a 58 cm high humanoid robot with a total of 21 degrees of freedom developed by Aldebaran Robotics. The Nao
 is equipped with all kinds of hardware that can be used to solve our problem. Here we will discuss the most
 important elements of the Nao that are useful for understanding the report. All
-experiments have been conducted on a RoboCup Nao Version 3.3 H21.
+experiments have been conducted on a RoboCup Nao H21, version $3.3$ and $4.0$.
 
 \subsection{Foot sensors} 
 \begin{figure}[htb]
@@ -175,8 +175,8 @@ requires each centroid to be described in the same coordinate system.
 In the Nao's documentation, each component's centroid is described relative to
 its own coordinate system, and offsets are included to convert between adjacent
 components’ coordinate systems. To handle this, we construct a chain of
-transformations to walk through each component while calculating the center of
-mass of the entire robot.
+transformations to walk through each component recursively while calculating the
+center of mass of the entire robot.
 
 \subsubsection{The proportional controller}
 The goal of the proportional controller (\emph{P-controller}) is to keep the
@@ -228,10 +228,10 @@ Using the force-sensitive resistors under Nao's feet, these external influences 
 \end{figure}\\
 The foot of the support leg will be divided into four sections (Front, Left, Right and Back). 
 \begin{itemize}
-    \item $Front_t = (1-s) * Front_{t-1} + s * (LFsrFL + LFsrFR)$
-    \item $Left_t = (1-s) * Left_{t-1} + s *(LFsrFL + LFsrRL)$
-    \item $Right_t = (1-s) * Right_{t-1} + s *(LFsrFR + LFsrRR)$
-    \item $Back_t = (1-s) * Back_{t-1} + s *(LFsrRL + LFsrRR)$ 
+    \item $Front_t = (1-s) * Front_{t-1} + s * (\textit{LFsrFL} + \textit{LFsrFR})$
+    \item $\textit{Left}_t = (1-s) * \textit{Left}_{t-1} + s *(\textit{LFsrFL} + \textit{LFsrRL})$
+    \item $\textit{Right}_t = (1-s) * \textit{Right}_{t-1} + s *(\textit{LFsrFR} + \textit{LFsrRR})$
+    \item $\textit{Back}_t = (1-s) * \textit{Back}_{t-1} + s *(\textit{LFsrRL} + \textit{LFsrRR})$ 
 \end{itemize}
 Where $s$ is the smoothing parameter and $t$ is the present time.
 
@@ -254,14 +254,14 @@ and $Back$) while the hip roll compensates for the error in the $y$ direction
 ($Right$ and $Left$).
 The angle offsets for the hip joints are calculated by
 \begin{itemize}
-    \item $e(t)_x = (Front_t - Back_t)$
-    \item $e(t)_y = (Right_t - Left_t)$
+    \item $e(t)_x = (\textit{Front}_t - \textit{Back}_t)$
+    \item $e(t)_y = (\textit{Right}_t - \textit{Left}_t)$
     \item $P_{out} x = e(t)_xK_p$
     \item $P_{out} y = e(t)_yK_p$
-    \item $D_{out} x = \frac{e(t)_x - e(t-1)_x}{timeTaken}K_d$
-    \item $D_{out} y = \frac{e(t)_y - e(t-1)_y}{timeTaken}K_d$
-    \item  $Offset$ $Hip$ $Pitch$ $= P_{out}x + D_{out}x$ 
-    \item $Offset$ $Hip$ $Roll$ $=  P_{out}y + D_{out}y$ 
+    \item $D_{out} x = \frac{e(t)_x - e(t-1)_x}{\textit{timeTaken}}K_d$
+    \item $D_{out} y = \frac{e(t)_y - e(t-1)_y}{]textit{timeTaken}}K_d$
+    \item $\textit{Offset}$ $\textit{Hip}$ $\textit{Pitch}$ $= P_{out}x + D_{out}x$ 
+    \item $\textit{Offset}$ $\textit{Hip}$ $R\textit{oll}$ $=  P_{out}y + D_{out}y$ 
 \end{itemize}
 Where $timeTaken = time_t - time_{t-1}$(the time taken between the current and previous execution).
 
@@ -311,8 +311,8 @@ Since the sampling rate is determent by the available CPU power, a fix is needed
 Doing this allows the same parameters to be used regardless of the background processes or CPU type.
 The follow fix is applied:
 \begin{itemize}
-	\item $Offset$ $Hip$ $Pitch$ $= (P_{out}x + D_{out}x) * timeTaken $ 
-	\item $Offset$ $Hip$ $Roll$ $=  (P_{out}y + D_{out}y) * timeTaken$ 
+	\item $\textit{Offset Hip Pitch} = (P_{out}x + D_{out}x) * \textit{timeTaken}$ 
+	\item $\textit{Offset Hip Roll} =  (P_{out}y + D_{out}y) * \textit{timeTaken}$ 
 \end{itemize}
 With this fix the angle offsets will be relative to $timeTaken$, giving a bigger offset when the time between the executions is larger and vice versa. This gives us a timing-independent compensation architecture which adapts to the available CPU power.
 
@@ -323,7 +323,7 @@ This big value will change the angles in such a way the robot will overshoot and
 Therefore disregarding these values will be necessary, adding a low-pass filter
 to $\Delta timeTaken$ allows finding these measurements. When the threshold of the low-pass filter has been exceeded the angle offsets will be set to 0, ignoring the large values.
 \[
-  Offset hip pitch = \left\{ 
+  \textit{Offset Hip Pitch} = \left\{ 
   \begin{array}{l l}
      (P_{out}x + D_{out}x)  * timeTaken& \quad \text{if $\Delta timeTaken < Thres_{low-pass}$}\\ 
     0 & \quad \text{Otherwise}\\
@@ -331,7 +331,7 @@ to $\Delta timeTaken$ allows finding these measurements. When the threshold of t
 \]
 
 \[
-  Offset hip roll = \left\{ 
+  \textit{Offset Hip Roll} = \left\{ 
   \begin{array}{l l}
      (P_{out}y + D_{out}y)  * timeTaken& \quad \text{if $\Delta timeTaken < Thres_{low-pass}$}\\ 
     0 & \quad \text{Otherwise}\\
@@ -434,7 +434,7 @@ certain threshold. This is done according to (\ref{eq:clampmag}).
   \end{cases}      \label{eq:clampmag}
 \end{align}
 
-Pseudocode for the algorithm can be seen in algorithm \ref{code:ik}.
+Pseudocode for the entire algorithm can be seen in algorithm \ref{code:ik}.
 
 \begin{algorithm}
   \begin{algorithmic}
@@ -583,7 +583,7 @@ the accuracy towards the force direction, we are able to make a balanced
 decision towards what a good retraction point is.
 
 \begin{align}
-    \vec{p} = 1-\delta * d_r + \delta * \frac{100}{d_a}
+    \vec{p} = (1-\delta) * d_r + \delta * \frac{100}{d_a}
 \label{eq:delta}
 \end{align}
 
@@ -661,7 +661,7 @@ parameter combinations which converged relatively quickly to aid in readability.
 \begin{figure}[htbp]
   \centering
   \makebox[\textwidth] {
-    \includegraphics[width=1.3\textwidth]{pics/ik_1.pdf}
+    \includegraphics[width=1.3\textwidth]{pics/ik_2.pdf}
   }
   \caption{The second position, with the positional error set out against
          the time.}
@@ -693,7 +693,7 @@ parameters, but they offer a nice starting point for further practical testing.
   }
   \caption{Visualistation of relevance of all tried retraction points. The red
       point is the finally used point. The red asterisk is the contact point. In
-      tis case the ball should be kicked straight forward.
+      this case the ball should be kicked straight forward.
          }
   \label{fig:retraction_plot1}
 \end{figure}
@@ -701,7 +701,7 @@ parameters, but they offer a nice starting point for further practical testing.
 To see how well the calculation of the retraction point really works, we
 visualised the different points that were tried out. Figure \ref{fig:retraction_plot1}
 is the result of a direction 
-$\begin{bmatrix} 1 \\  0 \\ 0 \end{bmatrix}$ and a center of mass positioning of
+$\begin{bmatrix} 1 &  0 & 0 \end{bmatrix}^T$ and a center of mass positioning of
     the ball right in front of the right foot (the kick commenced with the right
     leg as well). The line is the point on which we
     would like to see the foot retraction take place, as it is the line on which
@@ -716,8 +716,8 @@ $\begin{bmatrix} 1 \\  0 \\ 0 \end{bmatrix}$ and a center of mass positioning of
 
 Another experiment shows the same idea but, instead of kicking straight ahead,
 the direction was with an angle to the left, more precise with  $\vec{e} =
-\begin{bmatrix} \frac{1}{\sqrt{2}}\\
-\frac{1}{\sqrt{2}} \\ 0 \end{bmatrix}$. Using the same $\delta$ value as before gave us
+\begin{bmatrix} \frac{1}{\sqrt{2}} &
+\frac{1}{\sqrt{2}} & 0 \end{bmatrix}^T$. Using the same $\delta$ value as before gave us
 the result as can be seen in figure \ref{fig:retraction_plot2}. It is the most
 accurate point given a list of possible elements. 
 
@@ -739,13 +739,13 @@ direction, making the trade-off less pronounced than imagined.
 \end{figure}
 
 Another visualisation can be seen in figure \ref{fig:retraction_plot3}. In this
-case the ball should be kicked straight ahead again ( direction = $\begin{bmatrix} 1 \\  0 \\ 0 \end{bmatrix}$). All blue dots are evaluated retraction points and the red stars are the points that are the most
+case the ball should be kicked straight ahead again ( direction = $\begin{bmatrix} 1 &  0 & 0 \end{bmatrix}^T$). All blue dots are evaluated retraction points and the red stars are the points that are the most
 accurate(all have the same value). The data is set out over the $xy$ axis, which
 is the added length of the $x$ and $y$ direction, the $z$ axis and the
 $distance$ is the distance as we measure it in \ref{eq:distance} between contact point and the ball. The fact that sometimes multiple of the same $xy$ and $z$
 combinations have different distances to the contact point is to be understood from
 the fact that although in the axis both the real value of $x$ and $y$ are added to
-eachother, equation \ref{eq:distance} only considers the value of $x$ when the ball should go
+each other, equation \ref{eq:distance} only considers the value of $x$ when the ball should go
 straight ahead.
 
 \begin{figure}[htbp]
@@ -827,20 +827,8 @@ to time constraints, and the fact that less straightforward kicks are
 hard to visualise on a graph there are still cases left out, but it
 already makes for a succesful kick in the most basic of situations.
 
-\section{Discussion}
-Although the problem of making a dynamic kick has been solved by various teams
-in the Standard Platform League already (citations, citations), there are various solutions to our
-problems that we have not yet encountered in other papers. For instance the idea
-of making a proportinal controller based on the Center of Mass is one that is
-implemeneted often, but making a search space through which to find the optimal
-position is not one we have encountered but works great.
-
-It comes to show that although our problem initially looked as if it would be a
-straight path we have been able to give it our own interpretation which only
-gives the 
-
 \section{Future works}
-Now that all sub problems of making a dynamic kick seem to be solved succesfully, there are still some future improvements we would like to work on.
+Now that all subproblems of making a dynamic kick seem to be solved succesfully, there are still some future improvements we would like to work on.
 
 \subsection{Wrapping up our current work}
 Firstly, we would like to integrate all elements talked about to make a succesful kick. This
@@ -872,7 +860,7 @@ requesting end effector locations in a specified coordinate system.  The
 possible coordinate systems were ``world'' (where the origin was somewhere
 arbitrarily around the Nao), the torso and one between the legs. Because both
 the torso coordinate system and the one between the legs are dependent of the
-posture of the Nao , we tried to work with the coordinate somewhere in space.
+posture of the Nao, we tried to work with the coordinate somewhere in space.
 To determine the range of the legs we took the Nao by hand and set the legs in
 the most stretched positions and retrieved the maximum
 and minimum $x$ ,$y$ and $z$ values.  These were taken as absolute ranges
